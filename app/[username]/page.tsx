@@ -31,16 +31,16 @@ export default async function PortfolioPage({
     );
 
     return (
-        <div className="min-h-screen bg-[#050505] text-white selection:bg-[#8406f9] selection:text-white">
+        <div className="min-h-screen bg-[#050505] text-white selection:bg-[#8406f9] selection:text-white overflow-x-hidden">
             {/* Navbar */}
             <nav className="fixed top-0 w-full z-50 bg-[#050505]/80 backdrop-blur-md border-b border-white/5">
                 <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <Link href="/" className="text-2xl font-black italic tracking-tighter hover:opacity-80 transition-opacity">
+                    <Link href="/" className="text-xl md:text-2xl font-black italic tracking-tighter hover:opacity-80 transition-opacity">
                         ELITE <span className="text-[#8406f9]">INFLUENCER</span>
                     </Link>
                     <a
                         href={`mailto:${portfolio.contact_email}`}
-                        className="bg-white/5 hover:bg-white/10 border border-white/10 px-6 py-2.5 rounded-full font-bold text-sm transition-all"
+                        className="bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 md:px-6 md:py-2.5 rounded-full font-bold text-xs md:text-sm transition-all"
                     >
                         Contact Me
                     </a>
@@ -51,7 +51,7 @@ export default async function PortfolioPage({
                 <div className="max-w-4xl mx-auto">
                     {/* Header Profile */}
                     <div className="text-center mb-16 relative">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#8406f9] rounded-full blur-[120px] opacity-20 -z-10 animate-pulse"></div>
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-[#8406f9] rounded-full blur-[80px] md:blur-[120px] opacity-20 -z-10 animate-pulse"></div>
 
                         <div className="inline-block p-1 rounded-full bg-gradient-to-tr from-[#8406f9] to-transparent mb-6">
                             <div className="w-32 h-32 rounded-full bg-[#111] flex items-center justify-center text-4xl font-black uppercase text-white/20">
@@ -59,7 +59,7 @@ export default async function PortfolioPage({
                             </div>
                         </div>
 
-                        <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-4">
+                        <h1 className="text-4xl md:text-7xl font-black tracking-tight mb-4 break-words">
                             {portfolio.full_name}
                         </h1>
                         <p className="text-xl md:text-2xl text-white/60 font-medium max-w-2xl mx-auto">
