@@ -53,9 +53,9 @@ export default function Home() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in animate-delay-300">
-                        <a href="https://creatorcalc.netlify.app/" target="_blank" className="w-full sm:w-auto px-10 py-4 bg-[#8406f9] rounded-full font-bold text-lg hover:bg-[#8406f9]/90 transition-all transform hover:scale-105 text-center shadow-[0_0_20px_rgba(132,6,249,0.3)] hover:shadow-[0_0_40px_rgba(132,6,249,0.5)]">
+                        <Link href="/creator-calc" className="w-full sm:w-auto px-10 py-4 bg-[#8406f9] rounded-full font-bold text-lg hover:bg-[#8406f9]/90 transition-all transform hover:scale-105 text-center shadow-[0_0_20px_rgba(132,6,249,0.3)] hover:shadow-[0_0_40px_rgba(132,6,249,0.5)]">
                             CreatorCalc
-                        </a>
+                        </Link>
                         <a href="https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq" target="_blank" className="w-full sm:w-auto px-10 py-4 bg-white/5 border border-white/10 rounded-full font-bold text-lg hover:bg-white/10 transition-all text-center hover:scale-105">
                             Join Community
                         </a>
