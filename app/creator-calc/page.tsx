@@ -5,8 +5,8 @@ import { createClient } from '@supabase/supabase-js';
 import { toPng } from 'html-to-image';
 
 // --- CONFIGURATION ---
-const supabaseUrl = 'https://plpsqgvsquasicvrwhyb.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBscHNxZ3ZzcXVhc2ljdnJ3aHliIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2OTAwNjU4OSwiZXhwIjoyMDg0NTgyNTg5fQ.w9iZr_JocVWLjz5pFqfdmzMenwkCW3ucnM7Id36Xfak';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 // --- MARKET DATA ---
 const cpmRates: Record<string, number> = {
@@ -59,7 +59,7 @@ export default function CreatorCalc() {
     useEffect(() => {
         // Initialize Supabase
         try {
-            if (supabaseUrl) {
+            if (supabaseUrl && supabaseKey) {
                 const client = createClient(supabaseUrl, supabaseKey);
                 setSupabaseClient(client);
                 console.log("Supabase connected successfully.");
