@@ -1,6 +1,7 @@
 
 
 import Link from "next/link";
+import Image from "next/image";
 import LeadForm from "@/components/LeadForm";
 
 export default function Home() {
@@ -10,14 +11,9 @@ export default function Home() {
             {/* NAVIGATION */}
             <nav className="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-white/10">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 text-[#8406f9]">
-                            <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z"></path>
-                            </svg>
-                        </div>
-                        <h2 className="text-xl font-black tracking-tighter uppercase italic">Elite Influencer</h2>
-                    </div>
+                    <Link href="/" className="text-xl md:text-2xl font-black italic tracking-tighter hover:opacity-80 transition-opacity">
+                        ELITE <span className="text-[#8406f9]">INFLUENCER</span>
+                    </Link>
 
                     <div className="hidden md:flex items-center gap-10">
                         <Link className="text-sm font-medium text-white/70 hover:text-[#8406f9] transition-colors" href="#features">Features</Link>
@@ -121,14 +117,9 @@ export default function Home() {
             <footer className="border-t border-white/10 bg-[#0a0a0a] pt-20 pb-10 mt-20">
                 <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-12 mb-16">
                     <div className="col-span-1 md:col-span-2">
-                        <div className="flex items-center gap-2 mb-6">
-                            <div className="w-6 h-6 text-[#8406f9]">
-                                <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4 42.4379C4 42.4379 14.0962 36.0744 24 41.1692C35.0664 46.8624 44 42.2078 44 42.2078L44 7.01134C44 7.01134 35.068 11.6577 24.0031 5.96913C14.0971 0.876274 4 7.27094 4 7.27094L4 42.4379Z"></path>
-                                </svg>
-                            </div>
-                            <h2 className="text-xl font-black tracking-tighter uppercase italic">Elite Influencer</h2>
-                        </div>
+                        <Link href="/" className="flex items-center gap-2 mb-6 text-xl md:text-2xl font-black italic tracking-tighter hover:opacity-80 transition-opacity">
+                            ELITE <span className="text-[#8406f9]">INFLUENCER</span>
+                        </Link>
                         <p className="text-white/50 max-w-sm mb-8 leading-relaxed">
                             The premier ecosystem for top-tier creators to scale their personal brand, secure high-ticket deals, and network with the 1%.
                         </p>
@@ -169,7 +160,7 @@ export default function Home() {
                 </div>
 
                 <div className="border-t border-white/5 pt-8 text-center text-white/20 text-xs">
-                    © 2024 Elite Influencer Network. All rights reserved.
+                    © 2026 Elite Influencer Network. All rights reserved.
                 </div>
             </footer>
         </div>

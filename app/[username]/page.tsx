@@ -1,6 +1,7 @@
 import { supabase } from "@/utils/supabase/client";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 export const revalidate = 0; // Disable caching to see updates immediately
 
@@ -120,10 +121,12 @@ export default async function PortfolioPage({
                                         className="group relative aspect-video bg-[#111] border border-white/10 rounded-2xl overflow-hidden hover:border-[#8406f9]/50 transition-all"
                                     >
                                         {link.thumbnail ? (
-                                            <img
+                                            <Image
                                                 src={link.thumbnail}
-                                                alt={link.title}
-                                                className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                                                alt={link.title || "Video thumbnail"}
+                                                fill
+                                                className="object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                             />
                                         ) : (
                                             <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] to-[#050505]"></div>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { supabase } from "../../utils/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -54,9 +55,11 @@ export default function LoginPage() {
         <div className="min-h-screen bg-[#050505] flex items-center justify-center p-4">
             <div className="w-full max-w-md bg-[#111] border border-white/10 rounded-2xl p-8 shadow-2xl">
 
+
+
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <Link href="/" className="text-2xl font-black italic text-white tracking-tighter hover:opacity-80 transition-opacity">
+                    <Link href="/" className="text-3xl font-black italic tracking-tighter hover:opacity-80 transition-opacity inline-block">
                         ELITE <span className="text-[#8406f9]">INFLUENCER</span>
                     </Link>
                     <p className="text-white/50 text-sm mt-2">

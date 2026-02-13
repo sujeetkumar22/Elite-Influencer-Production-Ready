@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { createClient } from '@supabase/supabase-js';
 import { toPng } from 'html-to-image';
 
@@ -301,7 +302,7 @@ export default function CreatorCalc() {
                                     <div className="bg-[#111] border border-white/5 rounded-xl p-4 text-center">
                                         <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">Want more brand deals?</p>
                                         <a href="https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq" target="_blank" className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-black font-black py-4 rounded-xl transition-all flex items-center justify-center gap-2 group">
-                                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-6 h-6" alt="WhatsApp" />
+                                            <Image src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width={24} height={24} className="w-6 h-6" alt="WhatsApp" />
                                             <span>Join Creator Community</span>
                                             <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
                                         </a>
@@ -328,7 +329,7 @@ export default function CreatorCalc() {
                     </div>
                     <div className="flex flex-1 justify-end gap-8">
                         <a href="https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq" target="_blank" className="hidden md:flex items-center gap-2 text-sm font-bold text-[#25D366] hover:text-white transition-colors">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" className="w-4 h-4" alt="WhatsApp" />
+                            <Image src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width={16} height={16} className="w-4 h-4" alt="WhatsApp" />
                             Join Community
                         </a>
                     </div>
