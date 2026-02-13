@@ -95,6 +95,7 @@ export default function LoginPage() {
                         <label className="block text-xs font-bold uppercase text-white/40 mb-1">Email Address</label>
                         <input
                             type="email"
+                            suppressHydrationWarning
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#8406f9] transition-colors"
@@ -106,6 +107,7 @@ export default function LoginPage() {
                         <label className="block text-xs font-bold uppercase text-white/40 mb-1">Password</label>
                         <input
                             type="password"
+                            suppressHydrationWarning
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#8406f9] transition-colors"

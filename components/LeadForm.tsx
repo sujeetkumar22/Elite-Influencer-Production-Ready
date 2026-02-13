@@ -170,6 +170,7 @@ export default function LeadForm() {
 
             <button
                 type="submit"
+                suppressHydrationWarning
                 disabled={isSubmitting}
                 className="w-full bg-[#8406f9] hover:bg-[#8406f9]/90 text-white font-bold py-4 rounded-xl mt-4 disabled:opacity-50 transition-all shadow-[0_4px_20px_rgba(132,6,249,0.3)] hover:translate-y-[-2px] animate-fade-in animate-delay-300"
             >
