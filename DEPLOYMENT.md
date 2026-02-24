@@ -18,7 +18,14 @@ Check your local `.env.local` file.
 3. Add both keys and their values.
 4. Redeploy if necessary.
 
-## 2. Database Security
+## 2. Authentication Configuration (Supabase Dashboard)
+Before your Google Login works in production, you must update your Supabase settings:
+1. Go to **Authentication** > **URL Configuration**.
+2. Set the **Site URL** to `https://eliteinfluencer.in`.
+3. In **Redirect URLs**, add `https://eliteinfluencer.in/auth/callback`.
+4. Add `http://localhost:3000/**` to Redirect URLs for local testing.
+
+## 3. Database Security
 Before sharing your site publicly, you **MUST** secure your database.
 1. Open the [Supabase Dashboard](https://supabase.com/dashboard).
 2. Go to the **SQL Editor**.

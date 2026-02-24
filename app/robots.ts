@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: ['/dashboard/', '/auth/'],
         },
-        sitemap: 'https://elite-influencer.com/sitemap.xml',
+        sitemap: 'https://eliteinfluencer.in/sitemap.xml',
     }
 }

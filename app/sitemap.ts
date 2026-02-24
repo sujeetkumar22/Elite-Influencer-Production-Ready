@@ -3,19 +3,19 @@ import { MetadataRoute } from 'next'
 export default function sitemap(): MetadataRoute.Sitemap {
     return [
         {
-            url: 'https://elite-influencer.com',
+            url: 'https://eliteinfluencer.in',
             lastModified: new Date(),
             changeFrequency: 'yearly',
             priority: 1,
         },
         {
-            url: 'https://elite-influencer.com/creator-calc',
+            url: 'https://eliteinfluencer.in/creator-calc',
             lastModified: new Date(),
             changeFrequency: 'monthly',
             priority: 0.8,
         },
         {
-            url: 'https://elite-influencer.com/login',
+            url: 'https://eliteinfluencer.in/login',
             lastModified: new Date(),
             changeFrequency: 'yearly',
             priority: 0.5,
