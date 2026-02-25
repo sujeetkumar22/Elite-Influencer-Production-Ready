@@ -16,21 +16,15 @@ export default function LoginPage() {
     const handleGoogleLogin = async () => {
         setLoading(true);
 
-        // --- PORT DIAGNOSTICS START ---
-        const currentOrigin = window.location.origin;
-        console.log("Attempting login with origin:", currentOrigin);
-        // --- PORT DIAGNOSTICS END ---
-
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: `${currentOrigin}/auth/callback`,
+                redirectTo: `${window.location.origin}/auth/callback`,
             },
         });
 
         if (error) {
             console.error("Login error:", error);
-            alert(`Login error: ${error.message}\n\nCurrent Port: ${window.location.port || '80/443'}`);
             setLoading(false);
         }
     };
