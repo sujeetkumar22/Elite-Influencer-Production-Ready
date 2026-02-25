@@ -84,7 +84,11 @@ export default async function PortfolioPage({
                     {/* Stats Grid */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20">
                         <StatCard label="Followers" value={portfolio.stats?.followers || "-"} />
-                        <StatCard label="Monthly Reach" value={portfolio.stats?.reach || "-"} />
+                        <StatCard
+                            label="Monthly Reach"
+                            value={portfolio.stats?.reach || "-"}
+                            info="Monthly reach is the amount of views shown in your professional dashboard in last 30 days"
+                        />
                         <StatCard label="Engagement" value="High" />
                         <StatCard
                             label={portfolio.stats?.platform === "youtube" ? "YouTube" : "Instagram"}
@@ -201,9 +205,18 @@ export default async function PortfolioPage({
     );
 }
 
-function StatCard({ label, value, isLink, linkUrl }: { label: string; value: string | React.ReactNode; isLink?: boolean; linkUrl?: string }) {
+function StatCard({ label, value, isLink, linkUrl, info }: { label: string; value: string | React.ReactNode; isLink?: boolean; linkUrl?: string; info?: string }) {
     const content = (
-        <div className={`bg-[#111] border border-white/5 p-6 rounded-2xl text-center hover:bg-white/5 transition-colors group ${isLink ? "cursor-pointer hover:border-[#8406f9]/50" : ""}`}>
+        <div className={`bg-[#111] border border-white/5 p-6 rounded-2xl text-center hover:bg-white/5 transition-colors group relative ${isLink ? "cursor-pointer hover:border-[#8406f9]/50" : ""}`}>
+            {info && (
+                <div className="absolute top-3 right-3 group/info">
+                    <span className="material-symbols-outlined text-white/20 text-sm hover:text-white/60 transition-colors cursor-help">info</span>
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-3 bg-black/90 backdrop-blur-md border border-white/10 rounded-xl text-[10px] text-white/80 leading-relaxed opacity-0 invisible group-hover/info:visible group-hover/info:opacity-100 transition-all z-50 pointer-events-none">
+                        {info}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-black/90"></div>
+                    </div>
+                </div>
+            )}
             <div className="text-2xl md:text-3xl font-black text-white mb-1 group-hover:scale-110 transition-transform origin-center flex items-center justify-center h-10">
                 {value}
             </div>
