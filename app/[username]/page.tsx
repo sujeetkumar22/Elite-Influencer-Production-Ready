@@ -111,36 +111,57 @@ export default async function PortfolioPage({
                     {/* Work / Videos */}
                     {workLinksWithThumbnails.length > 0 && (
                         <div className="mb-20">
-                            <h2 className="text-3xl font-black mb-10 text-center">Featured Work</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <h2 className="text-3xl font-black mb-10 text-center flex items-center justify-center gap-4">
+                                <span className="h-px w-12 bg-white/10"></span>
+                                Featured Work
+                                <span className="h-px w-12 bg-white/10"></span>
+                            </h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 {workLinksWithThumbnails.map((link: any, i: number) => (
                                     <a
                                         key={i}
                                         href={link.url}
                                         target="_blank"
-                                        className="group relative aspect-video bg-[#111] border border-white/10 rounded-2xl overflow-hidden hover:border-[#8406f9]/50 transition-all"
+                                        className="group relative aspect-video bg-[#0a0a0a] border border-white/5 rounded-3xl overflow-hidden shadow-2xl transition-all duration-500 hover:scale-[1.02] hover:border-[#8406f9]/30"
                                     >
-                                        {link.thumbnail ? (
-                                            <Image
-                                                src={link.thumbnail}
-                                                alt={link.title || "Video thumbnail"}
-                                                fill
-                                                className="object-cover opacity-60 group-hover:opacity-100 transition-opacity"
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                            />
-                                        ) : (
-                                            <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] to-[#050505]"></div>
-                                        )}
+                                        {/* Ambient Glow behind card */}
+                                        <div className="absolute -inset-1 bg-gradient-to-r from-[#8406f9]/0 via-[#8406f9]/20 to-[#8406f9]/0 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500"></div>
 
-                                        <div className="absolute inset-0 flex items-center justify-center z-10">
-                                            <div className="w-16 h-16 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl">
-                                                <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-white border-b-[10px] border-b-transparent ml-1"></div>
+                                        <div className="relative h-full w-full overflow-hidden rounded-3xl z-10">
+                                            {link.thumbnail ? (
+                                                <Image
+                                                    src={link.thumbnail}
+                                                    alt={link.title || "Video thumbnail"}
+                                                    fill
+                                                    className="object-cover opacity-50 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
+                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                />
+                                            ) : (
+                                                <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a1a] to-[#050505] flex items-center justify-center">
+                                                    <div className="text-[#8406f9]/20 font-black text-6xl italic tracking-tighter">ELITE</div>
+                                                </div>
+                                            )}
+
+                                            {/* Overlays */}
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 z-20"></div>
+
+                                            <div className="absolute inset-0 flex items-center justify-center z-30">
+                                                <div className="w-20 h-20 bg-white/5 backdrop-blur-md rounded-full border border-white/10 flex items-center justify-center group-hover:scale-110 group-hover:bg-[#8406f9] group-hover:border-[#8406f9] transition-all duration-500 shadow-[0_0_50px_rgba(0,0,0,0.5)] group-hover:shadow-[0_0_50px_rgba(132,6,249,0.5)]">
+                                                    <div className="w-0 h-0 border-t-[12px] border-t-transparent border-l-[20px] border-l-white border-b-[12px] border-b-transparent ml-1"></div>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        {/* Gradient overlay for text readability */}
-                                        <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
-                                            <h3 className="font-bold text-lg text-white group-hover:text-[#8406f9] transition-colors">{link.title || "Untitled Video"}</h3>
+                                            <div className="absolute bottom-0 left-0 w-full p-8 z-40 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="px-2 py-0.5 rounded bg-[#8406f9] text-[10px] font-black uppercase tracking-widest text-white">Featured</span>
+                                                    {link.url.includes('youtube.com') || link.url.includes('youtu.be') ? (
+                                                        <span className="text-white/40 text-[10px] font-bold">YouTube</span>
+                                                    ) : link.url.includes('instagram.com') ? (
+                                                        <span className="text-white/40 text-[10px] font-bold">Instagram</span>
+                                                    ) : null}
+                                                </div>
+                                                <h3 className="font-black text-xl md:text-2xl text-white group-hover:text-white transition-colors line-clamp-2 leading-tight">{link.title || "Untitled Masterpiece"}</h3>
+                                            </div>
                                         </div>
                                     </a>
                                 ))}
@@ -218,27 +239,33 @@ async function getThumbnail(url: string) {
     // 1. Check for YouTube
     const ytId = getYouTubeId(url);
     if (ytId) {
-        return `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`;
+        // High-res version first, fallback to standard if needed
+        return `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
     }
 
     // 2. Check for Instagram (Server-side fetch to get og:image)
     if (url.includes("instagram.com")) {
         try {
             // Instagram blocks many scrapers, so we try our best.
-            // Using a generic user agent sometimes helps.
             const response = await fetch(url, {
                 headers: {
-                    "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
                 },
-                next: { revalidate: 3600 } // Cache for 1 hour to avoid hitting limits
+                next: { revalidate: 86400 } // Cache for 24 hours
             });
 
             if (!response.ok) return null;
 
             const html = await response.text();
-            // Regex to find og:image meta tag
+            // Try to find the image in the JSON LD or meta tags
             const match = html.match(/<meta property="og:image" content="([^"]+)"/);
-            return match ? match[1] : null;
+            if (match && match[1]) return match[1];
+
+            // Fallback to searching for the thumbnail in the JSON blobs
+            const jsonMatch = html.match(/"thumbnail_src":"([^"]+)"/);
+            if (jsonMatch && jsonMatch[1]) return jsonMatch[1].replace(/\\u0026/g, '&');
+
+            return null;
         } catch (error) {
             console.error("Failed to fetch Instagram thumbnail:", error);
             return null;
