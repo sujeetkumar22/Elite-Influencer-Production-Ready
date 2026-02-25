@@ -154,7 +154,7 @@ export default function Home() {
                         <ul className="space-y-4 text-sm text-white/60">
                             <li><Link href="#" className="hover:text-[#8406f9] transition-colors hover:pl-1">Privacy Policy</Link></li>
                             <li><Link href="#" className="hover:text-[#8406f9] transition-colors hover:pl-1">Terms of Service</Link></li>
-                            <li><a href="mailto:support@eliteinfluencer.com" className="hover:text-[#8406f9] transition-colors hover:pl-1">support@eliteinfluencer.com</a></li>
+                            <li><a href="mailto:eliteinfluencer.in@gmail.com" className="hover:text-[#8406f9] transition-colors hover:pl-1">eliteinfluencer.in@gmail.com</a></li>
                         </ul>
                     </div>
                 </div>
