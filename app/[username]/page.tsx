@@ -54,9 +54,40 @@ export default async function PortfolioPage({
                     <div className="text-center mb-16 relative">
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-[#8406f9] rounded-full blur-[80px] md:blur-[120px] opacity-20 -z-10 animate-pulse"></div>
 
-                        <div className="inline-block p-1 rounded-full bg-gradient-to-tr from-[#8406f9] to-transparent mb-6">
-                            <div className="w-32 h-32 rounded-full bg-[#111] flex items-center justify-center text-4xl font-black uppercase text-white/20">
-                                {portfolio.full_name?.[0] || "?"}
+                        <div className="relative inline-block mb-10 group cursor-default">
+                            {/* Animated Outer Glow */}
+                            <div className="absolute inset-0 rounded-full bg-[#8406f9] blur-2xl opacity-40 animate-avatar-pulse group-hover:opacity-100 transition-opacity duration-700"></div>
+
+                            {/* Rotating Border Layer */}
+                            <div className="relative w-36 h-36 rounded-full p-1 overflow-hidden flex items-center justify-center animate-avatar-pulse border border-white/10">
+                                <div className="absolute w-[200%] h-[200%] bg-[conic-gradient(from_0deg,#8406f9,#ff2e63,#08d1ff,#8406f9)] animate-rotate-bg opacity-80"></div>
+
+                                {/* Inner Avatar Container */}
+                                <div className="relative w-full h-full rounded-full bg-[#0a0a0a] flex items-center justify-center z-10 overflow-hidden shadow-inner border border-white/5">
+                                    {portfolio.profile_image ? (
+                                        <Image
+                                            src={portfolio.profile_image}
+                                            alt={portfolio.full_name || "Profile"}
+                                            fill
+                                            className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                        />
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center">
+                                            <span className="text-5xl font-black uppercase text-transparent bg-clip-text bg-gradient-to-br from-white via-white/40 to-white/10 select-none">
+                                                {portfolio.full_name?.[0] || "?"}
+                                            </span>
+                                            <div className="h-0.5 w-6 bg-[#8406f9] mt-1 rounded-full opacity-50"></div>
+                                        </div>
+                                    )}
+
+                                    {/* Glass Overlay */}
+                                    <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none"></div>
+                                </div>
+                            </div>
+
+                            {/* Verified Badge / Detail */}
+                            <div className="absolute -bottom-2 right-4 w-10 h-10 bg-[#8406f9] rounded-full border-4 border-[#050505] flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-transform duration-500 z-20">
+                                <span className="material-symbols-outlined text-white text-xl">verified</span>
                             </div>
                         </div>
 
