@@ -16,11 +16,10 @@ export async function GET(request: Request) {
             return NextResponse.redirect(`${origin}${next}`);
         }
         console.error("Auth exchange error:", error.message);
+        // Pass the error message to the error page
+        return NextResponse.redirect(`${origin}/auth/auth-code-error?error=${encodeURIComponent(error.message)}`);
     } else {
         console.warn("No auth code found in callback URL.");
+        return NextResponse.redirect(`${origin}/auth/auth-code-error?error=No+code+found`);
     }
-
-    // return the user to an error page with instructions
-    console.log("Redirecting to error page...");
-    return NextResponse.redirect(`${origin}/auth/auth-code-error`);
 }
