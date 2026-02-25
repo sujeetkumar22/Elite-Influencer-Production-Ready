@@ -145,6 +145,7 @@ export default function Home() {
                             <li><Link href="/" className="hover:text-[#8406f9] transition-colors hover:pl-1">Home</Link></li>
                             <li><Link href="#features" className="hover:text-[#8406f9] transition-colors hover:pl-1">Features</Link></li>
                             <li><Link href="/dashboard" className="hover:text-[#8406f9] transition-colors hover:pl-1">Portfolio Maker</Link></li>
+                            <li><a href="https://www.instagram.com/eliteinfluencer.in/" target="_blank" className="hover:text-[#8406f9] transition-colors hover:pl-1">Instagram</a></li>
                             <li><a href="https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq" target="_blank" className="hover:text-[#8406f9] transition-colors hover:pl-1">Community</a></li>
                         </ul>
                     </div>

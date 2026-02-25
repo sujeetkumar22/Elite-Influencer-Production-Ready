@@ -477,6 +477,10 @@ export default function CreatorCalc() {
                                 <span className="text-xs font-bold tracking-widest uppercase">CreatorCalc</span>
                             </div>
                             <p className="text-[10px] font-bold tracking-[0.3em] uppercase opacity-30 text-white">Powered by Elite Influencer</p>
+                            <a href="https://www.instagram.com/eliteinfluencer.in/" target="_blank" className="flex items-center gap-1.5 opacity-40 hover:opacity-100 transition-opacity">
+                                <Image src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" width={12} height={12} className="w-3 h-3 grayscale brightness-200" alt="Instagram" />
+                                <span className="text-[10px] font-bold tracking-widest uppercase text-white">Follow Us</span>
+                            </a>
                         </div>
                         <div className="text-[10px] font-bold tracking-widest uppercase opacity-20 text-white">© 2026 All rights reserved</div>
                     </footer>
