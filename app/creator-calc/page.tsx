@@ -385,9 +385,9 @@ export default function CreatorCalc() {
                             <div className="space-y-6">
                                 <div>
                                     <span className="text-[#cbd5e1] text-xs font-bold uppercase tracking-widest mb-2 block">Usage Rights</span>
-                                    <div className="flex p-1.5 bg-[rgba(0,0,0,0.6)] rounded-xl border border-[#1a1a1a] h-16">
+                                    <div className="flex flex-col md:flex-row p-1.5 bg-[rgba(0,0,0,0.6)] rounded-xl border border-[#1a1a1a] h-auto md:h-16 gap-2 md:gap-0">
                                         {['social', 'full', 'perpetual'].map((opt) => (
-                                            <label key={opt} className={`flex-1 flex items-center justify-center cursor-pointer rounded-lg transition-all text-sm font-bold ${rights === opt ? 'bg-[#8a2ce2] text-[#ffffff]' : 'text-[#64748b] hover:text-[#cbd5e1]'} relative group/opt`}>
+                                            <label key={opt} className={`w-full md:flex-1 flex items-center justify-center cursor-pointer rounded-lg transition-all text-sm font-bold py-3 md:py-0 ${rights === opt ? 'bg-[#8a2ce2] text-[#ffffff]' : 'text-[#64748b] hover:text-[#cbd5e1]'} relative group/opt`}>
                                                 <input
                                                     className="hidden"
                                                     name="rights"
@@ -397,8 +397,8 @@ export default function CreatorCalc() {
                                                     onChange={() => setRights(opt)}
                                                 />
                                                 {opt === 'social' ? 'Social Only' : opt === 'full' ? 'Full Usage' : 'Perpetual'}
-                                                <span className="material-symbols-outlined text-[14px] ml-1 opacity-50 hover:opacity-100">info</span>
-                                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-40 p-2 bg-[#111] border border-[rgba(255,255,255,0.2)] rounded-lg text-[10px] text-[#cbd5e1] opacity-0 invisible group-hover/opt:opacity-100 group-hover/opt:visible transition-all shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_10px_10px_-5px_rgba(0,0,0,0.04)] z-30 font-normal normal-case">
+                                                <span className="material-symbols-outlined text-[14px] ml-1.5 opacity-50 hover:opacity-100">info</span>
+                                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-40 p-2 bg-[#111] border border-[rgba(255,255,255,0.2)] rounded-lg text-[10px] text-[#cbd5e1] opacity-0 invisible group-hover/opt:opacity-100 group-hover/opt:visible transition-all shadow-[0_20px_25px_-5px_rgba(0,0,0,0.1),0_10px_10px_-5px_rgba(0,0,0,0.04)] z-30 font-normal normal-case pointer-events-none">
                                                     {opt === 'social' ? 'Standard organic usage on social media.' : opt === 'full' ? 'Includes Paid Ads and Digital Rights.' : 'Lifetime buyout. Brand owns the video.'}
                                                 </div>
                                             </label>
@@ -470,11 +470,15 @@ export default function CreatorCalc() {
                         </div>
                     </div>
 
-                    <footer className="w-full border-t border-white/5 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
-                        <div className="flex items-center gap-3 opacity-50">
-                            <span className="material-symbols-outlined text-xl">calculate</span>
-                            <span className="text-xs font-bold tracking-widest uppercase">CreatorCalc © 2024</span>
+                    <footer className="w-full border-t border-white/5 py-12 flex flex-col items-center gap-6">
+                        <div className="flex flex-col items-center gap-2">
+                            <div className="flex items-center gap-3 opacity-50">
+                                <span className="material-symbols-outlined text-xl">calculate</span>
+                                <span className="text-xs font-bold tracking-widest uppercase">CreatorCalc</span>
+                            </div>
+                            <p className="text-[10px] font-bold tracking-[0.3em] uppercase opacity-30 text-white">Powered by Elite Influencer</p>
                         </div>
+                        <div className="text-[10px] font-bold tracking-widest uppercase opacity-20 text-white">© 2026 All rights reserved</div>
                     </footer>
                 </main>
 
