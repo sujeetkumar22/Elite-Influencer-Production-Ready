@@ -2,12 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { createClient } from '@supabase/supabase-js';
+import { supabase as supabaseClient } from '../../utils/supabase/client';
 import { toPng } from 'html-to-image';
-
-// --- CONFIGURATION ---
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 // --- MARKET DATA ---
 const cpmRates: Record<string, number> = {
@@ -22,7 +18,6 @@ const rightsMultipliers: Record<string, number> = { "social": 1.0, "full": 1.5, 
 
 export default function CreatorCalc() {
     // --- STATE ---
-    const [supabaseClient, setSupabaseClient] = useState<any>(null);
     const [views, setViews] = useState('');
     const [niche, setNiche] = useState('tech');
     const [rights, setRights] = useState('social');
@@ -58,16 +53,8 @@ export default function CreatorCalc() {
 
     // --- INITIALIZATION ---
     useEffect(() => {
-        // Initialize Supabase
-        try {
-            if (supabaseUrl && supabaseKey) {
-                const client = createClient(supabaseUrl, supabaseKey);
-                setSupabaseClient(client);
-                console.log("Supabase connected successfully.");
-            }
-        } catch (err) {
-            console.error("Supabase initialization failed:", err);
-        }
+        // Shared Supabase client is already initialized
+        console.log("Supabase client ready.");
     }, []);
 
     // --- LOGIC ---
