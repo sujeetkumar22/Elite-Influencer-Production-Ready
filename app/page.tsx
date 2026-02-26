@@ -6,7 +6,7 @@ import LeadForm from "@/components/LeadForm";
 
 export default function Home() {
     return (
-        <div className="bg-[#f7f5f8] dark:bg-[#050505] min-h-screen text-white transition-colors duration-300">
+        <div className="bg-[#050505] min-h-screen text-white">
 
             {/* NAVIGATION */}
             <nav className="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-white/10">
