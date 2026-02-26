@@ -45,7 +45,7 @@ export default function Home() {
                     </h1>
 
                     <p className="max-w-2xl mx-auto text-lg md:text-xl text-white/60 mb-10 leading-relaxed animate-fade-in animate-delay-200">
-                        Access exclusive high-ticket brand deals, professional portfolio tools, and a global network of top-tier influencers scaling to 7-figures.
+                        Access exclusive high-ticket brand deals, professional portfolio tools, and a global network of top-tier influencers scaling their personal brand.
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in animate-delay-300">
