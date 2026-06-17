@@ -265,7 +265,7 @@ export default function CreatorCalc() {
                                         <div>
                                             <label className="text-xs font-bold uppercase tracking-widest text-slate-500 mb-1 block">2. Brand Deal Experience</label>
                                             <select id="surveyExp" value={formData.surveyExp} onChange={handleInputChange} className="w-full bg-black/40 border border-[#333] rounded-lg px-4 py-3 text-white focus:border-[#8a2ce2] focus:ring-0 transition-all cursor-pointer outline-none">
-                                                <option value="Newbie">I'm new (0 deals)</option>
+                                                <option value="Newbie">I&apos;m new (0 deals)</option>
                                                 <option value="Beginner">1-5 deals</option>
                                                 <option value="Intermediate">5-20 deals</option>
                                                 <option value="Pro">20+ deals</option>

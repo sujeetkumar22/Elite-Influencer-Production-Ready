@@ -4,7 +4,6 @@ import { useState } from "react";
 import { supabase } from "../../utils/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
@@ -45,8 +44,9 @@ export default function LoginPage() {
                 router.push("/dashboard");
             }
             router.refresh();
-        } catch (error: any) {
-            alert(error.message);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            alert(message);
         } finally {
             setLoading(false);
         }

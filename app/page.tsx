@@ -1,8 +1,8 @@
 
 
 import Link from "next/link";
-import Image from "next/image";
 import LeadForm from "@/components/LeadForm";
+import AIPitchGenerator from "@/components/AIPitchGenerator";
 
 export default function Home() {
     return (
@@ -17,8 +17,10 @@ export default function Home() {
 
                     <div className="hidden md:flex items-center gap-10">
                         <Link className="text-sm font-medium text-white/70 hover:text-[#8406f9] transition-colors" href="#features">Features</Link>
+                        <Link className="text-sm font-medium text-white/70 hover:text-[#8406f9] transition-colors" href="/#ai-pitch">AI Pitch</Link>
                         <a className="text-sm font-medium text-white/70 hover:text-[#8406f9] transition-colors" href="https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq" target="_blank">Community</a>
                         <Link className="text-sm font-medium text-white/70 hover:text-[#8406f9] transition-colors" href="/dashboard">Portfolio Maker</Link>
+                        <Link className="text-sm font-medium text-white/70 hover:text-[#8406f9] transition-colors" href="/feeds">Feeds</Link>
                     </div>
 
                     <div>
@@ -98,6 +100,11 @@ export default function Home() {
                     </div>
                 </section>
 
+                {/* AI PITCH GENERATOR */}
+                <section id="ai-pitch" className="px-6 mb-32 pt-10">
+                    <AIPitchGenerator />
+                </section>
+
                 {/* FORM */}
                 <section id="application-form" className="max-w-5xl mx-auto px-6">
                     <div className="bg-[#111111] rounded-lg border border-white/5 overflow-hidden flex flex-col md:flex-row shadow-2xl">
@@ -145,6 +152,7 @@ export default function Home() {
                             <li><Link href="/" className="hover:text-[#8406f9] transition-colors hover:pl-1">Home</Link></li>
                             <li><Link href="#features" className="hover:text-[#8406f9] transition-colors hover:pl-1">Features</Link></li>
                             <li><Link href="/dashboard" className="hover:text-[#8406f9] transition-colors hover:pl-1">Portfolio Maker</Link></li>
+                            <li><Link href="/feeds" className="hover:text-[#8406f9] transition-colors hover:pl-1">Feeds</Link></li>
                             <li><a href="https://www.instagram.com/eliteinfluencer.in/" target="_blank" className="hover:text-[#8406f9] transition-colors hover:pl-1">Instagram</a></li>
                             <li><a href="https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq" target="_blank" className="hover:text-[#8406f9] transition-colors hover:pl-1">Community</a></li>
                         </ul>

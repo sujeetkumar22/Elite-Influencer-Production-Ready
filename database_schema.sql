@@ -97,3 +97,42 @@ WITH CHECK ( true );
 CREATE POLICY "Enable select for service role only" 
 ON leads FOR SELECT 
 USING ( auth.role() = 'service_role' );
+
+----------------------------------------------------------------
+-- Articles Table (Admin Only Creation)
+----------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS articles (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at timestamptz DEFAULT now(),
+  title text NOT NULL,
+  content text NOT NULL,
+  author_id uuid REFERENCES auth.users(id) NOT NULL,
+  published boolean DEFAULT true,
+  image_url text
+);
+
+ALTER TABLE articles ENABLE ROW LEVEL SECURITY;
+
+-- Policy 1: Public can read published articles
+DROP POLICY IF EXISTS "Public can view published articles" ON articles;
+CREATE POLICY "Public can view published articles"
+ON articles FOR SELECT
+USING ( published = true );
+
+-- Policy 2: Admin/Owner can insert their own articles
+DROP POLICY IF EXISTS "Users can insert own articles" ON articles;
+CREATE POLICY "Users can insert own articles"
+ON articles FOR INSERT
+WITH CHECK ( auth.uid() = author_id );
+
+-- Policy 3: Admin/Owner can update their own articles
+DROP POLICY IF EXISTS "Users can update own articles" ON articles;
+CREATE POLICY "Users can update own articles"
+ON articles FOR UPDATE
+USING ( auth.uid() = author_id );
+
+-- Policy 4: Admin/Owner can delete their own articles
+DROP POLICY IF EXISTS "Users can delete own articles" ON articles;
+CREATE POLICY "Users can delete own articles"
+ON articles FOR DELETE
+USING ( auth.uid() = author_id );

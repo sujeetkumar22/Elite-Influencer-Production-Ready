@@ -5,6 +5,12 @@ import Image from "next/image";
 
 export const revalidate = 0; // Disable caching to see updates immediately
 
+interface WorkLink {
+    title?: string;
+    url: string;
+    thumbnail?: string | null;
+}
+
 export default async function PortfolioPage({
     params,
 }: {
@@ -25,7 +31,7 @@ export default async function PortfolioPage({
 
     // Fetch thumbnails in parallel
     const workLinksWithThumbnails = await Promise.all(
-        (portfolio.work_links || []).map(async (link: any) => {
+        ((portfolio.work_links as WorkLink[]) || []).map(async (link) => {
             const thumbnail = await getThumbnail(link.url);
             return { ...link, thumbnail };
         })
@@ -152,7 +158,7 @@ export default async function PortfolioPage({
                                 <span className="h-px w-12 bg-white/10"></span>
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                {workLinksWithThumbnails.map((link: any, i: number) => (
+                                {workLinksWithThumbnails.map((link, i) => (
                                     <a
                                         key={i}
                                         href={link.url}
@@ -220,7 +226,7 @@ export default async function PortfolioPage({
 
                     {/* Contact Footer */}
                     <div className="text-center py-20 border-t border-white/5">
-                        <h2 className="text-4xl md:text-6xl font-black mb-8">Let's Create Magic</h2>
+                        <h2 className="text-4xl md:text-6xl font-black mb-8">Let&apos;s Create Magic</h2>
                         <p className="text-white/50 mb-10 text-lg">Ready to take your brand to the next level?</p>
                         <a
                             href={`mailto:${portfolio.contact_email}`}

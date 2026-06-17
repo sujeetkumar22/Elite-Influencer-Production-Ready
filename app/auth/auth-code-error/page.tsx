@@ -21,7 +21,7 @@ function ErrorContent() {
             )}
 
             <p className="text-white/50 mb-8 leading-relaxed">
-                We couldn't verify your login. This usually happens if the link expired or your session was interrupted.
+                We couldn&apos;t verify your login. This usually happens if the link expired or your session was interrupted.
             </p>
             <div className="space-y-4">
                 <Link

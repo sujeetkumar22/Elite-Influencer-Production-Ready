@@ -33,8 +33,9 @@ export default function LeadForm() {
 
             if (error) throw error;
             setSubmitted(true);
-        } catch (error: any) {
-            alert("Error submitting: " + error.message);
+        } catch (error) {
+            const message = error instanceof Error ? error.message : String(error);
+            alert("Error submitting: " + message);
         } finally {
             setIsSubmitting(false);
         }

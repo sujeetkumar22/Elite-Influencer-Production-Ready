@@ -5,12 +5,13 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { User } from "@supabase/supabase-js";
 
 export default function Dashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -93,8 +94,9 @@ export default function Dashboard() {
     getData();
   }, [router]);
 
-  const handleChange = (e: any) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    const checked = type === "checkbox" ? (e.target as HTMLInputElement).checked : undefined;
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
@@ -165,8 +167,9 @@ export default function Dashboard() {
         alert("Saved successfully!");
       }
 
-    } catch (error: any) {
-      alert("Error saving: " + error.message);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      alert("Error saving: " + message);
     } finally {
       setSaving(false);
     }
@@ -195,6 +198,9 @@ export default function Dashboard() {
                 View Live Page
               </Link>
             )}
+            <Link href="/dashboard/feeds/create" className="bg-[#8406f9]/80 hover:bg-[#8406f9] px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+              New Article
+            </Link>
             <button onClick={handleLogout} className="text-red-500 text-sm font-bold hover:underline">
               Sign Out
             </button>
@@ -271,16 +277,14 @@ export default function Dashboard() {
               <div key={num} className="grid grid-cols-2 gap-4">
                 <input
                   name={`video${num}_title`}
-                  // @ts-ignore
-                  value={formData[`video${num}_title`]}
+                  value={formData[`video${num}_title` as keyof typeof formData] as string}
                   onChange={handleChange}
                   placeholder={`Video ${num} Title`}
                   className="bg-white/5 border border-white/10 rounded-lg p-3 text-white w-full text-sm"
                 />
                 <input
                   name={`video${num}_url`}
-                  // @ts-ignore
-                  value={formData[`video${num}_url`]}
+                  value={formData[`video${num}_url` as keyof typeof formData] as string}
                   onChange={handleChange}
                   placeholder={`Video ${num} URL`}
                   className="bg-white/5 border border-white/10 rounded-lg p-3 text-white w-full text-sm"

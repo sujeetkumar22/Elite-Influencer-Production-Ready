@@ -14,7 +14,7 @@ export default function NotFound() {
             </h2>
 
             <p className="text-white/50 text-lg max-w-md mb-10 leading-relaxed">
-                The page you are looking for has been archived or does not exist. Let's get you back to scaling your empire.
+                The page you are looking for has been archived or does not exist. Let&apos;s get you back to scaling your empire.
             </p>
 
             <Link
