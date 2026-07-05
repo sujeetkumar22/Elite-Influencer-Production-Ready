@@ -1,6 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/utils/supabase/client";
+
+interface CreatorContext {
+    full_name: string;
+    followers: string;
+    reach: string;
+    portfolio_url: string;
+}
 
 export default function AIPitchGenerator() {
     const [brandName, setBrandName] = useState("");
@@ -9,6 +17,32 @@ export default function AIPitchGenerator() {
     const [generating, setGenerating] = useState(false);
     const [pitch, setPitch] = useState("");
     const [copied, setCopied] = useState(false);
+    const [creator, setCreator] = useState<CreatorContext | null>(null);
+
+    // If the visitor is logged in and has a portfolio, personalize the
+    // pitch with their real name, stats, and portfolio link.
+    useEffect(() => {
+        const loadCreator = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+
+            const { data } = await supabase
+                .from("portfolios")
+                .select("full_name, username, stats")
+                .eq("user_id", user.id)
+                .maybeSingle();
+
+            if (data) {
+                setCreator({
+                    full_name: data.full_name || "",
+                    followers: data.stats?.followers || "",
+                    reach: data.stats?.reach || "",
+                    portfolio_url: data.username ? `https://eliteinfluencer.in/${data.username}` : "",
+                });
+            }
+        };
+        loadCreator();
+    }, []);
 
     const generatePitch = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -22,7 +56,7 @@ export default function AIPitchGenerator() {
             const response = await fetch("/api/generate-pitch", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ brandName, niche, tone }),
+                body: JSON.stringify({ brandName, niche, tone, creator }),
             });
 
             const data = await response.json();

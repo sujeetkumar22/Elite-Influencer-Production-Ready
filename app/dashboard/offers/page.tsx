@@ -1,9 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabase/client";
 import Link from "next/link";
+import { toast } from "@/components/Toast";
 
 interface BrandOffer {
     id: string;
@@ -53,7 +54,7 @@ export default function ManageOffersPage() {
             .eq("id", id);
 
         if (error) {
-            alert("Error updating status: " + error.message);
+            toast("Error updating status: " + error.message, "error");
         } else {
             setOffers((prev) =>
                 prev.map((o) => (o.id === id ? { ...o, is_active: !currentStatus } : o))
@@ -67,7 +68,7 @@ export default function ManageOffersPage() {
         const { error } = await supabase.from("brand_offers").delete().eq("id", id);
 
         if (error) {
-            alert("Error deleting offer: " + error.message);
+            toast("Error deleting offer: " + error.message, "error");
         } else {
             setOffers((prev) => prev.filter((o) => o.id !== id));
         }
@@ -131,12 +132,20 @@ export default function ManageOffersPage() {
                                                 </button>
                                             </td>
                                             <td className="py-4 text-right">
-                                                <button
-                                                    onClick={() => deleteOffer(offer.id)}
-                                                    className="text-red-500 hover:text-red-400 font-bold transition-colors text-xs ml-4"
-                                                >
-                                                    Delete
-                                                </button>
+                                                <div className="flex justify-end items-center gap-4">
+                                                    <Link
+                                                        href={`/dashboard/offers/edit/${offer.id}`}
+                                                        className="text-blue-500 hover:text-blue-400 font-bold transition-colors text-xs"
+                                                    >
+                                                        Edit
+                                                    </Link>
+                                                    <button
+                                                        onClick={() => deleteOffer(offer.id)}
+                                                        className="text-red-500 hover:text-red-400 font-bold transition-colors text-xs"
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}
@@ -154,3 +163,5 @@ export default function ManageOffersPage() {
         </div>
     );
 }
+
+

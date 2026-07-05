@@ -1,16 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../../utils/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "@/components/Toast";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [isSignUp, setIsSignUp] = useState(false);
+    const [nextUrl, setNextUrl] = useState("/dashboard");
     const router = useRouter();
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search);
+            const next = params.get("next");
+            if (next) {
+                setNextUrl(next);
+            }
+        }
+    }, []);
 
     const handleGoogleLogin = async () => {
         setLoading(true);
@@ -18,7 +30,7 @@ export default function LoginPage() {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "google",
             options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
+                redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}`,
             },
         });
 
@@ -36,19 +48,36 @@ export default function LoginPage() {
             if (isSignUp) {
                 const { error } = await supabase.auth.signUp({ email, password });
                 if (error) throw error;
-                alert("Account created! You are now logged in.");
-                router.push("/dashboard");
+                toast("Account created! You are now logged in.", "success");
+                router.push(nextUrl);
             } else {
                 const { error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) throw error;
-                router.push("/dashboard");
+                router.push(nextUrl);
             }
             router.refresh();
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
-            alert(message);
+            toast(message, "error");
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleForgotPassword = async () => {
+        if (!email) {
+            toast("Enter your email above first, then click Forgot Password.", "info");
+            return;
+        }
+        setLoading(true);
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+            redirectTo: `${window.location.origin}/auth/callback?next=/auth/update-password`,
+        });
+        setLoading(false);
+        if (error) {
+            toast(error.message, "error");
+        } else {
+            toast("Password reset link sent! Check your email.", "success");
         }
     };
 
@@ -126,13 +155,22 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <div className="mt-6 text-center">
+                <div className="mt-6 text-center space-y-3">
                     <button
                         onClick={() => setIsSignUp(!isSignUp)}
-                        className="text-sm text-white/40 hover:text-white transition-colors underline"
+                        className="block w-full text-sm text-white/40 hover:text-white transition-colors underline"
                     >
                         {isSignUp ? "Already have an account? Sign In" : "New here? Create an account"}
                     </button>
+                    {!isSignUp && (
+                        <button
+                            onClick={handleForgotPassword}
+                            disabled={loading}
+                            className="block w-full text-sm text-white/40 hover:text-[#8406f9] transition-colors"
+                        >
+                            Forgot password?
+                        </button>
+                    )}
                 </div>
 
             </div>

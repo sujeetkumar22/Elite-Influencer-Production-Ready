@@ -1,9 +1,10 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { supabase as supabaseClient } from '../../utils/supabase/client';
 import { toPng } from 'html-to-image';
+import { toast } from '@/components/Toast';
 
 // --- MARKET DATA ---
 const cpmRates: Record<string, number> = {
@@ -61,11 +62,11 @@ export default function CreatorCalc() {
     const calculateRate = () => {
         const rawViews = parseFloat(views.replace(/,/g, ''));
         if (isNaN(rawViews)) {
-            alert("Please enter a valid number for views.");
+            toast("Please enter a valid number for views.", "error");
             return;
         }
         if (rawViews < 1000) {
-            alert("Please enter a minimum of 1,000 views.");
+            toast("Please enter a minimum of 1,000 views.", "error");
             return;
         }
 
@@ -90,7 +91,7 @@ export default function CreatorCalc() {
 
     const openLeadModal = () => {
         if (results.avg === 0) {
-            alert("Please calculate a value before downloading.");
+            toast("Please calculate a value before downloading.", "error");
             return;
         }
         setModals({ ...modals, lead: true });
@@ -106,19 +107,19 @@ export default function CreatorCalc() {
     const submitAndDownload = async () => {
         const { name, email, insta, phone } = formData;
         if (!name || !email || !insta || !phone) {
-            alert("Please fill in all fields.");
+            toast("Please fill in all fields.", "error");
             return;
         }
 
         // Validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            alert("Please enter a valid email address.");
+            toast("Please enter a valid email address.", "error");
             return;
         }
         const cleanPhone = phone.replace(/\D/g, '');
         if (cleanPhone.length !== 10) {
-            alert("Please enter a valid 10-digit mobile number.");
+            toast("Please enter a valid 10-digit mobile number.", "error");
             return;
         }
 
@@ -147,7 +148,7 @@ export default function CreatorCalc() {
                 setModals({ ...modals, survey: true }); // Open Survey
             } catch (err) {
                 console.error(err);
-                alert("Error generating image.");
+                toast("Error generating image.", "error");
                 setSaveBtnText('Download Invoice');
             }
         }
@@ -156,7 +157,7 @@ export default function CreatorCalc() {
     const submitSurvey = async () => {
         const { surveyNiche, surveyExp, email } = formData;
         if (!surveyNiche || !surveyExp) {
-            alert("Please select an option for both questions.");
+            toast("Please select an option for both questions.", "error");
             return;
         }
 
@@ -200,7 +201,7 @@ export default function CreatorCalc() {
                     <div className="relative w-full max-w-md p-6 animate-fade-in-up">
                         <div className="bg-[#121212] border border-[#8a2ce2] rounded-2xl p-8 shadow-[0_0_50px_rgba(138,44,226,0.2)]">
                             <div className="text-center mb-6">
-                                <h3 className="text-2xl font-black text-white mb-2">Save Your Quote ⚡</h3>
+                                <h3 className="text-2xl font-black text-white mb-2">Save Your Quote âš¡</h3>
                                 <p className="text-slate-400 text-sm">Enter details to download the official valuation card.</p>
                             </div>
                             <div className="space-y-4">
@@ -278,7 +279,7 @@ export default function CreatorCalc() {
                                 </div>
                             ) : (
                                 <div id="surveyResult" className="text-left animate-fade-in">
-                                    <h3 className="text-xl font-bold text-white mb-4 text-center">🎉 Here is your Pitch Template</h3>
+                                    <h3 className="text-xl font-bold text-white mb-4 text-center">ðŸŽ‰ Here is your Pitch Template</h3>
                                     <div className="relative mb-6">
                                         <textarea id="pitchTemplate" className="w-full h-48 bg-[#1A1A1A] border border-[#333] rounded-xl p-4 text-slate-300 text-sm leading-relaxed focus:outline-none resize-none font-mono" readOnly value={`Hi [Brand Team],\n\nI've been using [Product Name] for a while and I'm a huge fan of what you're building.\n\nI am a content creator in the [Your Niche] space. My audience is highly engaged and always looking for recommendations. \n\nI have an idea for a Reel that highlights [Key Feature] in an authentic way that could drive immediate interest for your brand.\n\nHere is a link to my previous work: [Your Portfolio Link]\n\nWould you be open to a quick 5-min chat?\n\nBest,\n[Your Name]`}></textarea>
                                         <button onClick={copyTemplate} className={`absolute top-3 right-3 ${copyBtnText === 'Copied!' ? 'bg-green-600' : 'bg-[#8a2ce2] hover:bg-[#7a25c9]'} text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 transition-all cursor-pointer`}>
@@ -415,7 +416,7 @@ export default function CreatorCalc() {
                         <div className="border-t border-[rgba(255,255,255,0.05)] pt-10 text-center">
                             <p className="text-[#64748b] text-xs font-bold uppercase tracking-[0.2em] mb-4">Estimated Campaign Value (Average)</p>
                             <div className="font-mono text-6xl md:text-8xl font-bold text-[#8a2ce2] flex items-center justify-center gap-4 drop-shadow-[0_0_15px_rgba(138,44,226,0.8)]">
-                                <span className="opacity-50 text-4xl md:text-5xl">₹</span>
+                                <span className="opacity-50 text-4xl md:text-5xl">â‚¹</span>
                                 <span suppressHydrationWarning>{results.avg === 0 ? '0.00' : fmt(results.avg).replace(/[^\d.,]/g, '').trim()}</span>
                             </div>
                             <div className="mt-8 grid grid-cols-3 divide-x divide-[rgba(255,255,255,0.1)] border-t border-[rgba(255,255,255,0.1)] pt-6">
@@ -436,7 +437,7 @@ export default function CreatorCalc() {
                     </div>
 
                     <div className="mb-20 text-center space-y-4">
-                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest animate-pulse">👇 Save this for your next negotiation</p>
+                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest animate-pulse">ðŸ‘‡ Save this for your next negotiation</p>
                         <button onClick={openLeadModal} className="group relative inline-flex items-center gap-3 bg-white text-black text-lg font-black uppercase tracking-wider px-8 py-4 rounded-full hover:scale-105 transition-transform shadow-[0_0_40px_rgba(255,255,255,0.3)] cursor-pointer">
                             <span className="material-symbols-outlined text-2xl group-hover:animate-bounce">download</span>
                             Download Official Quote
@@ -482,7 +483,7 @@ export default function CreatorCalc() {
                                 <span className="text-[10px] font-bold tracking-widest uppercase text-white">Follow Us</span>
                             </a>
                         </div>
-                        <div className="text-[10px] font-bold tracking-widest uppercase opacity-20 text-white">© 2026 All rights reserved</div>
+                        <div className="text-[10px] font-bold tracking-widest uppercase opacity-20 text-white">Â© 2026 All rights reserved</div>
                     </footer>
                 </main>
 
@@ -505,3 +506,5 @@ export default function CreatorCalc() {
         </div>
     );
 }
+
+

@@ -1,6 +1,10 @@
 -- Elite Influencer Database Schema
 -- This file documents the structure of the 'portfolios' table.
 -- Run this in the Supabase SQL Editor to create the table or reference it for development.
+--
+-- IMPORTANT: after running this file, also run migration_security_fixes.sql
+-- (adds the admins table, locks down brand_offers/articles to admins only,
+-- adds portfolios.profile_image + is_verified, and the avatars storage bucket).
 
 -- Enable Row Level Security (RLS) is recommended but not strictly required for this demo.
 -- create extension if not exists "uuid-ossp";
@@ -46,6 +50,15 @@ CREATE TABLE IF NOT EXISTS portfolios (
   -- ]
   work_links jsonb DEFAULT '[]'::jsonb
 );
+
+-- Trigger for updated_at
+CREATE EXTENSION IF NOT EXISTS moddatetime SCHEMA extensions;
+DROP TRIGGER IF EXISTS handle_updated_at ON portfolios;
+CREATE TRIGGER handle_updated_at BEFORE UPDATE ON portfolios
+  FOR EACH ROW EXECUTE PROCEDURE extensions.moddatetime(updated_at);
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_portfolios_available ON portfolios(is_available);
 
 -- Recommended RLS Policies (Enabled for Production)
 ALTER TABLE portfolios ENABLE ROW LEVEL SECURITY;
@@ -106,10 +119,13 @@ CREATE TABLE IF NOT EXISTS articles (
   created_at timestamptz DEFAULT now(),
   title text NOT NULL,
   content text NOT NULL,
-  author_id uuid REFERENCES auth.users(id) NOT NULL,
+  author_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   published boolean DEFAULT true,
   image_url text
 );
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_articles_published ON articles(published);
 
 ALTER TABLE articles ENABLE ROW LEVEL SECURITY;
 
@@ -149,8 +165,13 @@ CREATE TABLE IF NOT EXISTS brand_offers (
   requirements text NOT NULL,
   logo_url text,
   is_active boolean DEFAULT true,
-  admin_id uuid REFERENCES auth.users(id) NOT NULL
+  admin_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  follower_range text,
+  apply_link text NOT NULL
 );
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_brand_offers_active ON brand_offers(is_active);
 
 ALTER TABLE brand_offers ENABLE ROW LEVEL SECURITY;
 

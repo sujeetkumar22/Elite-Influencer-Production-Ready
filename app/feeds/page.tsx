@@ -1,10 +1,16 @@
 import { createClient } from "@/utils/supabase/server";
 import ArticleCard from "@/components/ArticleCard";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
-export const revalidate = 0; // Disable cache for feeds if needed
+export const metadata = {
+  title: "Elite Journal — Creator Economy Insights",
+  description: "Strategies, brand deal guides, and community highlights to help you scale your personal empire.",
+};
 
 export default async function FeedsPage() {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
   // Fetch published articles
   const { data: articles, error } = await supabase
@@ -18,7 +24,9 @@ export default async function FeedsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white pt-32 pb-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-[#050505] text-white relative overflow-x-hidden">
+      <Navbar isLoggedIn={!!user} />
+      <div className="pt-32 pb-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background ambient glow */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#8406f9]/10 blur-[150px] rounded-full pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-pink-600/5 blur-[150px] rounded-full pointer-events-none"></div>
@@ -50,6 +58,8 @@ export default async function FeedsPage() {
           </div>
         )}
       </div>
+      </div>
+      <Footer />
     </div>
   );
 }

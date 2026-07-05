@@ -1,6 +1,12 @@
 import { createClient } from "@/utils/supabase/server";
+import Link from "next/link";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
-export const revalidate = 0; // Disable cache for marketplace
+export const metadata = {
+    title: "Brand Deals Marketplace",
+    description: "High-ticket collaborations with premium brands. Apply directly and secure your next big deal.",
+};
 
 interface BrandOffer {
     id: string;
@@ -9,11 +15,15 @@ interface BrandOffer {
     niche: string;
     requirements: string;
     logo_url?: string | null;
+    follower_range?: string;
+    apply_link?: string;
     created_at: string;
 }
 
 export default async function MarketplacePage() {
     const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    const isLoggedIn = !!user;
 
     // Fetch active brand offers
     const { data: offers, error } = await supabase
@@ -27,7 +37,9 @@ export default async function MarketplacePage() {
     }
 
     return (
-        <div className="min-h-screen bg-[#050505] text-white pt-32 pb-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        <div className="min-h-screen bg-[#050505] text-white relative overflow-x-hidden">
+            <Navbar isLoggedIn={isLoggedIn} />
+            <div className="pt-32 pb-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
             {/* Background ambient glow */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#8406f9]/10 blur-[150px] rounded-full pointer-events-none"></div>
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-pink-600/5 blur-[150px] rounded-full pointer-events-none"></div>
@@ -77,6 +89,13 @@ export default async function MarketplacePage() {
                                             <p className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-[#8406f9]">{offer.budget}</p>
                                         </div>
 
+                                        {offer.follower_range && (
+                                            <div>
+                                                <span className="block text-xs uppercase tracking-widest text-white/40 font-bold mb-1">Followers Needed</span>
+                                                <p className="text-white/90 text-sm font-semibold">{offer.follower_range}</p>
+                                            </div>
+                                        )}
+
                                         <div>
                                             <span className="block text-xs uppercase tracking-widest text-white/40 font-bold mb-1">Requirements</span>
                                             <p className="text-white/70 text-sm leading-relaxed whitespace-pre-wrap">{offer.requirements}</p>
@@ -85,14 +104,23 @@ export default async function MarketplacePage() {
                                 </div>
 
                                 {/* Actions */}
-                                <a
-                                    href="https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="w-full bg-[#8406f9] hover:bg-[#8406f9]/90 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(132,6,249,0.15)] flex items-center justify-center gap-2 group-hover:shadow-[0_0_25px_rgba(132,6,249,0.3)]"
-                                >
-                                    Apply via Community <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                                </a>
+                                {isLoggedIn ? (
+                                    <a
+                                        href={offer.apply_link || "https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq"}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="w-full bg-[#8406f9] hover:bg-[#8406f9]/90 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(132,6,249,0.15)] flex items-center justify-center gap-2 group-hover:shadow-[0_0_25px_rgba(132,6,249,0.3)]"
+                                    >
+                                        {offer.apply_link ? "Apply Now" : "Apply via Community"} <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                                    </a>
+                                ) : (
+                                    <Link
+                                        href="/login?next=/marketplace"
+                                        className="w-full bg-[#8406f9] hover:bg-[#8406f9]/90 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(132,6,249,0.15)] flex items-center justify-center gap-2 group-hover:shadow-[0_0_25px_rgba(132,6,249,0.3)]"
+                                    >
+                                        {offer.apply_link ? "Apply Now" : "Apply via Community"} <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                                    </Link>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -112,6 +140,8 @@ export default async function MarketplacePage() {
                     </div>
                 )}
             </div>
+            </div>
+            <Footer />
         </div>
     );
 }

@@ -1,14 +1,62 @@
-import { supabase } from "@/utils/supabase/client";
+import { supabasePublic as supabase } from "@/utils/supabase/public";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import type { Metadata } from "next";
 
-export const revalidate = 0; // Disable caching to see updates immediately
+// Cache profile pages for 60s — creators see edits within a minute,
+// but repeat visits don't hammer the database.
+export const revalidate = 60;
 
 interface WorkLink {
     title?: string;
     url: string;
     thumbnail?: string | null;
+}
+
+// Per-creator social previews: when a creator shares their link with a
+// brand (WhatsApp, IG DM, email), the preview shows their name and stats.
+export async function generateMetadata({
+    params,
+}: {
+    params: Promise<{ username: string }>;
+}): Promise<Metadata> {
+    const { username } = await params;
+    const { data: portfolio } = await supabase
+        .from("portfolios")
+        .select("full_name, tagline, bio, city, stats, profile_image")
+        .eq("username", username)
+        .single();
+
+    if (!portfolio) {
+        return { title: "Creator Not Found" };
+    }
+
+    const followers = portfolio.stats?.followers;
+    const title = `${portfolio.full_name || username} — Creator Portfolio`;
+    const description = [
+        portfolio.tagline,
+        followers && `${followers} followers`,
+        portfolio.city,
+    ]
+        .filter(Boolean)
+        .join(" • ") || `Check out ${portfolio.full_name || username}'s creator portfolio on Elite Influencer.`;
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: "profile",
+            ...(portfolio.profile_image ? { images: [{ url: portfolio.profile_image }] } : {}),
+        },
+        twitter: {
+            card: "summary_large_image",
+            title,
+            description,
+        },
+    };
 }
 
 export default async function PortfolioPage({
@@ -91,10 +139,12 @@ export default async function PortfolioPage({
                                 </div>
                             </div>
 
-                            {/* Verified Badge / Detail */}
-                            <div className="absolute -bottom-2 right-4 w-10 h-10 bg-[#8406f9] rounded-full border-4 border-[#050505] flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-transform duration-500 z-20">
-                                <span className="material-symbols-outlined text-white text-xl">verified</span>
-                            </div>
+                            {/* Verified Badge — only shown when granted by admins */}
+                            {portfolio.is_verified && (
+                                <div className="absolute -bottom-2 right-4 w-10 h-10 bg-[#8406f9] rounded-full border-4 border-[#050505] flex items-center justify-center shadow-xl transform group-hover:scale-110 transition-transform duration-500 z-20">
+                                    <span className="material-symbols-outlined text-white text-xl">verified</span>
+                                </div>
+                            )}
                         </div>
 
                         <h1 className="text-4xl md:text-7xl font-black tracking-tight mb-4 break-words">
@@ -119,14 +169,16 @@ export default async function PortfolioPage({
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-20">
+                    <div className={`grid grid-cols-2 ${portfolio.stats?.engagement ? "md:grid-cols-4" : "md:grid-cols-3"} gap-4 mb-20`}>
                         <StatCard label="Followers" value={portfolio.stats?.followers || "-"} />
                         <StatCard
                             label="Monthly Reach"
                             value={portfolio.stats?.reach || "-"}
                             info="Monthly reach is the amount of views shown in your professional dashboard in last 30 days"
                         />
-                        <StatCard label="Engagement" value="High" />
+                        {portfolio.stats?.engagement && (
+                            <StatCard label="Engagement" value={portfolio.stats.engagement} />
+                        )}
                         <StatCard
                             label={portfolio.stats?.platform === "youtube" ? "YouTube" : "Instagram"}
                             value={<PlatformIcon platform={portfolio.stats?.platform || "instagram"} />}
@@ -301,6 +353,8 @@ async function getThumbnail(url: string) {
                 headers: {
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
                 },
+                // Never let a slow/blocked Instagram fetch delay the page
+                signal: AbortSignal.timeout(3000),
                 next: { revalidate: 86400 } // Cache for 24 hours
             });
 

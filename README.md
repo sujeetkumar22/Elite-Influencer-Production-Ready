@@ -1,39 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Elite Influencer
+
+The premier ecosystem for creators to build portfolios, discover high-ticket brand deals, and scale their personal brand. Live at [eliteinfluencer.in](https://eliteinfluencer.in).
+
+## Features
+
+- **Portfolio Builder** — creators build a public portfolio page at `eliteinfluencer.in/<username>` with photo, stats, work samples, and contact details
+- **Brand Deals Marketplace** — curated brand collaboration offers (admin-posted)
+- **Elite Journal (Feeds)** — articles on the creator economy (admin-posted)
+- **CreatorCalc** — sponsored-content rate calculator with invoice download
+- **AI Pitch Generator** — Gemini-powered brand outreach pitches, personalized with the logged-in creator's real stats
+
+## Tech Stack
+
+- [Next.js 16](https://nextjs.org) (App Router) + React 19 + TypeScript
+- [Tailwind CSS 4](https://tailwindcss.com)
+- [Supabase](https://supabase.com) — Postgres, Auth (email + Google OAuth), Storage
+- Google Gemini API (pitch generation)
+- Deployed on Vercel
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+   ```bash
+   npm install
+   ```
+
+2. Create `.env.local` with:
+
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=<your supabase project url>
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=<your supabase anon key>
+   GEMINI_API_KEY=<your gemini api key>
+   ```
+
+3. Set up the database: run [database_schema.sql](database_schema.sql) and then
+   [migration_security_fixes.sql](migration_security_fixes.sql) in the Supabase SQL Editor.
+   The migration creates the `admins` table — insert your own user id there to get
+   admin access (manage brand offers and articles).
+
+4. Run the dev server:
+
+   ```bash
+   npm run dev
+   ```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Project Structure
+
+```
+app/
+  page.tsx               Landing page
+  [username]/            Public creator portfolio pages (ISR, 60s)
+  dashboard/             Creator dashboard (portfolio editor; admin: offers + articles)
+  marketplace/           Brand deals listing
+  feeds/                 Articles ("Elite Journal")
+  creator-calc/          Rate calculator
+  login/                 Auth (email/password + Google)
+  auth/                  OAuth callback, logout, password reset
+  api/generate-pitch/    Gemini pitch endpoint (rate-limited)
+components/              Navbar, Footer, Toast, LeadForm, AIPitchGenerator, ArticleCard
+utils/supabase/          Browser, server (cookie-aware), and public (cacheable) clients
+middleware.ts            Session refresh + server-side /dashboard protection
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Security Notes
 
-### 🔐 Authentication Setup
-If you encounter "localhost refused to connect" or other auth issues, see [DEPLOYMENT.md](file:///e:/Mission%20Placement/AI%20Enginier%20Roadmap/Project/Elite%20Influencer/elite-influencer/DEPLOYMENT.md#2-authentication-configuration-supabase-dashboard) for configuration steps.
+- Row Level Security is enabled on all tables — see `migration_security_fixes.sql`
+- Only users in the `admins` table can create brand offers and articles
+- Never commit `.env.local`, `client_secret*.json`, or recovery codes (gitignored)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Authentication Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+If you encounter "localhost refused to connect" or other auth issues, see
+[DEPLOYMENT.md](DEPLOYMENT.md) for Supabase dashboard configuration steps.

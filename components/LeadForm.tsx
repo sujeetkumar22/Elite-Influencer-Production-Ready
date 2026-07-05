@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/utils/supabase/client";
+import { toast } from "@/components/Toast";
 
 export default function LeadForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -35,7 +36,7 @@ export default function LeadForm() {
             setSubmitted(true);
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
-            alert("Error submitting: " + message);
+            toast("Error submitting: " + message, "error");
         } finally {
             setIsSubmitting(false);
         }

@@ -12,6 +12,9 @@ export default function CreateOfferPage() {
     const [niche, setNiche] = useState("");
     const [requirements, setRequirements] = useState("");
     const [logoUrl, setLogoUrl] = useState("");
+    const [followerRangeType, setFollowerRangeType] = useState("< 1K");
+    const [customFollowerRange, setCustomFollowerRange] = useState("");
+    const [applyLink, setApplyLink] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -29,10 +32,14 @@ export default function CreateOfferPage() {
             return;
         }
 
+        const finalFollowerRange = followerRangeType === "Custom" ? customFollowerRange : followerRangeType;
+
         const { error: insertError } = await supabase.from("brand_offers").insert({
             brand_name: brandName,
             budget,
             niche,
+            follower_range: finalFollowerRange,
+            apply_link: applyLink,
             requirements,
             logo_url: logoUrl || null,
             admin_id: user.id,
@@ -115,6 +122,46 @@ export default function CreateOfferPage() {
                                 onChange={(e) => setLogoUrl(e.target.value)}
                                 className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                 placeholder="e.g. https://example.com/logo.jpg"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label className="block text-sm font-medium text-zinc-300 mb-2">Follower Range</label>
+                            <select
+                                value={followerRangeType}
+                                onChange={(e) => setFollowerRangeType(e.target.value)}
+                                className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all mb-2"
+                            >
+                                <option value="< 1K">&lt; 1K Followers</option>
+                                <option value="1K - 5K">1K - 5K Followers</option>
+                                <option value="5K - 10K">5K - 10K Followers</option>
+                                <option value="10K - 100K">10K - 100K Followers</option>
+                                <option value="100K+">100K+ Followers</option>
+                                <option value="Custom">Custom Range...</option>
+                            </select>
+                            {followerRangeType === "Custom" && (
+                                <input
+                                    type="text"
+                                    required
+                                    value={customFollowerRange}
+                                    onChange={(e) => setCustomFollowerRange(e.target.value)}
+                                    className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                    placeholder="e.g. 50K - 200K"
+                                />
+                            )}
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-zinc-300 mb-2">Apply Link (Required)</label>
+                            <input
+                                type="url"
+                                required
+                                value={applyLink}
+                                onChange={(e) => setApplyLink(e.target.value)}
+                                className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                placeholder="e.g. https://forms.gle/..."
                             />
                         </div>
                     </div>

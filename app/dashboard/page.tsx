@@ -5,13 +5,29 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { User } from "@supabase/supabase-js";
+import { toast } from "@/components/Toast";
+
+// Usernames that would collide with app routes or look official
+const RESERVED_USERNAMES = [
+  "dashboard", "marketplace", "feeds", "login", "logout", "signup",
+  "register", "api", "auth", "creator-calc", "privacy", "terms",
+  "admin", "about", "contact", "settings", "profile", "home", "help",
+  "support", "blog", "creators", "events", "elite", "eliteinfluencer",
+];
+
+const USERNAME_REGEX = /^[a-z0-9_.]{3,30}$/;
 
 export default function Dashboard() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [usernameStatus, setUsernameStatus] = useState<"idle" | "checking" | "available" | "taken" | "invalid">("idle");
 
   // Form State
   const [formData, setFormData] = useState({
@@ -25,6 +41,7 @@ export default function Dashboard() {
     bio: "",
     followers: "",
     reach: "",
+    engagement: "",
     brands: "",
     email: "",
     phone: "",
@@ -47,6 +64,14 @@ export default function Dashboard() {
 
       setUser(user);
 
+      // Check admin status (controls offers/articles management UI)
+      supabase
+        .from("admins")
+        .select("user_id")
+        .eq("user_id", user.id)
+        .maybeSingle()
+        .then(({ data }) => setIsAdmin(!!data));
+
       // 2. Try to fetch existing portfolio
       try {
         const { data, error } = await supabase
@@ -60,7 +85,7 @@ export default function Dashboard() {
         }
 
         if (data) {
-          console.log("Found existing profile:", data);
+          setProfileImage(data.profile_image || null);
           setFormData({
             username: data.username || "",
             full_name: data.full_name || "",
@@ -72,6 +97,7 @@ export default function Dashboard() {
             bio: data.bio || "",
             followers: data.stats?.followers || "",
             reach: data.stats?.reach || "",
+            engagement: data.stats?.engagement || "",
             brands: data.brands ? data.brands.join(", ") : "",
             email: data.contact_email || "",
             phone: data.contact_phone || "",
@@ -97,10 +123,78 @@ export default function Dashboard() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     const checked = type === "checkbox" ? (e.target as HTMLInputElement).checked : undefined;
+    if (name === "username") setUsernameStatus("idle");
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  const normalizeUsername = (raw: string) =>
+    raw.toLowerCase().trim().replace(/\s/g, "");
+
+  // Validate format + reserved words + uniqueness. Returns error string or null.
+  const validateUsername = async (raw: string): Promise<string | null> => {
+    const username = normalizeUsername(raw);
+    if (!USERNAME_REGEX.test(username)) {
+      return "Username must be 3-30 characters: lowercase letters, numbers, dots or underscores.";
+    }
+    if (RESERVED_USERNAMES.includes(username)) {
+      return "This username is reserved. Please choose another.";
+    }
+    const { data } = await supabase
+      .from("portfolios")
+      .select("user_id")
+      .eq("username", username)
+      .maybeSingle();
+    if (data && data.user_id !== user?.id) {
+      return "This username is already taken.";
+    }
+    return null;
+  };
+
+  const checkUsernameAvailability = async () => {
+    if (!formData.username) return;
+    setUsernameStatus("checking");
+    const error = await validateUsername(formData.username);
+    if (!error) {
+      setUsernameStatus("available");
+    } else if (error.includes("taken") || error.includes("reserved")) {
+      setUsernameStatus("taken");
+    } else {
+      setUsernameStatus("invalid");
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast("Image must be under 5MB.", "error");
+      return;
+    }
+
+    setUploadingImage(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${user.id}/avatar-${Date.now()}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(path, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from("avatars").getPublicUrl(path);
+      setProfileImage(data.publicUrl);
+      toast("Photo uploaded! Remember to save your changes.", "success");
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      toast("Upload failed: " + message, "error");
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -110,6 +204,14 @@ export default function Dashboard() {
     try {
       if (!user) return;
 
+      // Validate username before writing anything
+      const usernameError = await validateUsername(formData.username);
+      if (usernameError) {
+        toast(usernameError, "error");
+        setSaving(false);
+        return;
+      }
+
       const brandsArray = formData.brands.split(",").map((s) => s.trim()).filter((s) => s);
       const videos = [];
       if (formData.video1_url) videos.push({ title: formData.video1_title, url: formData.video1_url });
@@ -118,7 +220,7 @@ export default function Dashboard() {
 
       const payload = {
         user_id: user.id,
-        username: formData.username.toLowerCase().replace(/\s/g, ""),
+        username: normalizeUsername(formData.username),
         full_name: formData.full_name,
         city: formData.city,
         tagline: formData.tagline,
@@ -127,9 +229,11 @@ export default function Dashboard() {
         contact_phone: formData.phone,
         brands: brandsArray,
         is_available: formData.is_available,
+        profile_image: profileImage,
         stats: {
           followers: formData.followers,
           reach: formData.reach,
+          engagement: formData.engagement,
           instagram: formData.instagram,
           platform: formData.platform,
           platform_url: formData.platform_url,
@@ -162,14 +266,14 @@ export default function Dashboard() {
       }
 
       if (error) {
-        alert("Database Error: " + error.message);
+        toast("Database error: " + error.message, "error");
       } else {
-        alert("Saved successfully!");
+        toast("Portfolio saved successfully!", "success");
       }
 
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      alert("Error saving: " + message);
+      toast("Error saving: " + message, "error");
     } finally {
       setSaving(false);
     }
@@ -192,18 +296,25 @@ export default function Dashboard() {
             <h1 className="text-3xl font-black text-white">Dashboard</h1>
             <p className="text-white/50 text-sm">Welcome, {formData.full_name || "Creator"}</p>
           </div>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap justify-center gap-3 md:gap-4">
+            <Link href="/" className="bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+              Home
+            </Link>
             {formData.username && (
               <Link href={`/${formData.username}`} target="_blank" className="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
                 View Live Page
               </Link>
             )}
-            <Link href="/dashboard/offers" className="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
-              Manage Brand Deals
-            </Link>
-            <Link href="/dashboard/feeds/create" className="bg-[#8406f9]/80 hover:bg-[#8406f9] px-4 py-2 rounded-lg text-sm font-bold transition-colors">
-              New Article
-            </Link>
+            {isAdmin && (
+              <>
+                <Link href="/dashboard/offers" className="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+                  Manage Brand Deals
+                </Link>
+                <Link href="/dashboard/feeds/create" className="bg-[#8406f9]/80 hover:bg-[#8406f9] px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+                  New Article
+                </Link>
+              </>
+            )}
             <button onClick={handleLogout} className="text-red-500 text-sm font-bold hover:underline">
               Sign Out
             </button>
@@ -234,8 +345,47 @@ export default function Dashboard() {
           {/* Identity */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold uppercase text-[#8406f9] tracking-widest">1. Identity</h3>
+
+            {/* Profile Photo */}
+            <div className="flex items-center gap-5 bg-white/5 p-4 rounded-xl border border-white/10">
+              <div className="relative w-20 h-20 rounded-full overflow-hidden bg-[#0a0a0a] border border-white/10 flex items-center justify-center shrink-0">
+                {profileImage ? (
+                  <Image src={profileImage} alt="Profile" fill className="object-cover" sizes="80px" />
+                ) : (
+                  <span className="text-2xl font-black text-white/20">
+                    {formData.full_name?.[0]?.toUpperCase() || "?"}
+                  </span>
+                )}
+              </div>
+              <div>
+                <label className="inline-block bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-sm font-bold cursor-pointer transition-colors">
+                  {uploadingImage ? "Uploading..." : profileImage ? "Change Photo" : "Upload Photo"}
+                  <input type="file" accept="image/*" onChange={handleImageUpload} disabled={uploadingImage} className="hidden" />
+                </label>
+                <p className="text-xs text-white/40 mt-2">JPG or PNG, up to 5MB. Brands trust profiles with real photos.</p>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input name="username" value={formData.username} onChange={handleChange} placeholder="Username (unique)" className="bg-white/5 border border-white/10 rounded-lg p-3 text-white w-full" required />
+              <div>
+                <input
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  onBlur={checkUsernameAvailability}
+                  placeholder="Username (unique)"
+                  className={`bg-white/5 border rounded-lg p-3 text-white w-full ${
+                    usernameStatus === "available" ? "border-green-500/50" :
+                    usernameStatus === "taken" || usernameStatus === "invalid" ? "border-red-500/50" :
+                    "border-white/10"
+                  }`}
+                  required
+                />
+                {usernameStatus === "checking" && <p className="text-xs text-white/40 mt-1">Checking availability…</p>}
+                {usernameStatus === "available" && <p className="text-xs text-green-500 mt-1">✓ Username available — your page will be eliteinfluencer.in/{normalizeUsername(formData.username)}</p>}
+                {usernameStatus === "taken" && <p className="text-xs text-red-500 mt-1">✕ This username is taken or reserved.</p>}
+                {usernameStatus === "invalid" && <p className="text-xs text-red-500 mt-1">✕ Use 3-30 lowercase letters, numbers, dots or underscores.</p>}
+              </div>
               <input name="full_name" value={formData.full_name} onChange={handleChange} placeholder="Full Name" className="bg-white/5 border border-white/10 rounded-lg p-3 text-white w-full" required />
             </div>
             {/* Replaced Instagram with Platform Selection */}
@@ -266,9 +416,10 @@ export default function Dashboard() {
           {/* Social Proof */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold uppercase text-[#8406f9] tracking-widest">2. Social Proof</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <input name="followers" value={formData.followers} onChange={handleChange} placeholder="Followers (e.g. 10k)" className="bg-white/5 border border-white/10 rounded-lg p-3 text-white w-full" />
               <input name="reach" value={formData.reach} onChange={handleChange} placeholder="Monthly Reach" className="bg-white/5 border border-white/10 rounded-lg p-3 text-white w-full" />
+              <input name="engagement" value={formData.engagement} onChange={handleChange} placeholder="Engagement Rate (e.g. 4.5%)" className="bg-white/5 border border-white/10 rounded-lg p-3 text-white w-full" />
             </div>
             <input name="brands" value={formData.brands} onChange={handleChange} placeholder="Brands (comma separated)" className="bg-white/5 border border-white/10 rounded-lg p-3 text-white w-full" />
           </div>
