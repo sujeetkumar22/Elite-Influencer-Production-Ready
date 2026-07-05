@@ -136,3 +136,36 @@ DROP POLICY IF EXISTS "Users can delete own articles" ON articles;
 CREATE POLICY "Users can delete own articles"
 ON articles FOR DELETE
 USING ( auth.uid() = author_id );
+
+----------------------------------------------------------------
+-- Brand Offers Table (Admin Only Creation)
+----------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS brand_offers (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at timestamptz DEFAULT now(),
+  brand_name text NOT NULL,
+  budget text NOT NULL,
+  niche text NOT NULL,
+  requirements text NOT NULL,
+  logo_url text,
+  is_active boolean DEFAULT true,
+  admin_id uuid REFERENCES auth.users(id) NOT NULL
+);
+
+ALTER TABLE brand_offers ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public can view active offers"
+ON brand_offers FOR SELECT
+USING ( is_active = true );
+
+CREATE POLICY "Admin can insert offers"
+ON brand_offers FOR INSERT
+WITH CHECK ( auth.uid() = admin_id );
+
+CREATE POLICY "Admin can update offers"
+ON brand_offers FOR UPDATE
+USING ( auth.uid() = admin_id );
+
+CREATE POLICY "Admin can delete offers"
+ON brand_offers FOR DELETE
+USING ( auth.uid() = admin_id );

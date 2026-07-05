@@ -18,6 +18,7 @@ export default function Home() {
                     <div className="hidden md:flex items-center gap-10">
                         <Link className="text-sm font-medium text-white/70 hover:text-[#8406f9] transition-colors" href="#features">Features</Link>
                         <Link className="text-sm font-medium text-white/70 hover:text-[#8406f9] transition-colors" href="/#ai-pitch">AI Pitch</Link>
+                        <Link className="text-sm font-medium text-white/70 hover:text-[#8406f9] transition-colors" href="/marketplace">Marketplace</Link>
                         <a className="text-sm font-medium text-white/70 hover:text-[#8406f9] transition-colors" href="https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq" target="_blank">Community</a>
                         <Link className="text-sm font-medium text-white/70 hover:text-[#8406f9] transition-colors" href="/dashboard">Portfolio Maker</Link>
                         <Link className="text-sm font-medium text-white/70 hover:text-[#8406f9] transition-colors" href="/feeds">Feeds</Link>
@@ -64,15 +65,14 @@ export default function Home() {
                 <section id="features" className="max-w-7xl mx-auto px-6 mb-24">
                     <div className="grid md:grid-cols-3 gap-6">
                         <div className="group p-8 rounded-lg bg-white/5 border border-white/10 hover:border-[#8406f9]/50 transition-all relative overflow-hidden hover:bg-white/10 hover:-translate-y-1 duration-300 animate-fade-in animate-delay-100">
-                            <div className="absolute top-3 right-3 bg-[#8406f9]/20 text-[#8406f9] text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">Coming Soon</div>
                             <div className="w-12 h-12 rounded-full bg-[#8406f9]/20 flex items-center justify-center text-[#8406f9] mb-6 group-hover:scale-110 transition-transform">
                                 <span className="material-symbols-outlined text-2xl">campaign</span>
                             </div>
                             <h3 className="text-xl font-bold mb-3">Brand Deals</h3>
                             <p className="text-white/50 mb-6">Unlock high-ticket partnerships with global luxury brands.</p>
-                            <div className="flex items-center gap-2 text-white/30 font-bold text-sm cursor-not-allowed">
-                                View Marketplace <span className="material-symbols-outlined text-sm">lock</span>
-                            </div>
+                            <Link href="/marketplace" className="flex items-center gap-2 text-[#8406f9] font-bold text-sm hover:text-[#8406f9]/80 transition-colors group-hover:gap-3">
+                                View Marketplace <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                            </Link>
                         </div>
 
                         <div className="group p-8 rounded-lg bg-white/5 border border-white/10 hover:border-[#8406f9]/50 transition-all relative overflow-hidden hover:bg-white/10 hover:-translate-y-1 duration-300 animate-fade-in animate-delay-200">

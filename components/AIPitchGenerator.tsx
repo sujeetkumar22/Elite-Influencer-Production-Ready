@@ -32,7 +32,7 @@ export default function AIPitchGenerator() {
             } else {
                 setPitch(`Error: ${data.error || "Failed to generate pitch"}`);
             }
-        } catch (err) {
+        } catch {
             setPitch("Error connecting to the AI service.");
         } finally {
             setGenerating(false);

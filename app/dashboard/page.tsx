@@ -198,6 +198,9 @@ export default function Dashboard() {
                 View Live Page
               </Link>
             )}
+            <Link href="/dashboard/offers" className="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+              Manage Brand Deals
+            </Link>
             <Link href="/dashboard/feeds/create" className="bg-[#8406f9]/80 hover:bg-[#8406f9] px-4 py-2 rounded-lg text-sm font-bold transition-colors">
               New Article
             </Link>
