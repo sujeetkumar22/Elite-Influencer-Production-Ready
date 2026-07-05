@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 import ShareProfileButton from "@/components/ShareProfileButton";
+import EditProfileButton from "@/components/EditProfileButton";
 
 // Cache profile pages for 60s — creators see edits within a minute,
 // but repeat visits don't hammer the database.
@@ -143,6 +144,7 @@ export default async function PortfolioPage({
                         ELITE <span className="text-[#8406f9]">INFLUENCER</span>
                     </Link>
                     <div className="flex items-center gap-3">
+                        <EditProfileButton ownerId={portfolio.user_id} />
                         <ShareProfileButton name={portfolio.full_name || username} url={profileUrl} />
                         {portfolio.contact_email && (
                             <a
