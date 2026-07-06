@@ -1,23 +1,11 @@
 
 
 import Link from "next/link";
-import Image from "next/image";
 import LeadForm from "@/components/LeadForm";
 import AIPitchGenerator from "@/components/AIPitchGenerator";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { createClient } from "@/utils/supabase/server";
-import { supabasePublic } from "@/utils/supabase/public";
-
-interface FeaturedCreator {
-    username: string;
-    full_name: string | null;
-    tagline: string | null;
-    city: string | null;
-    profile_image: string | null;
-    is_verified: boolean | null;
-    stats: { followers?: string; engagement?: string } | null;
-}
 
 const FEATURES = [
     {
@@ -68,30 +56,8 @@ const FEATURES = [
 
 export default async function Home() {
     const supabase = await createClient();
-
-    const [{ data: { user } }, { data: featuredRaw }, { count: campaignCount }] =
-        await Promise.all([
-            supabase.auth.getUser(),
-            supabasePublic
-                .from("portfolios")
-                .select("username, full_name, tagline, city, profile_image, is_verified, stats")
-                .not("profile_image", "is", null)
-                .limit(12),
-            supabasePublic.from("brand_offers").select("*", { count: "exact", head: true }),
-        ]);
-
+    const { data: { user } } = await supabase.auth.getUser();
     const isLoggedIn = !!user;
-
-    // Verified creators first — only real profiles with a photo and name
-    const featured: FeaturedCreator[] = ((featuredRaw as FeaturedCreator[]) || [])
-        .filter((p) => p.username && p.full_name)
-        .sort((a, b) => (b.is_verified ? 1 : 0) - (a.is_verified ? 1 : 0))
-        .slice(0, 3);
-
-    // Only show numbers that look like traction — never fake counts
-    const proofChips: string[] = [];
-    if ((campaignCount ?? 0) >= 3) proofChips.push(`${campaignCount} live campaigns`);
-    proofChips.push("4 cities of events");
 
     return (
         <div className="bg-[#050505] min-h-screen text-white">
@@ -126,56 +92,6 @@ export default async function Home() {
                         </Link>
                     </div>
                 </section>
-
-                {/* SOCIAL PROOF */}
-                {featured.length > 0 && (
-                    <section className="max-w-7xl mx-auto px-6 mb-24">
-                        <div className="text-center mb-10">
-                            <h2 className="text-2xl md:text-3xl font-black mb-4">Creators Already Building Here</h2>
-                            <div className="flex flex-wrap items-center justify-center gap-3">
-                                {proofChips.map((chip) => (
-                                    <span key={chip} className="px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/60 text-xs font-bold uppercase tracking-wider">
-                                        {chip}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="flex flex-wrap justify-center gap-6 max-w-4xl mx-auto">
-                            {featured.map((creator) => (
-                                <Link
-                                    key={creator.username}
-                                    href={`/${creator.username}`}
-                                    className="group w-full sm:w-64 bg-white/5 border border-white/10 hover:border-[#8406f9]/50 rounded-2xl p-6 text-center transition-all hover:bg-white/10 hover:-translate-y-1 duration-300"
-                                >
-                                    <div className="relative w-20 h-20 mx-auto mb-4 rounded-full overflow-hidden border-2 border-[#8406f9]/40 group-hover:border-[#8406f9] transition-colors">
-                                        <Image
-                                            src={creator.profile_image!}
-                                            alt={creator.full_name || creator.username}
-                                            fill
-                                            sizes="80px"
-                                            className="object-cover"
-                                        />
-                                    </div>
-                                    <div className="flex items-center justify-center gap-1.5 mb-1">
-                                        <span className="font-bold">{creator.full_name}</span>
-                                        {creator.is_verified && (
-                                            <span className="material-symbols-outlined text-[#8406f9] text-base" title="Verified">verified</span>
-                                        )}
-                                    </div>
-                                    <p className="text-white/40 text-xs mb-3 line-clamp-1">
-                                        {creator.tagline || creator.city || "Creator"}
-                                    </p>
-                                    {creator.stats?.followers && (
-                                        <span className="inline-block px-3 py-1 rounded-full bg-[#8406f9]/10 text-[#8406f9] text-xs font-bold">
-                                            {creator.stats.followers} followers
-                                        </span>
-                                    )}
-                                </Link>
-                            ))}
-                        </div>
-                    </section>
-                )}
 
                 {/* FEATURES */}
                 <section id="features" className="max-w-7xl mx-auto px-6 mb-24">
