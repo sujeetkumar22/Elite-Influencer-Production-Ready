@@ -10,26 +10,31 @@ export interface CityEvent {
     link: string;
 }
 
-// City allowlist — keeps the Gemini budget bounded and blocks prompt injection
-export const CITIES = [
-    "Delhi NCR",
-    "Mumbai",
-    "Bengaluru",
-    "Hyderabad",
-    "Pune",
-    "Chennai",
-    "Kolkata",
-    "Jaipur",
-    "Goa",
-    "Ahmedabad",
-    "Chandigarh",
-    "Lucknow",
-] as const;
+// City allowlist — keeps the Gemini budget bounded and blocks prompt
+// injection. Each city gets its own static URL (/events/<slug>) so it
+// can rank individually on Google.
+export interface CityInfo {
+    slug: string;
+    name: string;
+    /** Areas mentioned in SEO copy so the page reads locally authentic */
+    areas: string;
+}
 
-export function resolveCity(input?: string): string {
-    if (!input) return CITIES[0];
-    const match = CITIES.find((c) => c.toLowerCase() === input.toLowerCase().trim());
-    return match || CITIES[0];
+export const CITY_INFO: CityInfo[] = [
+    { slug: "delhi-ncr", name: "Delhi NCR", areas: "Delhi, Gurugram and Noida" },
+    { slug: "mumbai", name: "Mumbai", areas: "South Bombay, Bandra and Lower Parel" },
+    { slug: "pune", name: "Pune", areas: "Koregaon Park, Viman Nagar and Baner" },
+    { slug: "hyderabad", name: "Hyderabad", areas: "Jubilee Hills, Gachibowli and Hitech City" },
+];
+
+export function cityBySlug(slug?: string): CityInfo | undefined {
+    if (!slug) return undefined;
+    return CITY_INFO.find((c) => c.slug === slug.toLowerCase().trim());
+}
+
+export function cityByName(name?: string): CityInfo | undefined {
+    if (!name) return undefined;
+    return CITY_INFO.find((c) => c.name.toLowerCase() === name.toLowerCase().trim());
 }
 
 const CATEGORIES = ["Music", "Art", "Food", "Culture", "Nightlife", "Market", "Festival", "Exhibition", "Sports", "Other"];
