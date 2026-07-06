@@ -106,6 +106,7 @@ export default function AIPitchGenerator() {
                             placeholder="e.g. Nike, Sephora, Gymshark"
                             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#8406f9] transition-colors"
                             required
+                            suppressHydrationWarning
                         />
                     </div>
                     <div>
@@ -117,6 +118,7 @@ export default function AIPitchGenerator() {
                             placeholder="e.g. Tech, Fitness, Travel"
                             className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#8406f9] transition-colors"
                             required
+                            suppressHydrationWarning
                         />
                     </div>
                     <div>
@@ -126,6 +128,7 @@ export default function AIPitchGenerator() {
                                 value={tone}
                                 onChange={(e) => setTone(e.target.value)}
                                 className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#8406f9] transition-colors appearance-none cursor-pointer"
+                                suppressHydrationWarning
                             >
                                 <option value="Professional" className="bg-[#111]">Professional & Direct</option>
                                 <option value="Bold" className="bg-[#111]">Bold & Confident</option>
@@ -140,6 +143,7 @@ export default function AIPitchGenerator() {
                         type="submit"
                         disabled={generating}
                         className="w-full bg-[#8406f9] hover:bg-[#8406f9]/90 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(132,6,249,0.3)] flex items-center justify-center gap-2 group"
+                        suppressHydrationWarning
                     >
                         {generating ? (
                             <>

@@ -72,15 +72,15 @@ export default async function Home() {
                         </div>
 
                         <div className="group p-8 rounded-lg bg-white/5 border border-white/10 hover:border-[#8406f9]/50 transition-all relative overflow-hidden hover:bg-white/10 hover:-translate-y-1 duration-300 animate-fade-in animate-delay-300">
-                            <div className="absolute top-3 right-3 bg-[#8406f9]/20 text-[#8406f9] text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">Coming Soon</div>
+                            <div className="absolute top-3 right-3 bg-[#8406f9]/20 text-[#8406f9] text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">New</div>
                             <div className="w-12 h-12 rounded-full bg-[#8406f9]/20 flex items-center justify-center text-[#8406f9] mb-6 group-hover:scale-110 transition-transform">
                                 <span className="material-symbols-outlined text-2xl">event</span>
                             </div>
                             <h3 className="text-xl font-bold mb-3">Events</h3>
-                            <p className="text-white/50 mb-6">Find content worthy events near you.</p>
-                            <div className="flex items-center gap-2 text-white/30 font-bold text-sm cursor-not-allowed">
-                                View Events <span className="material-symbols-outlined text-sm">lock</span>
-                            </div>
+                            <p className="text-white/50 mb-6">Discover highly instagrammable events in your city.</p>
+                            <Link href="/events" className="flex items-center gap-2 text-[#8406f9] font-bold text-sm hover:text-[#8406f9]/80 transition-colors group-hover:gap-3">
+                                View Events <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                            </Link>
                         </div>
                     </div>
                 </section>

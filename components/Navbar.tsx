@@ -9,6 +9,7 @@ const links = [
     { label: "Features", href: "/#features" },
     { label: "AI Pitch", href: "/#ai-pitch" },
     { label: "Marketplace", href: "/marketplace" },
+    { label: "Events", href: "/events" },
     { label: "CreatorCalc", href: "/creator-calc" },
     { label: "Portfolio Maker", href: "/dashboard" },
     { label: "Feeds", href: "/feeds" },
