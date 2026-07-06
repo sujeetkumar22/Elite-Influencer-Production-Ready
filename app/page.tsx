@@ -69,7 +69,7 @@ const FEATURES = [
 export default async function Home() {
     const supabase = await createClient();
 
-    const [{ data: { user } }, { data: featuredRaw }, { count: creatorCount }, { count: campaignCount }] =
+    const [{ data: { user } }, { data: featuredRaw }, { count: campaignCount }] =
         await Promise.all([
             supabase.auth.getUser(),
             supabasePublic
@@ -77,7 +77,6 @@ export default async function Home() {
                 .select("username, full_name, tagline, city, profile_image, is_verified, stats")
                 .not("profile_image", "is", null)
                 .limit(12),
-            supabasePublic.from("portfolios").select("*", { count: "exact", head: true }),
             supabasePublic.from("brand_offers").select("*", { count: "exact", head: true }),
         ]);
 
@@ -91,7 +90,6 @@ export default async function Home() {
 
     // Only show numbers that look like traction — never fake counts
     const proofChips: string[] = [];
-    if ((creatorCount ?? 0) >= 10) proofChips.push(`${creatorCount}+ creators`);
     if ((campaignCount ?? 0) >= 3) proofChips.push(`${campaignCount} live campaigns`);
     proofChips.push("4 cities of events");
 
