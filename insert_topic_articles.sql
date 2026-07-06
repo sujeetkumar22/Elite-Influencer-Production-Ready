@@ -4,6 +4,14 @@
 -- Safe to re-run: skips any article whose title already exists.
 -- ============================================================
 
+-- The admins table is empty (the security migration only matched
+-- eliteinfluencer.in@gmail.com). Register the first-created account —
+-- the site owner — as admin so author_id resolves and the Edit button
+-- works on these articles.
+INSERT INTO admins (user_id)
+SELECT id FROM auth.users ORDER BY created_at ASC LIMIT 1
+ON CONFLICT (user_id) DO NOTHING;
+
 -- Article 1: Brand campaigns
 INSERT INTO articles (title, content, author_id, published)
 SELECT
@@ -21,7 +29,7 @@ Step three is to pitch like a marketer, not a fan. The winning pitch is short an
 Step four is to deliver like an agency. Hit the deadline, follow the brief, send the draft before posting, and share a screenshot of the results a week later. Brands re-book creators who make their job easy — and a re-booking pipeline is worth more than any viral post.
 
 Finally, put yourself where the deals already are. Elite Influencer runs a marketplace of live paid campaigns from brands actively looking for creators, plus an AI pitch generator that writes your outreach for you. The creators earning consistently are not the luckiest — they are the ones who treated getting brand deals like a system. Start yours today at eliteinfluencer.in.$art$,
-  (SELECT user_id FROM admins LIMIT 1),
+  COALESCE((SELECT user_id FROM admins LIMIT 1), (SELECT id FROM auth.users ORDER BY created_at ASC LIMIT 1)),
   true
 WHERE NOT EXISTS (
   SELECT 1 FROM articles WHERE title = 'How to Get Paid Brand Campaigns as a Creator in India (2026 Guide)'
@@ -42,7 +50,7 @@ A worked example: a fashion creator averaging 50,000 views per reel, with 5 perc
 Three pricing mistakes to stop making today. One: accepting barter once your content clearly drives views — barter is for testing relationships, not for funding your career. Two: quoting a single number with no breakdown, which invites lowballing; itemized quotes get negotiated respectfully. Three: forgetting payment terms — always agree on 50 percent advance or payment within 30 days, in writing, before you shoot anything.
 
 If you want the math done for you, CreatorCalc on eliteinfluencer.in is a free calculator that takes your niche, average views, and engagement and gives you a professional rate card in seconds. Pair it with a portfolio that proves your numbers, and "what are your charges?" stops being scary — it becomes the moment you win the deal.$art$,
-  (SELECT user_id FROM admins LIMIT 1),
+  COALESCE((SELECT user_id FROM admins LIMIT 1), (SELECT id FROM auth.users ORDER BY created_at ASC LIMIT 1)),
   true
 WHERE NOT EXISTS (
   SELECT 1 FROM articles WHERE title = 'How Much Should You Charge for a Paid Campaign? Creator Rates in India Explained'
@@ -67,7 +75,7 @@ Pillar five: engineer engagement instead of begging for it. Reply to every comme
 Pillar six: monetize the growth. Growth without income is an expensive hobby. Once you cross roughly 1,000 engaged followers in a clear niche, you are ready for your first collaborations — build a media kit, set a defensible rate, and start pitching. Paid campaigns fund better equipment and better locations, which produce better content, which drives more growth. That flywheel is the whole game.
 
 Run an honest audit against these six pillars tonight. Whichever one you are weakest at is your fastest path to growth. And when the followers turn up, Elite Influencer gives you everything for the monetization side free — portfolio builder, rate calculator, AI pitch writer, and a marketplace of live paid campaigns at eliteinfluencer.in.$art$,
-  (SELECT user_id FROM admins LIMIT 1),
+  COALESCE((SELECT user_id FROM admins LIMIT 1), (SELECT id FROM auth.users ORDER BY created_at ASC LIMIT 1)),
   true
 WHERE NOT EXISTS (
   SELECT 1 FROM articles WHERE title = 'How to Grow on Social Media in 2026: The 6 Pillars Every Creator Needs'
