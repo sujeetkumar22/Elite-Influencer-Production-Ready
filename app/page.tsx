@@ -1,11 +1,16 @@
 
 
+import type { Metadata } from "next";
 import Link from "next/link";
 import LeadForm from "@/components/LeadForm";
 import AIPitchGenerator from "@/components/AIPitchGenerator";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { createClient } from "@/utils/supabase/server";
+
+export const metadata: Metadata = {
+    alternates: { canonical: "https://eliteinfluencer.in" },
+};
 
 const FEATURES = [
     {

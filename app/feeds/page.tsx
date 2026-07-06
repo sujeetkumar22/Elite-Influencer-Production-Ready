@@ -4,8 +4,15 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-  title: "Elite Journal — Creator Economy Insights",
-  description: "Strategies, brand deal guides, and community highlights to help you scale your personal empire.",
+  title: "Elite Journal — Brand Deal Guides & Creator Economy Insights",
+  description: "Guides on paid brand campaigns, influencer pricing in India, and growing on social media — written for creators who want to earn from their content.",
+  alternates: { canonical: "https://eliteinfluencer.in/feeds" },
+  openGraph: {
+    title: "Elite Journal — Brand Deal Guides & Creator Economy Insights",
+    description: "Guides on paid brand campaigns, influencer pricing, and growing on social media.",
+    url: "https://eliteinfluencer.in/feeds",
+    type: "website",
+  },
 };
 
 export default async function FeedsPage() {
