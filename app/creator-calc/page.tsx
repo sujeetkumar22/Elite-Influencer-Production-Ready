@@ -1,12 +1,13 @@
-﻿'use client';
+'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
+import React, { useState, useRef } from 'react';
+import Link from 'next/link';
 import { supabase as supabaseClient } from '../../utils/supabase/client';
 import { toPng } from 'html-to-image';
 import { toast } from '@/components/Toast';
 
-// --- MARKET DATA ---
+// --- MARKET DATA (Indian market benchmarks, reviewed 2026) ---
+// CPM = rupees per 1,000 views for branded content in that niche.
 const cpmRates: Record<string, number> = {
     "tech": 500, "finance": 800, "beauty": 450, "health": 400,
     "travel": 400, "food": 350, "lifestyle": 250, "gaming": 150
@@ -17,11 +18,55 @@ const productionFees: Record<string, number> = {
 };
 const rightsMultipliers: Record<string, number> = { "social": 1.0, "full": 1.5, "perpetual": 2.0 };
 
+// Above-average engagement adds 20–40% in the Indian market;
+// weak engagement discounts the rate.
+const engagementMultipliers: Record<string, number> = {
+    "low": 0.85, "avg": 1.0, "good": 1.2, "high": 1.35
+};
+const engagementLabels: Record<string, string> = {
+    "low": "Under 2%", "avg": "2–4% (Average)", "good": "4–6% (Strong)", "high": "6%+ (Exceptional)"
+};
+
+// Relative to a dedicated reel = 1.0 (market ratios: story ≈ 0.35x,
+// carousel ≈ 0.75x, integration ≈ 0.6x, reel + stories bundle ≈ 1.25x).
+const deliverableMultipliers: Record<string, number> = {
+    "reel": 1.0, "reel_stories": 1.25, "mention": 0.6, "carousel": 0.75, "stories": 0.35
+};
+const deliverableLabels: Record<string, string> = {
+    "reel": "Dedicated Reel",
+    "reel_stories": "Reel + 3 Stories",
+    "mention": "Integrated Mention",
+    "carousel": "Carousel Post",
+    "stories": "Story Series (3)"
+};
+
+// Keep in sync with the FAQPage JSON-LD in creator-calc/layout.tsx
+const FAQS = [
+    {
+        q: "How much should I charge for an Instagram reel in India?",
+        a: "It depends on your real inventory: views, not followers. Branded content in India typically earns creators ₹250 to ₹800 per 1,000 views depending on niche — finance and tech at the top, lifestyle at the bottom. A creator averaging 50,000 views per reel in a mid-tier niche can defensibly quote ₹15,000–30,000 for a dedicated reel.",
+    },
+    {
+        q: "Do brands pay more for higher engagement?",
+        a: "Yes. Engagement rate above 4% signals a real community and typically adds 20–40% to your rate, which is why this calculator applies an engagement multiplier. Below 2%, expect brands to negotiate down.",
+    },
+    {
+        q: "What are usage rights and why do they change the price?",
+        a: "Usage rights define where the brand can reuse your content. Organic social posting is standard. If the brand wants to run your video as a paid ad (full usage), charge about 1.5x. A perpetual buyout — the brand owns the video forever — is worth 2x or more.",
+    },
+    {
+        q: "Should stories cost the same as reels?",
+        a: "No. A story disappears in 24 hours and gets a fraction of a reel's reach — the market prices a story series at roughly a third of a dedicated reel. A reel plus 3 stories bundle typically adds about 25% over the reel alone.",
+    },
+];
+
 export default function CreatorCalc() {
     // --- STATE ---
     const [views, setViews] = useState('');
     const [niche, setNiche] = useState('tech');
     const [rights, setRights] = useState('social');
+    const [engagement, setEngagement] = useState('avg');
+    const [deliverable, setDeliverable] = useState('reel');
 
     const [results, setResults] = useState({
         avg: 0,
@@ -29,7 +74,9 @@ export default function CreatorCalc() {
         max: 0,
         baseRate: 0,
         prodFee: 0,
-        multiplier: 1.0
+        multiplier: 1.0,
+        engMult: 1.0,
+        delMult: 1.0
     });
 
     const [modals, setModals] = useState({
@@ -52,12 +99,6 @@ export default function CreatorCalc() {
 
     const targetRef = useRef<HTMLDivElement>(null);
 
-    // --- INITIALIZATION ---
-    useEffect(() => {
-        // Shared Supabase client is already initialized
-        console.log("Supabase client ready.");
-    }, []);
-
     // --- LOGIC ---
     const calculateRate = () => {
         const rawViews = parseFloat(views.replace(/,/g, ''));
@@ -74,8 +115,10 @@ export default function CreatorCalc() {
         const baseRate = (rawViews / 1000) * cpm;
         const avgProdFee = productionFees[niche] || 700;
         const multiplier = rightsMultipliers[rights] || 1.0;
+        const engMult = engagementMultipliers[engagement] || 1.0;
+        const delMult = deliverableMultipliers[deliverable] || 1.0;
 
-        const totalAvg = (baseRate + avgProdFee) * multiplier;
+        const totalAvg = (baseRate + avgProdFee) * multiplier * engMult * delMult;
         const totalMin = totalAvg * 0.80;
         const totalMax = totalAvg * 1.50;
 
@@ -85,7 +128,9 @@ export default function CreatorCalc() {
             max: totalMax,
             baseRate: baseRate,
             prodFee: avgProdFee,
-            multiplier: multiplier
+            multiplier: multiplier,
+            engMult: engMult,
+            delMult: delMult
         });
     };
 
@@ -201,7 +246,7 @@ export default function CreatorCalc() {
                     <div className="relative w-full max-w-md p-6 animate-fade-in-up">
                         <div className="bg-[#121212] border border-[#8a2ce2] rounded-2xl p-8 shadow-[0_0_50px_rgba(138,44,226,0.2)]">
                             <div className="text-center mb-6">
-                                <h3 className="text-2xl font-black text-white mb-2">Save Your Quote âš¡</h3>
+                                <h3 className="text-2xl font-black text-white mb-2">Save Your Quote ⚡</h3>
                                 <p className="text-slate-400 text-sm">Enter details to download the official valuation card.</p>
                             </div>
                             <div className="space-y-4">
@@ -279,7 +324,7 @@ export default function CreatorCalc() {
                                 </div>
                             ) : (
                                 <div id="surveyResult" className="text-left animate-fade-in">
-                                    <h3 className="text-xl font-bold text-white mb-4 text-center">ðŸŽ‰ Here is your Pitch Template</h3>
+                                    <h3 className="text-xl font-bold text-white mb-4 text-center">🎉 Here is your Pitch Template</h3>
                                     <div className="relative mb-6">
                                         <textarea id="pitchTemplate" className="w-full h-48 bg-[#1A1A1A] border border-[#333] rounded-xl p-4 text-slate-300 text-sm leading-relaxed focus:outline-none resize-none font-mono" readOnly value={`Hi [Brand Team],\n\nI've been using [Product Name] for a while and I'm a huge fan of what you're building.\n\nI am a content creator in the [Your Niche] space. My audience is highly engaged and always looking for recommendations. \n\nI have an idea for a Reel that highlights [Key Feature] in an authentic way that could drive immediate interest for your brand.\n\nHere is a link to my previous work: [Your Portfolio Link]\n\nWould you be open to a quick 5-min chat?\n\nBest,\n[Your Name]`}></textarea>
                                         <button onClick={copyTemplate} className={`absolute top-3 right-3 ${copyBtnText === 'Copied!' ? 'bg-green-600' : 'bg-[#8a2ce2] hover:bg-[#7a25c9]'} text-white text-xs font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 transition-all cursor-pointer`}>
@@ -290,7 +335,6 @@ export default function CreatorCalc() {
                                     <div className="bg-[#111] border border-white/5 rounded-xl p-4 text-center">
                                         <p className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-3">Want more brand deals?</p>
                                         <a href="https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq" target="_blank" className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-black font-black py-4 rounded-xl transition-all flex items-center justify-center gap-2 group">
-                                            <Image src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width={24} height={24} className="w-6 h-6" alt="WhatsApp" />
                                             <span>Join Creator Community</span>
                                             <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
                                         </a>
@@ -315,11 +359,16 @@ export default function CreatorCalc() {
                         </div>
                         <h2 className="text-white text-xl font-black leading-tight tracking-tight">CREATOR<span className="text-[#8a2ce2]">CALC</span></h2>
                     </div>
-                    <div className="flex flex-1 justify-end gap-8">
+                    <div className="flex flex-1 justify-end items-center gap-6">
+                        <Link href="/" className="hidden sm:block text-sm font-black italic tracking-tighter hover:opacity-80 transition-opacity">
+                            ELITE <span className="text-[#8a2ce2]">INFLUENCER</span>
+                        </Link>
                         <a href="https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq" target="_blank" className="hidden md:flex items-center gap-2 text-sm font-bold text-[#25D366] hover:text-white transition-colors">
-                            <Image src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width={16} height={16} className="w-4 h-4" alt="WhatsApp" />
                             Join Community
                         </a>
+                        <Link href="/" className="sm:hidden flex items-center text-white/60 hover:text-white transition-colors" aria-label="Back to Elite Influencer">
+                            <span className="material-symbols-outlined">home</span>
+                        </Link>
                     </div>
                 </header>
 
@@ -330,7 +379,7 @@ export default function CreatorCalc() {
                             <span className="text-[#8a2ce2]">KNOW YOUR WORTH.</span>
                         </h1>
                         <p className="text-slate-400 text-lg max-w-2xl mx-auto font-light">
-                            The algorithmic standard for content creator pricing in India.
+                            The influencer rate calculator built on Indian market benchmarks — niche CPM, engagement, deliverables and usage rights.
                         </p>
                     </div>
 
@@ -355,7 +404,7 @@ export default function CreatorCalc() {
                                         <div className="absolute right-4 top-1/2 -translate-y-1/2 group/tooltip z-20">
                                             <span className="material-symbols-outlined text-[#64748b] cursor-help hover:text-[#ffffff] transition-colors">info</span>
                                             <div className="absolute bottom-full right-0 mb-3 w-64 p-3 bg-[#111] border border-[rgba(255,255,255,0.2)] rounded-xl text-xs text-[#cbd5e1] opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all shadow-[0_0_30px_rgba(0,0,0,0.5)] pointer-events-none transform translate-y-2 group-hover/tooltip:translate-y-0">
-                                                The average views of your last 5 days divide by 5.
+                                                Add up the views of your last 10–15 reels and divide by how many you counted. That average is what brands actually buy.
                                                 <div className="absolute -bottom-1 right-2 w-2 h-2 bg-[#111] border-b border-r border-[rgba(255,255,255,0.2)] rotate-45"></div>
                                             </div>
                                         </div>
@@ -369,14 +418,29 @@ export default function CreatorCalc() {
                                             onChange={(e) => setNiche(e.target.value)}
                                             className="w-full bg-[rgba(0,0,0,0.4)] border-2 border-[#1a1a1a] focus:border-[#8a2ce2] focus:ring-0 rounded-xl h-16 px-6 text-lg text-[#ffffff] transition-all appearance-none cursor-pointer outline-none"
                                         >
-                                            <option value="tech">Tech & Engineering</option>
-                                            <option value="finance">Finance & SaaS</option>
-                                            <option value="beauty">Beauty & Makeup</option>
-                                            <option value="health">Health & Fitness</option>
-                                            <option value="travel">Travel & Vlog</option>
-                                            <option value="food">Food & Drinks</option>
-                                            <option value="lifestyle">Lifestyle & Fashion</option>
-                                            <option value="gaming">Gaming & Esports</option>
+                                            <option value="tech">Tech &amp; Engineering</option>
+                                            <option value="finance">Finance &amp; SaaS</option>
+                                            <option value="beauty">Beauty &amp; Makeup</option>
+                                            <option value="health">Health &amp; Fitness</option>
+                                            <option value="travel">Travel &amp; Vlog</option>
+                                            <option value="food">Food &amp; Drinks</option>
+                                            <option value="lifestyle">Lifestyle &amp; Fashion</option>
+                                            <option value="gaming">Gaming &amp; Esports</option>
+                                        </select>
+                                        <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#475569] pointer-events-none">expand_more</span>
+                                    </div>
+                                </label>
+                                <label className="block">
+                                    <span className="text-[#cbd5e1] text-xs font-bold uppercase tracking-widest mb-2 block">Engagement Rate</span>
+                                    <div className="relative group">
+                                        <select
+                                            value={engagement}
+                                            onChange={(e) => setEngagement(e.target.value)}
+                                            className="w-full bg-[rgba(0,0,0,0.4)] border-2 border-[#1a1a1a] focus:border-[#8a2ce2] focus:ring-0 rounded-xl h-16 px-6 text-lg text-[#ffffff] transition-all appearance-none cursor-pointer outline-none"
+                                        >
+                                            {Object.keys(engagementLabels).map((k) => (
+                                                <option key={k} value={k}>{engagementLabels[k]}</option>
+                                            ))}
                                         </select>
                                         <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#475569] pointer-events-none">expand_more</span>
                                     </div>
@@ -384,6 +448,21 @@ export default function CreatorCalc() {
                             </div>
 
                             <div className="space-y-6">
+                                <label className="block">
+                                    <span className="text-[#cbd5e1] text-xs font-bold uppercase tracking-widest mb-2 block">Deliverable</span>
+                                    <div className="relative group">
+                                        <select
+                                            value={deliverable}
+                                            onChange={(e) => setDeliverable(e.target.value)}
+                                            className="w-full bg-[rgba(0,0,0,0.4)] border-2 border-[#1a1a1a] focus:border-[#8a2ce2] focus:ring-0 rounded-xl h-16 px-6 text-lg text-[#ffffff] transition-all appearance-none cursor-pointer outline-none"
+                                        >
+                                            {Object.keys(deliverableLabels).map((k) => (
+                                                <option key={k} value={k}>{deliverableLabels[k]}</option>
+                                            ))}
+                                        </select>
+                                        <span className="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-[#475569] pointer-events-none">expand_more</span>
+                                    </div>
+                                </label>
                                 <div>
                                     <span className="text-[#cbd5e1] text-xs font-bold uppercase tracking-widest mb-2 block">Usage Rights</span>
                                     <div className="flex flex-col md:flex-row p-1.5 bg-[rgba(0,0,0,0.6)] rounded-xl border border-[#1a1a1a] h-auto md:h-16 gap-2 md:gap-0">
@@ -416,7 +495,7 @@ export default function CreatorCalc() {
                         <div className="border-t border-[rgba(255,255,255,0.05)] pt-10 text-center">
                             <p className="text-[#64748b] text-xs font-bold uppercase tracking-[0.2em] mb-4">Estimated Campaign Value (Average)</p>
                             <div className="font-mono text-6xl md:text-8xl font-bold text-[#8a2ce2] flex items-center justify-center gap-4 drop-shadow-[0_0_15px_rgba(138,44,226,0.8)]">
-                                <span className="opacity-50 text-4xl md:text-5xl">â‚¹</span>
+                                <span className="opacity-50 text-4xl md:text-5xl">₹</span>
                                 <span suppressHydrationWarning>{results.avg === 0 ? '0.00' : fmt(results.avg).replace(/[^\d.,]/g, '').trim()}</span>
                             </div>
                             <div className="mt-8 grid grid-cols-3 divide-x divide-[rgba(255,255,255,0.1)] border-t border-[rgba(255,255,255,0.1)] pt-6">
@@ -437,7 +516,7 @@ export default function CreatorCalc() {
                     </div>
 
                     <div className="mb-20 text-center space-y-4">
-                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest animate-pulse">ðŸ‘‡ Save this for your next negotiation</p>
+                        <p className="text-slate-400 text-xs font-bold uppercase tracking-widest animate-pulse">Save this for your next negotiation</p>
                         <button onClick={openLeadModal} className="group relative inline-flex items-center gap-3 bg-white text-black text-lg font-black uppercase tracking-wider px-8 py-4 rounded-full hover:scale-105 transition-transform shadow-[0_0_40px_rgba(255,255,255,0.3)] cursor-pointer">
                             <span className="material-symbols-outlined text-2xl group-hover:animate-bounce">download</span>
                             Download Official Quote
@@ -450,7 +529,7 @@ export default function CreatorCalc() {
                                 <span className="material-symbols-outlined text-[#8a2ce2]">monitoring</span>
                             </div>
                             <h3 className="text-white text-xl font-bold mb-3">Base Rate</h3>
-                            <p className="text-slate-500 text-sm leading-relaxed mb-6">Calculated using dynamic CPM floor based on your niche selection.</p>
+                            <p className="text-slate-500 text-sm leading-relaxed mb-6">Your average views priced at your niche&apos;s market CPM (₹150–800 per 1,000 views in India).</p>
                             <div className="text-white font-mono font-bold" suppressHydrationWarning>{fmt(results.baseRate)}</div>
                         </div>
                         <div className="bg-[#0c0c0c] border border-[#1a1a1a] p-8 rounded-2xl hover:border-[#8a2ce2]/50 transition-colors group">
@@ -458,18 +537,39 @@ export default function CreatorCalc() {
                                 <span className="material-symbols-outlined text-[#8a2ce2]">movie_edit</span>
                             </div>
                             <h3 className="text-white text-xl font-bold mb-3">Production Fee</h3>
-                            <p className="text-slate-500 text-sm leading-relaxed mb-6">Estimated overhead for high-complexity video content.</p>
+                            <p className="text-slate-500 text-sm leading-relaxed mb-6">Estimated overhead for shooting and editing branded content in your niche.</p>
                             <div className="text-white font-mono font-bold" suppressHydrationWarning>{fmt(results.prodFee)}</div>
                         </div>
                         <div className="bg-[#0c0c0c] border border-[#1a1a1a] p-8 rounded-2xl hover:border-[#8a2ce2]/50 transition-colors group">
                             <div className="w-12 h-12 rounded-lg bg-[#8a2ce2]/10 flex items-center justify-center mb-6 group-hover:bg-[#8a2ce2]/20 transition-colors">
                                 <span className="material-symbols-outlined text-[#8a2ce2]">verified_user</span>
                             </div>
-                            <h3 className="text-white text-xl font-bold mb-3">Rights Multiplier</h3>
-                            <p className="text-slate-500 text-sm leading-relaxed mb-6">Multiplier based on usage rights duration.</p>
-                            <div className="text-[#8a2ce2] font-mono font-bold">{results.multiplier}x Applied</div>
+                            <h3 className="text-white text-xl font-bold mb-3">Multipliers</h3>
+                            <p className="text-slate-500 text-sm leading-relaxed mb-6">Usage rights x engagement x deliverable type, applied to your base value.</p>
+                            <div className="text-[#8a2ce2] font-mono font-bold">{results.multiplier}x &middot; {results.engMult}x &middot; {results.delMult}x</div>
                         </div>
                     </div>
+
+                    {/* FAQ — keep text in sync with FAQPage JSON-LD in layout.tsx */}
+                    <section className="w-full max-w-3xl mb-20">
+                        <h2 className="text-white text-2xl md:text-3xl font-black mb-8 text-center">Influencer pricing in India — FAQ</h2>
+                        <div className="space-y-4">
+                            {FAQS.map((f, i) => (
+                                <details key={i} className="group bg-[#0c0c0c] border border-[#1a1a1a] rounded-2xl overflow-hidden">
+                                    <summary className="cursor-pointer list-none p-6 flex items-center justify-between gap-4 font-bold text-white/90 hover:text-white transition-colors">
+                                        {f.q}
+                                        <span className="material-symbols-outlined text-[#8a2ce2] group-open:rotate-180 transition-transform shrink-0">expand_more</span>
+                                    </summary>
+                                    <p className="px-6 pb-6 text-slate-400 leading-relaxed text-sm">{f.a}</p>
+                                </details>
+                            ))}
+                        </div>
+                        <div className="text-center mt-8">
+                            <Link href="/brand-campaigns" className="inline-flex items-center gap-2 text-[#8a2ce2] font-bold text-sm hover:gap-3 transition-all">
+                                Read the full brand campaigns guide <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                            </Link>
+                        </div>
+                    </section>
 
                     <footer className="w-full border-t border-white/5 py-12 flex flex-col items-center gap-6">
                         <div className="flex flex-col items-center gap-2">
@@ -477,34 +577,31 @@ export default function CreatorCalc() {
                                 <span className="material-symbols-outlined text-xl">calculate</span>
                                 <span className="text-xs font-bold tracking-widest uppercase">CreatorCalc</span>
                             </div>
-                            <p className="text-[10px] font-bold tracking-[0.3em] uppercase opacity-30 text-white">Powered by Elite Influencer</p>
+                            <Link href="/" className="text-[10px] font-bold tracking-[0.3em] uppercase opacity-30 hover:opacity-100 transition-opacity text-white">Powered by Elite Influencer</Link>
                             <a href="https://www.instagram.com/eliteinfluencer.in/" target="_blank" className="flex items-center gap-1.5 opacity-40 hover:opacity-100 transition-opacity">
-                                <Image src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" width={12} height={12} className="w-3 h-3 grayscale brightness-200" alt="Instagram" />
-                                <span className="text-[10px] font-bold tracking-widest uppercase text-white">Follow Us</span>
+                                <span className="text-[10px] font-bold tracking-widest uppercase text-white">Follow Us on Instagram</span>
                             </a>
                         </div>
-                        <div className="text-[10px] font-bold tracking-widest uppercase opacity-20 text-white">Â© 2026 All rights reserved</div>
+                        <div className="text-[10px] font-bold tracking-widest uppercase opacity-20 text-white">&copy; 2026 All rights reserved</div>
                     </footer>
                 </main>
 
                 <style jsx global>{`
           .grid-overlay {
-            background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px), 
+            background-image: linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
             background-size: 40px 40px;
           }
           .glow-orb {
             background: radial-gradient(circle, rgba(138, 44, 226, 0.15) 0%, rgba(5, 5, 5, 0) 70%);
           }
-          input[type=number]::-webkit-inner-spin-button, 
-          input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
+          input[type=number]::-webkit-inner-spin-button,
+          input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
           }
         `}</style>
             </div>
         </div>
     );
 }
-
-
