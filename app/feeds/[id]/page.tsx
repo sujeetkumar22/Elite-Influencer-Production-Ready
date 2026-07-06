@@ -1,8 +1,39 @@
 import { createClient } from "@/utils/supabase/server";
+import { supabasePublic } from "@/utils/supabase/public";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import type { Metadata } from "next";
 
 export const revalidate = 0;
+
+// SEO: without this, every article shared or indexed shows the generic
+// site title instead of its own headline.
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const { data: article } = await supabasePublic
+    .from("articles")
+    .select("title, content, image_url, created_at")
+    .eq("id", id)
+    .eq("published", true)
+    .single();
+
+  if (!article) return { title: "Article Not Found" };
+
+  const description = article.content.slice(0, 155).replace(/\s+/g, " ").trim();
+  return {
+    title: article.title,
+    description,
+    alternates: { canonical: `https://eliteinfluencer.in/feeds/${id}` },
+    openGraph: {
+      title: article.title,
+      description,
+      type: "article",
+      publishedTime: article.created_at,
+      ...(article.image_url ? { images: [{ url: article.image_url }] } : {}),
+    },
+    twitter: { card: "summary_large_image", title: article.title, description },
+  };
+}
 
 export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const supabase = await createClient();
@@ -30,8 +61,20 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
     year: "numeric",
   });
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.title,
+    datePublished: article.created_at,
+    ...(article.image_url ? { image: article.image_url } : {}),
+    author: { "@type": "Organization", name: "Elite Influencer", url: "https://eliteinfluencer.in" },
+    publisher: { "@type": "Organization", name: "Elite Influencer", url: "https://eliteinfluencer.in" },
+    mainEntityOfPage: `https://eliteinfluencer.in/feeds/${article.id}`,
+  };
+
   return (
     <div className="min-h-screen bg-[#050505] text-white pt-24 pb-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />
       {/* Background glowing orb */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#8406f9]/20 blur-[130px] rounded-[100%] pointer-events-none"></div>
 
