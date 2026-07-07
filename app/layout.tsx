@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import Toaster from "@/components/Toast";
+
+// Set NEXT_PUBLIC_GA_ID (e.g. "G-XXXXXXXXXX") in .env.local and in the
+// hosting env vars to activate GA4. Left unset = no tracking script loads.
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -81,6 +86,7 @@ export default function RootLayout({
         {children}
         <Toaster />
       </body>
+      {GA_ID && <GoogleAnalytics gaId={GA_ID} />}
     </html>
   );
 }
