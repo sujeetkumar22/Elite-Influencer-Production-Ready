@@ -29,11 +29,11 @@ CREATE POLICY "brand_leads_public_insert" ON brand_leads
 DROP POLICY IF EXISTS "brand_leads_admin_select" ON brand_leads;
 CREATE POLICY "brand_leads_admin_select" ON brand_leads
   FOR SELECT TO authenticated
-  USING (is_admin());
+  USING (is_admin(auth.uid()));
 
 DROP POLICY IF EXISTS "brand_leads_admin_delete" ON brand_leads;
 CREATE POLICY "brand_leads_admin_delete" ON brand_leads
   FOR DELETE TO authenticated
-  USING (is_admin());
+  USING (is_admin(auth.uid()));
 
 SELECT 'brand_leads table ready' AS status;
