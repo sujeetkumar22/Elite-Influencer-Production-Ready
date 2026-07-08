@@ -5,12 +5,12 @@ import Footer from "@/components/Footer";
 const BASE_URL = "https://eliteinfluencer.in";
 
 export const metadata = {
-    title: "Brand Campaigns & Paid Campaigns for Creators — The Complete Guide",
-    description: "What brand campaigns are, how much paid campaigns pay in India, and how creators land their first paid brand collaboration — with free tools to get started.",
+    title: "Paid Brand Deals for Influencers India | find influencer collaborations | Brand Campaigns",
+    description: "Find influencer collaborations and paid brand deals for influencers in India. Read the ultimate guide on brand campaigns for micro-influencers and how to land them.",
     alternates: { canonical: `${BASE_URL}/brand-campaigns` },
     openGraph: {
-        title: "Brand Campaigns & Paid Campaigns for Creators — The Complete Guide",
-        description: "How paid brand campaigns work, what they pay, and how to land your first collaboration.",
+        title: "Paid Brand Deals for Influencers India | Brand Campaigns",
+        description: "How to find influencer collaborations and land paid brand deals for micro-influencers in India. What they pay, and how to get started.",
         type: "article",
         url: `${BASE_URL}/brand-campaigns`,
     },
@@ -20,12 +20,12 @@ const CAMPAIGN_TYPES = [
     {
         icon: "paid",
         title: "Paid Campaigns",
-        text: "The brand pays a fixed fee for deliverables — a reel, a set of stories, or a dedicated post. Rates depend on your reach, engagement, and niche.",
+        text: "The brand pays a fixed fee for deliverables (a reel, a set of stories, or a dedicated post). Rates depend on your reach, engagement, and niche.",
     },
     {
         icon: "swap_horiz",
         title: "Barter Collaborations",
-        text: "You receive the product or an experience instead of cash. Common for early creators — good for portfolio building, but always know your worth.",
+        text: "You receive the product or an experience instead of cash. Common for early creators: good for portfolio building, but always know your worth.",
     },
     {
         icon: "trending_up",
@@ -35,12 +35,12 @@ const CAMPAIGN_TYPES = [
     {
         icon: "videocam",
         title: "UGC Campaigns",
-        text: "Brands pay you to create content they run on their own channels and ads. Follower count matters less — production quality matters more.",
+        text: "Brands pay you to create content they run on their own channels and ads. Follower count matters less: production quality matters more.",
     },
     {
         icon: "workspace_premium",
         title: "Brand Ambassadorships",
-        text: "Long-term paid partnerships with monthly deliverables. The most stable creator income — usually earned after a successful one-off campaign.",
+        text: "Long-term paid partnerships with monthly deliverables. The most stable creator income, usually earned after a successful one-off campaign.",
     },
 ];
 
@@ -67,7 +67,7 @@ const STEPS = [
     },
     {
         title: "Deliver, document, repeat",
-        text: "Save results from every campaign — views, clicks, sales. Case studies with numbers are what turn one-off deals into ambassadorships.",
+        text: "Save results from every campaign (views, clicks, sales). Case studies with numbers are what turn one-off deals into ambassadorships.",
         link: null,
     },
 ];
@@ -75,27 +75,27 @@ const STEPS = [
 const FAQS = [
     {
         q: "What is a brand campaign?",
-        a: "A brand campaign is a structured collaboration where a brand works with content creators to promote a product or service. In influencer marketing this usually means the creator produces agreed deliverables — reels, posts, stories, or videos — for a fee (a paid campaign), a product exchange (barter), or performance-based commission (affiliate).",
+        a: "A brand campaign is a structured collaboration where a brand works with content creators to promote a product or service. In influencer marketing this usually means the creator produces agreed deliverables (reels, posts, stories, or videos) for a fee (a paid campaign), a product exchange (barter), or performance-based commission (affiliate).",
     },
     {
         q: "How much do paid campaigns pay in India?",
-        a: "Paid campaign rates in India typically follow a CPM model — a rate per 1,000 average views — that varies by niche: finance and tech command roughly ₹500–800 per 1,000 views, while lifestyle sits nearer ₹250. A production fee and usage-rights multiplier are added on top. A creator averaging 50,000 views can reasonably quote ₹15,000–40,000 per reel depending on niche and rights.",
+        a: "Paid campaign rates in India typically follow a CPM model (a rate per 1,000 average views) that varies by niche: finance and tech command roughly ₹500 to ₹800 per 1,000 views, while lifestyle sits nearer ₹250. A production fee and usage-rights multiplier are added on top. A creator averaging 50,000 views can reasonably quote ₹15,000 to ₹40,000 per reel depending on niche and rights.",
     },
     {
         q: "How many followers do I need to get paid brand campaigns?",
-        a: "Fewer than most people think. Brands increasingly prefer nano (1K–10K) and micro (10K–100K) creators because their engagement is higher and their audiences trust them more. If you have over 1,000 engaged followers and a clear niche, you can start pitching — and UGC campaigns don't depend on follower count at all.",
+        a: "Fewer than most people think. Brands increasingly prefer nano (1K to 10K) and micro (10K to 100K) creators because their engagement is higher and their audiences trust them more. If you have over 1,000 engaged followers and a clear niche, you can start pitching, and UGC campaigns don't depend on follower count at all.",
     },
     {
         q: "How do I find brand campaigns as a new creator?",
-        a: "Three reliable routes: (1) build a professional portfolio so inbound brands take you seriously, (2) pitch 5–10 relevant brands per week with a short personalized message and one content idea, and (3) apply to live campaigns on creator marketplaces like Elite Influencer, where brands post paid deals with budgets and requirements listed upfront.",
+        a: "Three reliable routes: (1) build a professional portfolio so inbound brands take you seriously, (2) pitch 5 to 10 relevant brands per week with a short personalized message and one content idea, and (3) apply to live campaigns on creator marketplaces like Elite Influencer, where brands post paid deals with budgets and requirements listed upfront.",
     },
     {
         q: "Should I accept barter collaborations?",
-        a: "Early on, selectively — barter builds your portfolio and relationships with brands. But set a boundary: once a brand has seen your content perform, the next campaign should be paid. Never accept barter for deliverables with heavy production cost or exclusive usage rights.",
+        a: "Early on, selectively: barter builds your portfolio and relationships with brands. But set a boundary: once a brand has seen your content perform, the next campaign should be paid. Never accept barter for deliverables with heavy production cost or exclusive usage rights.",
     },
     {
         q: "What do brands look for before paying a creator?",
-        a: "Five things: a real engagement rate (not bought followers), content quality they can show their manager, niche alignment with their customer, professionalism (media kit, on-time delivery, clear rates), and proof — past campaign results or even organic posts featuring products.",
+        a: "Five things: a real engagement rate (not bought followers), content quality they can show their manager, niche alignment with their customer, professionalism (media kit, on-time delivery, clear rates), and proof: past campaign results or even organic posts featuring products.",
     },
 ];
 
@@ -103,7 +103,7 @@ const jsonLd = [
     {
         "@context": "https://schema.org",
         "@type": "Article",
-        headline: "Brand Campaigns & Paid Campaigns for Creators — The Complete Guide",
+        headline: "Brand Campaigns & Paid Campaigns for Creators | The Complete Guide",
         description: "What brand campaigns are, how much paid campaigns pay in India, and how creators land their first paid brand collaboration.",
         author: { "@type": "Organization", name: "Elite Influencer", url: BASE_URL },
         publisher: { "@type": "Organization", name: "Elite Influencer", url: BASE_URL },
@@ -150,7 +150,7 @@ export default function BrandCampaignsPage() {
                             <br />FOR CREATORS
                         </h1>
                         <p className="text-white/60 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto animate-fade-in animate-delay-200">
-                            How paid brand collaborations actually work, what they pay in India, and the exact steps to land your first campaign — with free tools for each step.
+                            How paid brand collaborations actually work, what they pay in India, and the exact steps to land your first campaign, with free tools for each step.
                         </p>
                     </header>
 
@@ -161,7 +161,7 @@ export default function BrandCampaignsPage() {
                             <p>
                                 A <strong className="text-white">brand campaign</strong> is a collaboration where a brand partners with content
                                 creators to promote a product or service to the creator&apos;s audience. When money changes hands
-                                for agreed deliverables — a reel, a post, a story sequence, a YouTube integration — it&apos;s a{" "}
+                                for agreed deliverables (a reel, a post, a story sequence, a YouTube integration), it&apos;s a{" "}
                                 <strong className="text-white">paid campaign</strong>.
                             </p>
                             <p>
@@ -194,22 +194,22 @@ export default function BrandCampaignsPage() {
                         <h2 className="text-2xl md:text-3xl font-black mb-6">How much do paid campaigns pay?</h2>
                         <div className="space-y-4 text-white/70 text-lg leading-relaxed mb-8">
                             <p>
-                                Most Indian brand deals price on a <strong className="text-white">CPM basis</strong> — a rate per 1,000
-                                average views — adjusted by niche, production effort, and usage rights. Finance and tech niches
-                                command the highest CPMs (₹500–800), beauty and health sit in the middle (₹400–450), and broad
+                                Most Indian brand deals price on a <strong className="text-white">CPM basis</strong> (a rate per 1,000
+                                average views) adjusted by niche, production effort, and usage rights. Finance and tech niches
+                                command the highest CPMs (₹500 to ₹800), beauty and health sit in the middle (₹400 to ₹450), and broad
                                 lifestyle content averages around ₹250.
                             </p>
                             <p>
                                 On top of the base rate, add a <strong className="text-white">production fee</strong> for your shooting and
-                                editing effort, and multiply for <strong className="text-white">usage rights</strong> — if the brand wants to
-                                run your content as ads or keep it forever, your rate should be 1.5–2× higher.
+                                editing effort, and multiply for <strong className="text-white">usage rights</strong>: if the brand wants to
+                                run your content as ads or keep it forever, your rate should be 1.5 to 2× higher.
                             </p>
                         </div>
                         <Link
                             href="/creator-calc"
                             className="inline-flex items-center gap-2 bg-[#8406f9] hover:bg-[#8406f9]/90 text-white font-bold px-8 py-4 rounded-full transition-all shadow-[0_0_20px_rgba(132,6,249,0.3)]"
                         >
-                            Calculate your exact rate — free
+                            Calculate your exact rate | Free
                             <span className="material-symbols-outlined text-sm">arrow_forward</span>
                         </Link>
                     </section>
@@ -239,7 +239,7 @@ export default function BrandCampaignsPage() {
 
                     {/* FAQ */}
                     <section className="mb-16">
-                        <h2 className="text-2xl md:text-3xl font-black mb-8 text-center">Brand campaigns — FAQ</h2>
+                        <h2 className="text-2xl md:text-3xl font-black mb-8 text-center">Brand campaigns: FAQ</h2>
                         <div className="space-y-4">
                             {FAQS.map((f, i) => (
                                 <details key={i} className="group bg-[#111111] border border-white/5 rounded-2xl overflow-hidden">
@@ -258,7 +258,7 @@ export default function BrandCampaignsPage() {
                         <div className="absolute top-0 right-0 w-72 h-72 bg-white rounded-full blur-[150px] opacity-10"></div>
                         <h2 className="text-3xl md:text-5xl font-black mb-4">Ready for your first paid campaign?</h2>
                         <p className="text-white/70 mb-8 text-lg max-w-xl mx-auto">
-                            Build your portfolio, price yourself right, and apply to live brand deals — all free.
+                            Build your portfolio, price yourself right, and apply to live brand deals, all free.
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                             <Link href="/marketplace" className="w-full sm:w-auto bg-white text-[#4a048a] font-black text-lg px-10 py-4 rounded-full transition-all hover:-translate-y-1 shadow-2xl">

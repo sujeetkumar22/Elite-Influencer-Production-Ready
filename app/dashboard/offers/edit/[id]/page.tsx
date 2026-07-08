@@ -51,7 +51,7 @@ export default function EditOfferPage() {
             setLogoUrl(data.logo_url || "");
             
             const fr = data.follower_range || "";
-            const standardOptions = ["< 1K", "1K - 5K", "5K - 10K", "10K - 100K", "100K+"];
+            const standardOptions = ["< 1K", "1K to 5K", "5K to 10K", "10K to 100K", "100K+"];
             if (fr && !standardOptions.includes(fr)) {
                 setFollowerRangeType("Custom");
                 setCustomFollowerRange(fr);
@@ -163,7 +163,7 @@ export default function EditOfferPage() {
                                     value={budget}
                                     onChange={(e) => setBudget(e.target.value)}
                                     className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                                    placeholder="e.g. $500 - $1,500 or Product Only"
+                                    placeholder="e.g. $500 to $1,500 or Product Only"
                                 />
                             </div>
 
@@ -188,9 +188,9 @@ export default function EditOfferPage() {
                                     className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all mb-2"
                                 >
                                     <option value="< 1K">&lt; 1K Followers</option>
-                                    <option value="1K - 5K">1K - 5K Followers</option>
-                                    <option value="5K - 10K">5K - 10K Followers</option>
-                                    <option value="10K - 100K">10K - 100K Followers</option>
+                                    <option value="1K to 5K">1K to 5K Followers</option>
+                                    <option value="5K to 10K">5K to 10K Followers</option>
+                                    <option value="10K to 100K">10K to 100K Followers</option>
                                     <option value="100K+">100K+ Followers</option>
                                     <option value="Custom">Custom Range...</option>
                                 </select>
@@ -201,7 +201,7 @@ export default function EditOfferPage() {
                                         value={customFollowerRange}
                                         onChange={(e) => setCustomFollowerRange(e.target.value)}
                                         className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                                        placeholder="e.g. 50K - 200K"
+                                        placeholder="e.g. 50K to 200K"
                                     />
                                 )}
                             </div>

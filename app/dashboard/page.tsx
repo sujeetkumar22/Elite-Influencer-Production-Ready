@@ -321,6 +321,60 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Share & Badge SEO Widgets */}
+        <div className="bg-[#111] border border-white/10 rounded-2xl p-6 md:p-8 mb-8 space-y-4">
+            <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <span className="material-symbols-outlined text-[#8406f9]">share</span> Share Your Portfolio & Boost SEO
+            </h2>
+            <p className="text-white/60 text-sm">
+                Add your portfolio link to your social media bios to get discovered by brands. You can also copy your Verified Badge HTML code below and add it to your personal blog or website to build authority.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/40 block">Your Portfolio Link</label>
+                    <div className="flex gap-2">
+                        <input 
+                            readOnly 
+                            value={formData.username ? `https://eliteinfluencer.in/${formData.username}` : "Save your username to get your link"} 
+                            className="bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white/80 w-full outline-none"
+                        />
+                        <button 
+                            onClick={(e) => {
+                                e.preventDefault();
+                                if (!formData.username) return;
+                                navigator.clipboard.writeText(`https://eliteinfluencer.in/${formData.username}`);
+                                alert("Link copied!");
+                            }}
+                            className="bg-white/10 hover:bg-white/20 px-4 rounded-lg text-xs font-bold transition-colors"
+                        >
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-widest text-white/40 block">Verified Badge Widget (HTML)</label>
+                    <div className="flex gap-2">
+                        <textarea 
+                            readOnly 
+                            rows={1}
+                            value={`<a href="https://eliteinfluencer.in" target="_blank" style="display:inline-flex;align-items:center;background:#111;color:#fff;border:1px solid #8406f9;padding:8px 16px;border-radius:8px;font-family:sans-serif;font-weight:bold;text-decoration:none;font-size:12px;gap:8px;"><span style="color:#8406f9;font-size:14px;">★</span> Verified by Elite Influencer</a>`} 
+                            className="bg-white/5 border border-white/10 rounded-lg p-3 text-sm text-white/80 w-full outline-none resize-none font-mono"
+                        />
+                        <button 
+                            onClick={(e) => {
+                                e.preventDefault();
+                                navigator.clipboard.writeText(`<a href="https://eliteinfluencer.in" target="_blank" style="display:inline-flex;align-items:center;background:#111;color:#fff;border:1px solid #8406f9;padding:8px 16px;border-radius:8px;font-family:sans-serif;font-weight:bold;text-decoration:none;font-size:12px;gap:8px;"><span style="color:#8406f9;font-size:14px;">★</span> Verified by Elite Influencer</a>`);
+                                alert("Badge HTML copied!");
+                            }}
+                            className="bg-white/10 hover:bg-white/20 px-4 rounded-lg text-xs font-bold transition-colors"
+                        >
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         {/* Form */}
         <form onSubmit={handleSave} className="bg-[#111] border border-white/10 rounded-2xl p-8 space-y-8">
 

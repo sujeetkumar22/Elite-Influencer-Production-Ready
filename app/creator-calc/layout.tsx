@@ -5,14 +5,14 @@ const BASE_URL = "https://eliteinfluencer.in";
 // The calculator itself is a client component, so its SEO lives here.
 // Targets: "influencer rate calculator", "how much to charge for brand deals".
 export const metadata: Metadata = {
-    title: "CreatorCalc — Influencer Rate Calculator for Brand Deals in India",
+    title: "Instagram Sponsor Rate Calculator India | how much to charge for a sponsored post | CreatorCalc",
     description:
-        "Free influencer rate calculator. Enter your niche, average views and engagement to get a defensible price for paid brand campaigns — based on real Indian market CPM rates.",
+        "Free TikTok & Instagram sponsor rate calculator India. Find out exactly how much to charge for a sponsored post based on real niche CPM rates, engagement, and usage rights.",
     alternates: { canonical: `${BASE_URL}/creator-calc` },
     openGraph: {
-        title: "CreatorCalc — Influencer Rate Calculator for Brand Deals",
+        title: "Instagram Sponsor Rate Calculator India | CreatorCalc",
         description:
-            "Know exactly what to charge brands. Free rate calculator built on real Indian market CPM data.",
+            "Find out how much to charge for a sponsored post. Free TikTok & Instagram sponsor rate calculator built on real Indian market CPM data.",
         url: `${BASE_URL}/creator-calc`,
         type: "website",
     },

@@ -4,11 +4,11 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata = {
-    title: "Brand Deals Marketplace — Live Paid Campaigns for Creators",
-    description: "Browse live paid brand campaigns for influencers in India. See the budget, deliverables and brand upfront — apply directly and secure your next collaboration.",
+    title: "Brand Deals Marketplace | Live Paid Campaigns for Creators",
+    description: "Browse live paid brand campaigns for influencers in India. See the budget, deliverables, and brand upfront. Apply directly and secure your next collaboration.",
     alternates: { canonical: "https://eliteinfluencer.in/marketplace" },
     openGraph: {
-        title: "Brand Deals Marketplace — Live Paid Campaigns for Creators",
+        title: "Brand Deals Marketplace | Live Paid Campaigns for Creators",
         description: "Browse live paid brand campaigns for influencers in India and apply directly.",
         url: "https://eliteinfluencer.in/marketplace",
         type: "website",

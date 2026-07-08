@@ -42,8 +42,8 @@ export async function generateMetadata({
     const city = cityBySlug(slug);
     if (!city) return { title: "Events Not Found" };
 
-    const title = `Instagrammable Events in ${city.name} (${monthYear()})`;
-    const description = `AI-curated list of the most instagrammable events in ${city.name} right now — art shows, festivals, flea markets and pop-ups across ${city.areas}. Updated daily with links to book.`;
+    const title = `Influencer Meetups, Creator Events & Instagrammable Venues in ${city.name} (${monthYear()})`;
+    const description = `Looking for influencer meetups or creator events in ${city.name}? Here is the best AI-curated list of instagrammable events, festivals, art shows, and creator networking spots in ${city.name} for ${monthYear()}.`;
 
     return {
         title,
@@ -73,11 +73,11 @@ export default async function CityEventsPage({
             q: `What are the most instagrammable events in ${city.name} right now?`,
             a: events.length > 0
                 ? `Right now the standout content-worthy events in ${city.name} include ${topThree}. The full curated list above covers ${events.length} events across ${city.areas}, with dates, venues and booking links.`
-                : `Our curated list of instagrammable events in ${city.name} is refreshed daily — check back shortly for the latest lineup across ${city.areas}.`,
+                : `Our curated list of instagrammable events in ${city.name} is refreshed daily: check back shortly for the latest lineup across ${city.areas}.`,
         },
         {
             q: `How is this list of ${city.name} events curated?`,
-            a: `Elite Influencer curates events automatically using AI with live Google Search, focusing on visually spectacular experiences — immersive art, festivals, night markets and pop-ups — that work best for Instagram reels and photos. The list refreshes every 24 hours.`,
+            a: `Elite Influencer curates events automatically using AI with live Google Search, focusing on visually spectacular experiences (immersive art, festivals, night markets and pop-ups) that work best for Instagram reels and photos. The list refreshes every 24 hours.`,
         },
         {
             q: `Where can I book tickets for these ${city.name} events?`,
@@ -89,7 +89,7 @@ export default async function CityEventsPage({
         {
             "@context": "https://schema.org",
             "@type": "ItemList",
-            name: `Instagrammable events in ${city.name} — ${monthYear()}`,
+            name: `Instagrammable events in ${city.name} | ${monthYear()}`,
             description: `Curated list of the most instagrammable events in ${city.name}, India. Updated daily.`,
             url: `${BASE_URL}/events/${city.slug}`,
             numberOfItems: events.length,
@@ -156,7 +156,7 @@ export default async function CityEventsPage({
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8406f9] to-pink-500 uppercase">{city.name}</span>
                         </h1>
                         <p className="text-white/60 text-lg md:text-xl leading-relaxed animate-fade-in animate-delay-200">
-                            The most content-worthy events happening across {city.areas} — curated with AI, refreshed every day, made for your next reel.
+                            The most content-worthy events happening across {city.areas}, curated with AI, refreshed every day, made for your next reel.
                         </p>
                     </header>
 
@@ -187,7 +187,7 @@ export default async function CityEventsPage({
                             </div>
                             <p className="text-center text-white/25 text-xs mt-12 max-w-xl mx-auto">
                                 Curated automatically with AI + Google Search and refreshed daily.
-                                Dates and availability can change — always verify on the event page before heading out.
+                                Dates and availability can change, so always verify on the event page before heading out.
                             </p>
                         </>
                     ) : (
@@ -209,7 +209,7 @@ export default async function CityEventsPage({
                     {/* FAQ — visible content backing the FAQPage schema */}
                     <section className="mt-24 max-w-3xl mx-auto">
                         <h2 className="text-2xl md:text-3xl font-black mb-8 text-center">
-                            {city.name} Events — FAQ
+                            {city.name} Events: FAQ
                         </h2>
                         <div className="space-y-4">
                             {faqs.map((f, i) => (

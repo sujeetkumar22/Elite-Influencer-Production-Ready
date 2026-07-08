@@ -44,7 +44,7 @@ const deliverableLabels: Record<string, string> = {
 const FAQS = [
     {
         q: "How much should I charge for an Instagram reel in India?",
-        a: "It depends on your real inventory: views, not followers. Branded content in India typically earns creators ₹250 to ₹800 per 1,000 views depending on niche — finance and tech at the top, lifestyle at the bottom. A creator averaging 50,000 views per reel in a mid-tier niche can defensibly quote ₹15,000–30,000 for a dedicated reel.",
+        a: "It depends on your real inventory: views, not followers. Branded content in India typically earns creators ₹250 to ₹800 per 1,000 views depending on niche (finance and tech at the top, lifestyle at the bottom). A creator averaging 50,000 views per reel in a mid-tier niche can defensibly quote ₹15,000 to ₹30,000 for a dedicated reel.",
     },
     {
         q: "Do brands pay more for higher engagement?",
@@ -52,11 +52,11 @@ const FAQS = [
     },
     {
         q: "What are usage rights and why do they change the price?",
-        a: "Usage rights define where the brand can reuse your content. Organic social posting is standard. If the brand wants to run your video as a paid ad (full usage), charge about 1.5x. A perpetual buyout — the brand owns the video forever — is worth 2x or more.",
+        a: "Usage rights define where the brand can reuse your content. Organic social posting is standard. If the brand wants to run your video as a paid ad (full usage), charge about 1.5x. A perpetual buyout (where the brand owns the video forever) is worth 2x or more.",
     },
     {
         q: "Should stories cost the same as reels?",
-        a: "No. A story disappears in 24 hours and gets a fraction of a reel's reach — the market prices a story series at roughly a third of a dedicated reel. A reel plus 3 stories bundle typically adds about 25% over the reel alone.",
+        a: "No. A story disappears in 24 hours and gets a fraction of a reel's reach: the market prices a story series at roughly a third of a dedicated reel. A reel plus 3 stories bundle typically adds about 25% over the reel alone.",
     },
 ];
 
@@ -379,7 +379,7 @@ export default function CreatorCalc() {
                             <span className="text-[#8a2ce2]">KNOW YOUR WORTH.</span>
                         </h1>
                         <p className="text-slate-400 text-lg max-w-2xl mx-auto font-light">
-                            The influencer rate calculator built on Indian market benchmarks — niche CPM, engagement, deliverables and usage rights.
+                            The influencer rate calculator built on Indian market benchmarks: niche CPM, engagement, deliverables and usage rights.
                         </p>
                     </div>
 
@@ -552,7 +552,7 @@ export default function CreatorCalc() {
 
                     {/* FAQ — keep text in sync with FAQPage JSON-LD in layout.tsx */}
                     <section className="w-full max-w-3xl mb-20">
-                        <h2 className="text-white text-2xl md:text-3xl font-black mb-8 text-center">Influencer pricing in India — FAQ</h2>
+                        <h2 className="text-white text-2xl md:text-3xl font-black mb-8 text-center">Influencer pricing in India: FAQ</h2>
                         <div className="space-y-4">
                             {FAQS.map((f, i) => (
                                 <details key={i} className="group bg-[#0c0c0c] border border-[#1a1a1a] rounded-2xl overflow-hidden">

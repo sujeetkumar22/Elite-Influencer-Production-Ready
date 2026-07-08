@@ -5,11 +5,11 @@ import Footer from "@/components/Footer";
 const BASE_URL = "https://eliteinfluencer.in";
 
 export const metadata = {
-    title: "How to Grow on Social Media in 2026 — A Creator's Playbook",
+    title: "How to Grow on Social Media in 2026 | A Creator's Playbook",
     description: "A practical playbook for growing on Instagram and social media: niche positioning, content systems, reels strategy, engagement, and turning growth into paid brand campaigns.",
     alternates: { canonical: `${BASE_URL}/how-to-grow-on-social-media` },
     openGraph: {
-        title: "How to Grow on Social Media in 2026 — A Creator's Playbook",
+        title: "How to Grow on Social Media in 2026 | A Creator's Playbook",
         description: "Niche positioning, content systems, reels strategy, and turning growth into paid brand campaigns.",
         type: "article",
         url: `${BASE_URL}/how-to-grow-on-social-media`,
@@ -20,33 +20,33 @@ const PILLARS = [
     {
         icon: "target",
         title: "1. Pick a niche people search for",
-        text: "Growth compounds when the algorithm knows who to show you to. Choose one clear niche — fitness, personal finance, tech, food, fashion — and stay recognizable: same face, same topics, same visual style. Broad 'lifestyle' accounts grow slowest because no algorithm knows who needs them.",
+        text: "Growth compounds when the algorithm knows who to show you to. Choose one clear niche (fitness, personal finance, tech, food, fashion) and stay recognizable: same face, same topics, same visual style. Broad 'lifestyle' accounts grow slowest because no algorithm knows who needs them.",
     },
     {
         icon: "calendar_month",
         title: "2. Build a content system, not bursts of motivation",
-        text: "Consistency beats intensity. Decide a sustainable cadence (3–5 reels a week beats 14 one week and none for a month), batch-shoot on one day, and keep an idea bank so you never start from a blank page. Every viral account you follow runs on a system.",
+        text: "Consistency beats intensity. Decide a sustainable cadence (3 to 5 reels a week beats 14 one week and none for a month), batch-shoot on one day, and keep an idea bank so you never start from a blank page. Every viral account you follow runs on a system.",
     },
     {
         icon: "movie",
         title: "3. Master short-form video",
-        text: "Reels are the fastest organic growth lever on Instagram. The first 1.5 seconds decide everything — open with movement, a bold claim, or a visual hook. Keep cuts fast, add captions (most viewers watch muted), and end with a reason to comment or share.",
+        text: "Reels are the fastest organic growth lever on Instagram. The first 1.5 seconds decide everything: open with movement, a bold claim, or a visual hook. Keep cuts fast, add captions (most viewers watch muted), and end with a reason to comment or share.",
     },
     {
         icon: "photo_camera",
         title: "4. Shoot where the content is",
-        text: "Locations do half the work. Immersive art shows, festivals, night markets and pop-ups give you scroll-stopping backdrops and trending audio moments — and audiences save location-based content, which the algorithm rewards.",
+        text: "Locations do half the work. Immersive art shows, festivals, night markets and pop-ups give you scroll-stopping backdrops and trending audio moments, and audiences save location-based content, which the algorithm rewards.",
         link: { href: "/events", label: "Find instagrammable events in your city" },
     },
     {
         icon: "forum",
         title: "5. Engineer engagement, don't beg for it",
-        text: "Reply to every comment in the first hour, ask one specific question in captions, and use stories daily to stay in the feed. Engagement rate — not follower count — is what both the algorithm and brands actually measure.",
+        text: "Reply to every comment in the first hour, ask one specific question in captions, and use stories daily to stay in the feed. Engagement rate (not follower count) is what both the algorithm and brands actually measure.",
     },
     {
         icon: "handshake",
         title: "6. Monetize the growth",
-        text: "Growth without monetization is a hobby. Once you cross ~1,000 engaged followers, build a portfolio, set your rate, and start pitching brands — paid campaigns fund better content, which fuels more growth.",
+        text: "Growth without monetization is a hobby. Once you cross ~1,000 engaged followers, build a portfolio, set your rate, and start pitching brands: paid campaigns fund better content, which fuels more growth.",
         link: { href: "/brand-campaigns", label: "Read the brand campaigns guide" },
     },
 ];
@@ -54,7 +54,7 @@ const PILLARS = [
 const FAQS = [
     {
         q: "How do I grow on social media from zero?",
-        a: "Start with one platform and one niche. Post short-form video consistently (3–5 per week), study which hooks hold attention in your first-3-seconds retention data, engage genuinely with accounts in your niche, and give every post one clear job — entertain, teach, or inspire. Most accounts that 'blow up' posted consistently for 3–6 months first.",
+        a: "Start with one platform and one niche. Post short-form video consistently (3 to 5 per week), study which hooks hold attention in your first-3-seconds retention data, engage genuinely with accounts in your niche, and give every post one clear job: entertain, teach, or inspire. Most accounts that 'blow up' posted consistently for 3 to 6 months first.",
     },
     {
         q: "How long does it take to grow on Instagram?",
@@ -62,7 +62,7 @@ const FAQS = [
     },
     {
         q: "Do I need to post every day to grow?",
-        a: "No. Quality and consistency beat frequency. 3–5 strong reels a week with daily stories outperforms 7 rushed posts. The algorithm rewards watch time and shares, not volume.",
+        a: "No. Quality and consistency beat frequency. 3 to 5 strong reels a week with daily stories outperforms 7 rushed posts. The algorithm rewards watch time and shares, not volume.",
     },
     {
         q: "When can I start earning from social media?",
@@ -78,7 +78,7 @@ const jsonLd = [
     {
         "@context": "https://schema.org",
         "@type": "Article",
-        headline: "How to Grow on Social Media in 2026 — A Creator's Playbook",
+        headline: "How to Grow on Social Media in 2026 | A Creator's Playbook",
         description: "A practical playbook for growing on Instagram and social media: niche positioning, content systems, reels strategy, engagement, and monetization.",
         author: { "@type": "Organization", name: "Elite Influencer", url: BASE_URL },
         publisher: { "@type": "Organization", name: "Elite Influencer", url: BASE_URL },
@@ -124,7 +124,7 @@ export default function GrowOnSocialMediaPage() {
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8406f9] to-pink-500">SOCIAL MEDIA</span>
                         </h1>
                         <p className="text-white/60 text-lg md:text-xl leading-relaxed max-w-2xl mx-auto animate-fade-in animate-delay-200">
-                            The six pillars behind every account that grows — niche, systems, short-form video, locations, engagement, and monetization. No hacks, just the playbook.
+                            The six pillars behind every account that grows: niche, systems, short-form video, locations, engagement, and monetization. No hacks, just the playbook.
                         </p>
                     </header>
 
@@ -150,7 +150,7 @@ export default function GrowOnSocialMediaPage() {
 
                     {/* FAQ */}
                     <section className="mb-16">
-                        <h2 className="text-2xl md:text-3xl font-black mb-8 text-center">Growing on social media — FAQ</h2>
+                        <h2 className="text-2xl md:text-3xl font-black mb-8 text-center">Growing on social media: FAQ</h2>
                         <div className="space-y-4">
                             {FAQS.map((f, i) => (
                                 <details key={i} className="group bg-[#111111] border border-white/5 rounded-2xl overflow-hidden">

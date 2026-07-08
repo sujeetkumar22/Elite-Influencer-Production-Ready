@@ -5,8 +5,8 @@ import Footer from "@/components/Footer";
 import { CITY_INFO, cityByName, cityBySlug } from "@/utils/events";
 
 export const metadata = {
-    title: "Instagrammable Events in India — Pick Your City",
-    description: "AI-curated, highly instagrammable events in Delhi NCR, Mumbai, Pune and Hyderabad. Updated daily with venues, dates and booking links.",
+    title: "Influencer Meetups, Creator Events & Instagrammable Locations in India",
+    description: "Discover upcoming influencer meetups and creator events in India. Browse AI-curated instagrammable events and networking pop-ups in Mumbai, Delhi, Bangalore and more.",
     alternates: { canonical: "https://eliteinfluencer.in/events" },
 };
 
@@ -40,7 +40,7 @@ export default async function EventsHubPage({
                             INSTAGRAMMABLE <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8406f9] to-pink-500">EVENTS</span>
                         </h1>
                         <p className="text-white/60 text-lg md:text-xl leading-relaxed animate-fade-in animate-delay-200">
-                            AI-curated events made for the camera — refreshed every day. Pick your city and find your next reel location.
+                            AI-curated events made for the camera, refreshed every day. Pick your city and find your next reel location.
                         </p>
                     </header>
 
