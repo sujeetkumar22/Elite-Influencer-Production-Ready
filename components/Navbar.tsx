@@ -6,6 +6,7 @@ import Link from "next/link";
 const COMMUNITY_URL = "https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq";
 
 const primaryLinks = [
+    { label: "For Brands", href: "/for-brands" },
     { label: "Marketplace", href: "/marketplace" },
     { label: "Events", href: "/events" },
 ];

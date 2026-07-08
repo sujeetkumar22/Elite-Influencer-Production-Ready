@@ -37,6 +37,7 @@ export default function Footer() {
                         <li><Link href="/dashboard" className="hover:text-[#8406f9] transition-colors hover:pl-1">Portfolio Maker</Link></li>
                         <li><Link href="/marketplace" className="hover:text-[#8406f9] transition-colors hover:pl-1">Marketplace</Link></li>
                         <li><Link href="/events" className="hover:text-[#8406f9] transition-colors hover:pl-1">Events</Link></li>
+                        <li><Link href="/for-brands" className="hover:text-[#8406f9] transition-colors hover:pl-1">For Brands</Link></li>
                         <li><Link href="/brand-campaigns" className="hover:text-[#8406f9] transition-colors hover:pl-1">Brand Campaigns Guide</Link></li>
                         <li><Link href="/how-to-grow-on-social-media" className="hover:text-[#8406f9] transition-colors hover:pl-1">Grow on Social Media</Link></li>
                         <li><Link href="/feeds" className="hover:text-[#8406f9] transition-colors hover:pl-1">Feeds</Link></li>
