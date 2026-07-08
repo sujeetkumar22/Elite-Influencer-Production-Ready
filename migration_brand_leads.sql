@@ -19,6 +19,12 @@ CREATE TABLE IF NOT EXISTS brand_leads (
 
 ALTER TABLE brand_leads ENABLE ROW LEVEL SECURITY;
 
+-- RLS policies only take effect on top of a base table GRANT — without
+-- this, Postgres reports the failure as an RLS violation even though
+-- the real cause is a missing privilege for the anon/authenticated role.
+GRANT INSERT ON brand_leads TO anon, authenticated;
+GRANT SELECT, DELETE ON brand_leads TO authenticated;
+
 -- Anyone (including logged-out brands) can submit the form...
 DROP POLICY IF EXISTS "brand_leads_public_insert" ON brand_leads;
 CREATE POLICY "brand_leads_public_insert" ON brand_leads
