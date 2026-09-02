@@ -1,0 +1,35 @@
+name: Daily SEO Article Auto-Publisher
+
+on:
+  schedule:
+    # Runs every day at 08:00 UTC (1:30 PM IST)
+    - cron: '0 8 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  publish-article:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: elite-influencer/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: ./elite-influencer
+        run: npm ci
+
+      - name: Generate & Publish Daily Article
+        working-directory: ./elite-influencer
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          ADMIN_USER_ID: ${{ secrets.ADMIN_USER_ID }}
+        run: npx tsx scripts/auto-publish-article.ts

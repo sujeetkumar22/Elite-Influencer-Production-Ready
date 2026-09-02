@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "auto-publish": "npx tsx scripts/auto-publish-article.ts",
+    "auto-publish:dry-run": "npx tsx scripts/auto-publish-article.ts --dry-run"
   },
   "dependencies": {
     "@next/third-parties": "^16.1.4",

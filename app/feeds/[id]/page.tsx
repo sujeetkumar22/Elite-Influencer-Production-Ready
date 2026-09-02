@@ -3,6 +3,7 @@ import { supabasePublic } from "@/utils/supabase/public";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
+import ArticleMarkdown from "@/components/ArticleMarkdown";
 
 export const revalidate = 0;
 
@@ -124,23 +125,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
             </div>
           )}
           
-          <div className="prose prose-invert prose-lg max-w-none prose-p:leading-relaxed prose-p:text-white/80 prose-p:font-light md:prose-p:text-xl prose-a:text-[#8406f9] hover:prose-a:text-[#4a048a] prose-strong:text-white prose-strong:font-bold prose-headings:text-white prose-headings:font-black prose-headings:tracking-tight prose-blockquote:border-[#8406f9] prose-blockquote:bg-white/5 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-xl prose-blockquote:italic prose-blockquote:text-white/90">
-             {article.content.split('\n').map((paragraph: string, idx: number) => {
-                if (!paragraph.trim()) return <br key={idx} />;
-                
-                // Add a stylish drop cap to the very first paragraph for a premium magazine feel
-                if (idx === 0) {
-                  return (
-                    <p key={idx} className="mb-8 leading-relaxed text-white/90">
-                      <span className="float-left text-6xl md:text-7xl font-black text-[#8406f9] pr-4 pt-3 pb-2 leading-none drop-shadow-[0_0_15px_rgba(132,6,249,0.4)]">
-                        {paragraph.charAt(0)}
-                      </span>
-                      {paragraph.substring(1)}
-                    </p>
-                  );
-                }
-                return <p key={idx} className="mb-8">{paragraph}</p>;
-             })}
+          <div className="prose prose-invert prose-lg max-w-none">
+             <ArticleMarkdown content={article.content} />
           </div>
 
           <div className="mt-24 pt-16 border-t border-white/10 text-center relative">
