@@ -18,14 +18,12 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-          cache-dependency-path: elite-influencer/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install Dependencies
-        working-directory: ./elite-influencer
         run: npm ci
 
       - name: Generate & Publish Daily Article
-        working-directory: ./elite-influencer
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
