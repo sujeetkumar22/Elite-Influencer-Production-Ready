@@ -102,16 +102,20 @@ export default function ArticleMarkdown({ content }: ArticleMarkdownProps) {
             return;
         }
 
+        // Horizontal divider (--- or ***)
+        if (/^[-*_]{3,}$/.test(trimmed)) {
+            flushList(index);
+            elements.push(<hr key={`hr-${index}`} className="my-10 border-white/10" />);
+            return;
+        }
+
         // Standard paragraph
         flushList(index);
         if (isFirstParagraph) {
             isFirstParagraph = false;
             elements.push(
-                <p key={`p-${index}`} className="mb-8 leading-relaxed text-white/90 text-lg md:text-xl font-light">
-                    <span className="float-left text-6xl md:text-7xl font-black text-[#8406f9] pr-4 pt-3 pb-2 leading-none drop-shadow-[0_0_15px_rgba(132,6,249,0.4)]">
-                        {trimmed.charAt(0)}
-                    </span>
-                    {parseInlineFormatting(trimmed.substring(1))}
+                <p key={`p-${index}`} className="mb-8 leading-relaxed text-white/95 text-lg md:text-xl font-normal">
+                    {parseInlineFormatting(trimmed)}
                 </p>
             );
         } else {

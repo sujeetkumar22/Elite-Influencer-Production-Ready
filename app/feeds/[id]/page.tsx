@@ -79,7 +79,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
       {/* Background glowing orb */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#8406f9]/20 blur-[130px] rounded-[100%] pointer-events-none"></div>
 
-      <div className="max-w-3xl mx-auto relative z-10">
+      <div className="max-w-5xl mx-auto relative z-10 px-2 sm:px-4">
         <div className="flex items-center justify-between mb-10">
           <Link 
             href="/feeds"
