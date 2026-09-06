@@ -40,6 +40,7 @@ export default function Footer() {
                         <li><Link href="/for-brands" className="hover:text-[#8406f9] transition-colors hover:pl-1">For Brands</Link></li>
                         <li><Link href="/brand-campaigns" className="hover:text-[#8406f9] transition-colors hover:pl-1">Brand Campaigns Guide</Link></li>
                         <li><Link href="/how-to-grow-on-social-media" className="hover:text-[#8406f9] transition-colors hover:pl-1">Grow on Social Media</Link></li>
+                        <li><Link href="/collabs" className="hover:text-[#8406f9] transition-colors hover:pl-1">Collab Finder</Link></li>
                         <li><Link href="/feeds" className="hover:text-[#8406f9] transition-colors hover:pl-1">Feeds</Link></li>
                         <li><a href="https://www.instagram.com/eliteinfluencer.in/" target="_blank" rel="noreferrer" className="hover:text-[#8406f9] transition-colors hover:pl-1">Instagram</a></li>
                         <li><a href={COMMUNITY_URL} target="_blank" rel="noreferrer" className="hover:text-[#8406f9] transition-colors hover:pl-1">Community</a></li>

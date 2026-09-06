@@ -256,3 +256,53 @@ DROP POLICY IF EXISTS "Users can delete own avatar" ON storage.objects;
 CREATE POLICY "Users can delete own avatar"
 ON storage.objects FOR DELETE
 USING ( bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::text );
+
+-- ------------------------------------------------------------
+-- 8. COLLAB REQUESTS TABLE (Creator Networking Board)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS collab_requests (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at timestamptz DEFAULT now(),
+  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  creator_name text NOT NULL,
+  creator_username text,
+  creator_avatar text,
+  title text NOT NULL,
+  description text NOT NULL,
+  niche text NOT NULL,
+  city text NOT NULL,
+  collab_type text NOT NULL,
+  follower_count text,
+  contact_platform text DEFAULT 'instagram',
+  contact_handle text NOT NULL,
+  is_open boolean DEFAULT true
+);
+
+CREATE INDEX IF NOT EXISTS idx_collab_requests_open ON collab_requests(is_open);
+CREATE INDEX IF NOT EXISTS idx_collab_requests_city ON collab_requests(city);
+CREATE INDEX IF NOT EXISTS idx_collab_requests_niche ON collab_requests(niche);
+
+ALTER TABLE collab_requests ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public can view open collab requests" ON collab_requests;
+CREATE POLICY "Public can view open collab requests"
+ON collab_requests FOR SELECT
+USING ( is_open = true );
+
+DROP POLICY IF EXISTS "Authenticated users can create collab requests" ON collab_requests;
+CREATE POLICY "Authenticated users can create collab requests"
+ON collab_requests FOR INSERT
+TO authenticated
+WITH CHECK ( auth.uid() = user_id );
+
+DROP POLICY IF EXISTS "Users can update own collab requests" ON collab_requests;
+CREATE POLICY "Users can update own collab requests"
+ON collab_requests FOR UPDATE
+TO authenticated
+USING ( auth.uid() = user_id );
+
+DROP POLICY IF EXISTS "Users can delete own collab requests" ON collab_requests;
+CREATE POLICY "Users can delete own collab requests"
+ON collab_requests FOR DELETE
+TO authenticated
+USING ( auth.uid() = user_id );
