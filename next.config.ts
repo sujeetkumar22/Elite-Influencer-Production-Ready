@@ -35,7 +35,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'scontent.cdninstagram.com',
+        hostname: 'images.unsplash.com',
       },
       {
         protocol: 'https',

@@ -28,10 +28,11 @@ export async function GET(req: Request) {
             success: true,
             article: result
         });
-    } catch (error: any) {
+    } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error('Auto-publish cron error:', error);
         return NextResponse.json(
-            { success: false, error: error.message || 'Internal Server Error' },
+            { success: false, error: message || 'Internal Server Error' },
             { status: 500 }
         );
     }

@@ -46,16 +46,21 @@ export default function LoginPage() {
 
         try {
             if (isSignUp) {
-                const { error } = await supabase.auth.signUp({ email, password });
+                const { data, error } = await supabase.auth.signUp({ email, password });
                 if (error) throw error;
-                toast("Account created! You are now logged in.", "success");
-                router.push(nextUrl);
+                if (data.user && !data.session) {
+                    toast("Account created! Please check your email to confirm your account before logging in.", "info");
+                } else {
+                    toast("Account created! You are now logged in.", "success");
+                    router.push(nextUrl);
+                    router.refresh();
+                }
             } else {
                 const { error } = await supabase.auth.signInWithPassword({ email, password });
                 if (error) throw error;
                 router.push(nextUrl);
+                router.refresh();
             }
-            router.refresh();
         } catch (error) {
             const message = error instanceof Error ? error.message : String(error);
             toast(message, "error");

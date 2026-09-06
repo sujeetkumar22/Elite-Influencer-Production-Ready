@@ -24,6 +24,16 @@ const secondaryLinks = [
 export default function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
     const [open, setOpen] = useState(false);
 
+    const handleLogout = async () => {
+        try {
+            const { supabase } = await import("@/utils/supabase/client");
+            await supabase.auth.signOut();
+        } catch (e) {
+            console.error("Signout error:", e);
+        }
+        window.location.href = "/";
+    };
+
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-white/10">
             <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
@@ -93,12 +103,12 @@ export default function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean })
                             >
                                 My Profile
                             </Link>
-                            <a
-                                href="/auth/logout"
-                                className="hidden sm:inline-block bg-red-500/10 hover:bg-red-500/20 text-red-500 px-4 py-2.5 md:px-5 rounded-full text-sm font-bold transition-all"
+                            <button
+                                onClick={handleLogout}
+                                className="hidden sm:inline-block bg-red-500/10 hover:bg-red-500/20 text-red-500 px-4 py-2.5 md:px-5 rounded-full text-sm font-bold transition-all cursor-pointer"
                             >
                                 Sign Out
-                            </a>
+                            </button>
                         </>
                     ) : (
                         <Link
@@ -167,12 +177,12 @@ export default function Navbar({ isLoggedIn = false }: { isLoggedIn?: boolean })
                     ))}
 
                     {isLoggedIn && (
-                        <a
-                            href="/auth/logout"
-                            className="py-3 text-base font-medium text-red-500 hover:text-red-400 transition-colors border-t border-white/5"
+                        <button
+                            onClick={handleLogout}
+                            className="py-3 text-left text-base font-medium text-red-500 hover:text-red-400 transition-colors border-t border-white/5 cursor-pointer w-full"
                         >
                             Sign Out
-                        </a>
+                        </button>
                     )}
                 </div>
             )}

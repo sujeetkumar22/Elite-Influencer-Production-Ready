@@ -3,6 +3,8 @@ import ArticleCard from "@/components/ArticleCard";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
+export const revalidate = 60;
+
 export const metadata = {
   title: "Elite Journal | Brand Deal Guides & Creator Economy Insights",
   description: "Guides on paid brand campaigns, influencer pricing in India, and growing on social media. Written for creators who want to earn from their content.",

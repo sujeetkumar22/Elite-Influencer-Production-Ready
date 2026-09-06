@@ -48,8 +48,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const articlePages: MetadataRoute.Sitemap = (articles || []).map((a) => ({
         url: `${BASE_URL}/feeds/${a.id}`,
         lastModified: a.created_at ? new Date(a.created_at) : new Date(),
-        changeFrequency: 'monthly' as const,
-        priority: 0.6,
+        changeFrequency: 'daily' as const,
+        priority: 0.8,
     }))
 
     return [...staticPages, ...profilePages, ...articlePages]

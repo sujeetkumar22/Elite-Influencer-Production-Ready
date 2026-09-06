@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 interface ArticleProps {
   article: {
@@ -28,11 +29,13 @@ export default function ArticleCard({ article }: ArticleProps) {
     <article className="group flex flex-col h-full bg-[#111111] border border-white/5 hover:border-[#8406f9]/50 rounded-2xl overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_15px_40px_rgba(132,6,249,0.15)] relative">
       {article.image_url ? (
         <div className="w-full h-56 overflow-hidden relative">
-          <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-[#111111]/40 to-transparent z-10"></div>
-          <img
+          <div className="absolute inset-0 bg-gradient-to-t from-[#111111] via-[#111111]/40 to-transparent z-10 pointer-events-none"></div>
+          <Image
             src={article.image_url}
             alt={article.title}
-            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transform group-hover:scale-110 transition-transform duration-700"
           />
         </div>
       ) : (

@@ -2,6 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 import { supabasePublic } from "@/utils/supabase/public";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import ArticleMarkdown from "@/components/ArticleMarkdown";
 
@@ -115,12 +116,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
           </header>
 
           {article.image_url && (
-            <div className="w-full relative mb-16 rounded-3xl overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(132,6,249,0.15)] group">
+            <div className="w-full relative mb-16 rounded-3xl overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(132,6,249,0.15)] group h-[400px] md:h-[550px]">
                <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-80 z-10 pointer-events-none"></div>
-               <img 
+               <Image 
                  src={article.image_url} 
                  alt={article.title} 
-                 className="w-full h-[400px] md:h-[550px] object-cover transform group-hover:scale-105 transition-transform duration-1000"
+                 fill
+                 priority
+                 sizes="(max-width: 1200px) 100vw, 1200px"
+                 className="object-cover transform group-hover:scale-105 transition-transform duration-1000"
                />
             </div>
           )}

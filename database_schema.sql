@@ -1,14 +1,37 @@
--- Elite Influencer Database Schema
--- This file documents the structure of the 'portfolios' table.
--- Run this in the Supabase SQL Editor to create the table or reference it for development.
---
--- IMPORTANT: after running this file, also run migration_security_fixes.sql
--- (adds the admins table, locks down brand_offers/articles to admins only,
--- adds portfolios.profile_image + is_verified, and the avatars storage bucket).
+-- ============================================================
+-- Elite Influencer — Master Database Schema & Security
+-- Single Source of Truth for Database Structure & RLS
+-- ============================================================
 
--- Enable Row Level Security (RLS) is recommended but not strictly required for this demo.
--- create extension if not exists "uuid-ossp";
+-- ------------------------------------------------------------
+-- 1. ADMINS TABLE & HELPER FUNCTION
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS admins (
+  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+  created_at timestamptz DEFAULT now()
+);
 
+ALTER TABLE admins ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Admins readable by authenticated users" ON admins;
+CREATE POLICY "Admins readable by authenticated users"
+ON admins FOR SELECT
+TO authenticated
+USING ( true );
+
+-- Helper used across administrative policies
+CREATE OR REPLACE FUNCTION is_admin(uid uuid)
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT EXISTS (SELECT 1 FROM admins WHERE user_id = uid);
+$$;
+
+-- ------------------------------------------------------------
+-- 2. PORTFOLIOS TABLE
+-- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS portfolios (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL UNIQUE,
@@ -16,73 +39,55 @@ CREATE TABLE IF NOT EXISTS portfolios (
   updated_at timestamptz DEFAULT now(),
   
   -- Identity
-  username text UNIQUE NOT NULL, -- e.g. "john_doe"
-  full_name text,                -- e.g. "John Doe"
-  tagline text,                  -- e.g. "Digital Creator | Filmmaker"
-  bio text,                      -- e.g. "I create content for..."
-  city text,                     -- e.g. "New York, USA"
+  username text UNIQUE NOT NULL,
+  full_name text,
+  tagline text,
+  bio text,
+  city text,
+  profile_image text,
+  is_verified boolean DEFAULT false,
   
-  -- Status
+  -- Status & Contact
   is_available boolean DEFAULT true,
-  
-  -- Contact
   contact_email text,
   contact_phone text,
   
-  -- Social Proof (Brands)
-  brands text[], -- Array of strings, e.g. ["Nike", "Adidas"]
-  
-  -- Flexible Stats & Platform Data (JSONB)
-  -- Schema for 'stats':
-  -- {
-  --   "followers": "10k",
-  --   "reach": "50k",
-  --   "platform": "instagram" | "youtube",
-  --   "platform_url": "https://instagram.com/john_doe"
-  -- }
+  -- Proof & Data
+  brands text[],
   stats jsonb DEFAULT '{}'::jsonb,
-  
-  -- Work Links (Videos) (JSONB)
-  -- Schema for 'work_links':
-  -- [
-  --   { "title": "My Viral Video", "url": "https://youtube.com/watch?v=..." },
-  --   { "title": "Brand Collab", "url": "https://instagram.com/reel/..." }
-  -- ]
   work_links jsonb DEFAULT '[]'::jsonb
 );
 
--- Trigger for updated_at
 CREATE EXTENSION IF NOT EXISTS moddatetime SCHEMA extensions;
 DROP TRIGGER IF EXISTS handle_updated_at ON portfolios;
 CREATE TRIGGER handle_updated_at BEFORE UPDATE ON portfolios
   FOR EACH ROW EXECUTE PROCEDURE extensions.moddatetime(updated_at);
 
--- Indexes
 CREATE INDEX IF NOT EXISTS idx_portfolios_available ON portfolios(is_available);
+CREATE INDEX IF NOT EXISTS idx_portfolios_username ON portfolios(username);
 
--- Recommended RLS Policies (Enabled for Production)
 ALTER TABLE portfolios ENABLE ROW LEVEL SECURITY;
 
--- Policy: Anyone can view portfolios
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON portfolios;
 CREATE POLICY "Public profiles are viewable by everyone" 
 ON portfolios FOR SELECT 
 USING ( true );
 
--- Policy: Users can only update their own portfolio
+DROP POLICY IF EXISTS "Users can update own portfolio" ON portfolios;
 CREATE POLICY "Users can update own portfolio" 
 ON portfolios FOR UPDATE 
 USING ( auth.uid() = user_id );
 
--- Policy: Users can insert their own portfolio
+DROP POLICY IF EXISTS "Users can insert own portfolio" ON portfolios;
 CREATE POLICY "Users can insert own portfolio" 
 ON portfolios FOR INSERT 
 WITH CHECK ( auth.uid() = user_id );
 
-----------------------------------------------------------------
--- Leads Table (Public Form Submissions)
-----------------------------------------------------------------
+-- ------------------------------------------------------------
+-- 3. LEADS TABLE (CreatorCalc & General Inquiries)
+-- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS leads (
-  id bigint generated by default as identity not null primary key,
+  id bigint GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,
   created_at timestamptz DEFAULT now(),
   name text,
   email text,
@@ -97,23 +102,59 @@ CREATE TABLE IF NOT EXISTS leads (
 
 ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
 
--- Policy 1: Allow public to INSERT (Required for the Contact Form)
--- Note: Supabase may flag this as "unsafe" because it allows anyone to write.
--- This is intentional for a public contact form.
+-- Public can submit leads
+DROP POLICY IF EXISTS "Enable insert for everyone" ON leads;
 CREATE POLICY "Enable insert for everyone" 
 ON leads FOR INSERT 
 WITH CHECK ( true );
 
--- Policy 2: Restrict SELECT to Service Role only (or Admin users)
--- No "USING (true)" policy here means public CANNOT read the data.
--- Only the dashboard owner can view leads in the Supabase Table Editor.
-CREATE POLICY "Enable select for service role only" 
+-- Service role & admins can manage and view leads
+DROP POLICY IF EXISTS "Enable select for service role only" ON leads;
+DROP POLICY IF EXISTS "Admins can view leads" ON leads;
+CREATE POLICY "Admins can view leads" 
 ON leads FOR SELECT 
-USING ( auth.role() = 'service_role' );
+USING ( auth.role() = 'service_role' OR is_admin(auth.uid()) );
 
-----------------------------------------------------------------
--- Articles Table (Admin Only Creation)
-----------------------------------------------------------------
+-- ------------------------------------------------------------
+-- 4. BRAND LEADS TABLE (/for-brands Submissions)
+-- ------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS brand_leads (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  brand_name text NOT NULL,
+  contact_name text NOT NULL,
+  work_email text NOT NULL,
+  phone text,
+  website text,
+  budget_range text,
+  campaign_goal text,
+  target_niche text,
+  message text,
+  created_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE brand_leads ENABLE ROW LEVEL SECURITY;
+
+GRANT INSERT ON brand_leads TO anon, authenticated;
+GRANT SELECT, DELETE ON brand_leads TO authenticated;
+
+DROP POLICY IF EXISTS "brand_leads_public_insert" ON brand_leads;
+CREATE POLICY "brand_leads_public_insert" ON brand_leads
+  FOR INSERT TO anon, authenticated
+  WITH CHECK (true);
+
+DROP POLICY IF EXISTS "brand_leads_admin_select" ON brand_leads;
+CREATE POLICY "brand_leads_admin_select" ON brand_leads
+  FOR SELECT TO authenticated
+  USING (is_admin(auth.uid()));
+
+DROP POLICY IF EXISTS "brand_leads_admin_delete" ON brand_leads;
+CREATE POLICY "brand_leads_admin_delete" ON brand_leads
+  FOR DELETE TO authenticated
+  USING (is_admin(auth.uid()));
+
+-- ------------------------------------------------------------
+-- 5. ARTICLES TABLE (Feeds / Blog)
+-- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS articles (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   created_at timestamptz DEFAULT now(),
@@ -124,38 +165,33 @@ CREATE TABLE IF NOT EXISTS articles (
   image_url text
 );
 
--- Indexes
 CREATE INDEX IF NOT EXISTS idx_articles_published ON articles(published);
 
 ALTER TABLE articles ENABLE ROW LEVEL SECURITY;
 
--- Policy 1: Public can read published articles
 DROP POLICY IF EXISTS "Public can view published articles" ON articles;
 CREATE POLICY "Public can view published articles"
 ON articles FOR SELECT
 USING ( published = true );
 
--- Policy 2: Admin/Owner can insert their own articles
 DROP POLICY IF EXISTS "Users can insert own articles" ON articles;
 CREATE POLICY "Users can insert own articles"
 ON articles FOR INSERT
-WITH CHECK ( auth.uid() = author_id );
+WITH CHECK ( is_admin(auth.uid()) AND auth.uid() = author_id );
 
--- Policy 3: Admin/Owner can update their own articles
 DROP POLICY IF EXISTS "Users can update own articles" ON articles;
 CREATE POLICY "Users can update own articles"
 ON articles FOR UPDATE
-USING ( auth.uid() = author_id );
+USING ( is_admin(auth.uid()) );
 
--- Policy 4: Admin/Owner can delete their own articles
 DROP POLICY IF EXISTS "Users can delete own articles" ON articles;
 CREATE POLICY "Users can delete own articles"
 ON articles FOR DELETE
-USING ( auth.uid() = author_id );
+USING ( is_admin(auth.uid()) );
 
-----------------------------------------------------------------
--- Brand Offers Table (Admin Only Creation)
-----------------------------------------------------------------
+-- ------------------------------------------------------------
+-- 6. BRAND OFFERS TABLE (Marketplace Campaigns)
+-- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS brand_offers (
   id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
   created_at timestamptz DEFAULT now(),
@@ -170,23 +206,53 @@ CREATE TABLE IF NOT EXISTS brand_offers (
   apply_link text NOT NULL
 );
 
--- Indexes
 CREATE INDEX IF NOT EXISTS idx_brand_offers_active ON brand_offers(is_active);
 
 ALTER TABLE brand_offers ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Public can view active offers" ON brand_offers;
 CREATE POLICY "Public can view active offers"
 ON brand_offers FOR SELECT
 USING ( is_active = true );
 
+DROP POLICY IF EXISTS "Admin can insert offers" ON brand_offers;
 CREATE POLICY "Admin can insert offers"
 ON brand_offers FOR INSERT
-WITH CHECK ( auth.uid() = admin_id );
+WITH CHECK ( is_admin(auth.uid()) AND auth.uid() = admin_id );
 
+DROP POLICY IF EXISTS "Admin can update offers" ON brand_offers;
 CREATE POLICY "Admin can update offers"
 ON brand_offers FOR UPDATE
-USING ( auth.uid() = admin_id );
+USING ( is_admin(auth.uid()) );
 
+DROP POLICY IF EXISTS "Admin can delete offers" ON brand_offers;
 CREATE POLICY "Admin can delete offers"
 ON brand_offers FOR DELETE
-USING ( auth.uid() = admin_id );
+USING ( is_admin(auth.uid()) );
+
+-- ------------------------------------------------------------
+-- 7. AVATARS STORAGE BUCKET
+-- ------------------------------------------------------------
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('avatars', 'avatars', true)
+ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "Avatar images are publicly accessible" ON storage.objects;
+CREATE POLICY "Avatar images are publicly accessible"
+ON storage.objects FOR SELECT
+USING ( bucket_id = 'avatars' );
+
+DROP POLICY IF EXISTS "Users can upload own avatar" ON storage.objects;
+CREATE POLICY "Users can upload own avatar"
+ON storage.objects FOR INSERT
+WITH CHECK ( bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::text );
+
+DROP POLICY IF EXISTS "Users can update own avatar" ON storage.objects;
+CREATE POLICY "Users can update own avatar"
+ON storage.objects FOR UPDATE
+USING ( bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::text );
+
+DROP POLICY IF EXISTS "Users can delete own avatar" ON storage.objects;
+CREATE POLICY "Users can delete own avatar"
+ON storage.objects FOR DELETE
+USING ( bucket_id = 'avatars' AND (storage.foldername(name))[1] = auth.uid()::text );

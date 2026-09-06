@@ -2,7 +2,6 @@
 
 import React, { useState, useRef } from 'react';
 import Link from 'next/link';
-import { supabase as supabaseClient } from '../../utils/supabase/client';
 import { toPng } from 'html-to-image';
 import { toast } from '@/components/Toast';
 
@@ -94,6 +93,7 @@ export default function CreatorCalc() {
     });
 
     const [surveySubmitted, setSurveySubmitted] = useState(false);
+    const [submittedLeadId, setSubmittedLeadId] = useState<string | number | null>(null);
     const [saveBtnText, setSaveBtnText] = useState('Download Invoice');
     const [copyBtnText, setCopyBtnText] = useState('Copy');
 
@@ -170,13 +170,28 @@ export default function CreatorCalc() {
 
         setSaveBtnText('Saving...');
 
-        // Save to Supabase
-        if (supabaseClient) {
-            try {
-                await supabaseClient.from('leads').insert({
-                    name, email, instagram: insta, phone: phone, quote_price: results.avg
-                });
-            } catch (err) { console.error("DB Save Error:", err); }
+        // Save to Database via API route (avoids anonymous RLS update limitation)
+        try {
+            const res = await fetch('/api/lead', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'create',
+                    data: {
+                        name,
+                        email,
+                        instagram: insta,
+                        phone,
+                        quote_price: results.avg
+                    }
+                })
+            });
+            const resData = await res.json();
+            if (resData?.id) {
+                setSubmittedLeadId(resData.id);
+            }
+        } catch (err) {
+            console.error("DB Save Error:", err);
         }
 
         // Download Image
@@ -206,12 +221,25 @@ export default function CreatorCalc() {
             return;
         }
 
-        if (supabaseClient && email) {
-            supabaseClient
-                .from('leads')
-                .update({ niche_category: surveyNiche, experience_level: surveyExp })
-                .eq('email', email)
-                .then(() => console.log("Survey saved"));
+        try {
+            const res = await fetch('/api/lead', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'update_survey',
+                    leadId: submittedLeadId,
+                    email,
+                    data: {
+                        niche_category: surveyNiche,
+                        experience_level: surveyExp
+                    }
+                })
+            });
+            if (res.ok) {
+                toast("Preferences saved!", "success");
+            }
+        } catch (err) {
+            console.error("Survey save error:", err);
         }
 
         setSurveySubmitted(true);
