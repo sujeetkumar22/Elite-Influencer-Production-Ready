@@ -9,19 +9,23 @@ export async function GET(request: Request) {
     const isRelative = rawNext.startsWith("/") && !rawNext.startsWith("//");
     const next = isRelative ? rawNext : "/dashboard";
 
+    const forwardedHost = request.headers.get("x-forwarded-host");
+    const isLocalEnv = process.env.NODE_ENV === "development";
+    const redirectBase = forwardedHost && !isLocalEnv ? `https://${forwardedHost}` : origin;
+
     if (code) {
         const supabase = await createClient();
         console.log("Exchanging code for session...");
         const { error } = await supabase.auth.exchangeCodeForSession(code);
         if (!error) {
             console.log("Auth success! Redirecting to dashboard...");
-            return NextResponse.redirect(`${origin}${next}`);
+            return NextResponse.redirect(`${redirectBase}${next}`);
         }
         console.error("Auth exchange error:", error.message);
         // Pass the error message to the error page
-        return NextResponse.redirect(`${origin}/auth/auth-code-error?error=${encodeURIComponent(error.message)}`);
+        return NextResponse.redirect(`${redirectBase}/auth/auth-code-error?error=${encodeURIComponent(error.message)}`);
     } else {
         console.warn("No auth code found in callback URL.");
-        return NextResponse.redirect(`${origin}/auth/auth-code-error?error=No+code+found`);
+        return NextResponse.redirect(`${redirectBase}/auth/auth-code-error?error=No+code+found`);
     }
 }

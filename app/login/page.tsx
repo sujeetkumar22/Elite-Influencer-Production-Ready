@@ -27,15 +27,27 @@ export default function LoginPage() {
     const handleGoogleLogin = async () => {
         setLoading(true);
 
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: "google",
-            options: {
-                redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}`,
-            },
-        });
+        try {
+            const redirectUrl = `${window.location.origin}/auth/callback?next=${encodeURIComponent(nextUrl)}`;
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: "google",
+                options: {
+                    redirectTo: redirectUrl,
+                    queryParams: {
+                        access_type: "offline",
+                        prompt: "select_account",
+                    },
+                },
+            });
 
-        if (error) {
-            console.error("Login error:", error);
+            if (error) {
+                console.error("Google login error:", error);
+                toast(error.message || "Failed to initiate Google login", "error");
+                setLoading(false);
+            }
+        } catch (err) {
+            console.error("Unexpected error in Google login:", err);
+            toast("An unexpected error occurred. Please try again.", "error");
             setLoading(false);
         }
     };
