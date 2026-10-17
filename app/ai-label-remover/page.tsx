@@ -433,19 +433,19 @@ export default function AILabelRemoverPage() {
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#8406f9] opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2 w-2 bg-[#8406f9]"></span>
                         </span>
-                        100% Private In-Browser Tool • No Server Uploads
+                        AI Content Tag Remover from Instagram • 100% Free & Private
                     </div>
 
                     <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mb-6 tracking-tight leading-[1.08] text-white">
-                        REMOVE{' '}
+                        AI CONTENT{' '}
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8406f9] via-pink-400 to-purple-300 drop-shadow-[0_0_35px_rgba(132,6,249,0.4)]">
-                            AI LABEL
+                            TAG REMOVER
                         </span>{' '}
-                        FOR INSTAGRAM
+                        FROM INSTAGRAM
                     </h1>
 
                     <p className="text-white/60 text-base sm:text-xl leading-relaxed mb-6">
-                        Strip C2PA Content Credentials, IPTC markers, and invisible AI metadata before uploading to Instagram, Facebook, and TikTok. Prevent automated &ldquo;Made with AI&rdquo; flags on your creative work.
+                        Strip C2PA Content Credentials, IPTC markers, and invisible AI metadata before uploading to Instagram, Facebook, and TikTok. The #1 tool to remove the &ldquo;Made with AI&rdquo; and AI content tag from your photos, Reels, and carousels.
                     </p>
 
                     <div className="flex items-center justify-center gap-6 text-xs text-white/40 font-medium">
@@ -455,11 +455,11 @@ export default function AILabelRemoverPage() {
                         </span>
                         <span className="flex items-center gap-1.5">
                             <span className="material-symbols-outlined text-sm text-green-400">check_circle</span>
-                            Zero Quality Loss
+                            No AI Content Tag on Post
                         </span>
                         <span className="flex items-center gap-1.5">
                             <span className="material-symbols-outlined text-sm text-green-400">check_circle</span>
-                            Never Uploaded to Server
+                            100% In-Browser Privacy
                         </span>
                     </div>
                 </header>
@@ -786,6 +786,10 @@ export default function AILabelRemoverPage() {
 
                     <div className="space-y-4 max-w-3xl mx-auto">
                         {[
+                            {
+                                q: "How does this AI content tag remover from Instagram work?",
+                                a: "Our AI content tag remover from Instagram strips the C2PA Content Credentials manifests, IPTC digitalSourceType markers, and EXIF software tags that trigger Meta's automated detection. When you post the sanitized photo to Instagram, the platform finds zero AI markers, preventing the AI content tag and 'Made with AI' label from appearing.",
+                            },
                             {
                                 q: "How do I remove the 'Made with AI' label on Instagram?",
                                 a: "Before uploading your image to Instagram, upload it to our tool. It automatically detects and strips the C2PA Content Credentials, IPTC tags, and EXIF comments that trigger Instagram's automated scanner. Download the clean file and post it to Instagram — it will publish without the AI label.",

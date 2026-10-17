@@ -3,16 +3,29 @@ import type { Metadata } from "next";
 const BASE_URL = "https://eliteinfluencer.in";
 
 export const metadata: Metadata = {
-    title: "Instagram AI Label Remover | Remove 'Made with AI' & C2PA Metadata Free",
+    title: "Instagram AI Content Tag Remover | Remove 'Made with AI' & C2PA Metadata Free",
     description:
-        "Remove the 'Made with AI' and 'AI info' label from Instagram, TikTok, and Meta posts. 100% free browser tool that strips C2PA Content Credentials, IPTC, XMP, and EXIF AI metadata before uploading.",
+        "Free AI content tag remover from Instagram. Remove the 'Made with AI', 'AI info', and AI content tag from Instagram posts, Reels, and Stories by stripping C2PA Content Credentials, IPTC, and EXIF metadata in your browser.",
     alternates: { canonical: `${BASE_URL}/ai-label-remover` },
     keywords: [
+        "ai content tag remover from instagram",
+        "how to remove ai content tag from instagram",
+        "remove ai content tag instagram",
+        "instagram ai content tag remover",
+        "remove ai tag instagram",
+        "instagram ai tag remover",
         "remove ai label instagram",
         "how to remove made with ai on instagram",
         "instagram ai label remover",
         "remove ai info instagram",
-        "c2pa metadata remover",
+        "remove ai generated tag instagram",
+        "remove made with ai tag from instagram",
+        "remove ai label from instagram post",
+        "remove ai label from instagram reel",
+        "how to post ai photos on instagram without ai label",
+        "bypass instagram ai detection",
+        "bypass instagram ai content label",
+        "c2pa metadata remover instagram",
         "remove c2pa instagram",
         "strip ai metadata",
         "ai image metadata cleaner",
@@ -22,18 +35,18 @@ export const metadata: Metadata = {
         "clean photo for instagram"
     ],
     openGraph: {
-        title: "Instagram AI Label Remover | Strip 'Made with AI' & C2PA Metadata",
+        title: "Instagram AI Content Tag Remover | Strip 'Made with AI' & C2PA Metadata",
         description:
-            "Stop Instagram from flagging your posts with 'Made with AI'. Strip C2PA, IPTC, and invisible AI markers in your browser. 100% private, free, and instant.",
+            "Stop Instagram from flagging your posts with the AI content tag. Strip C2PA, IPTC, and invisible AI markers in your browser. 100% private, free, and instant.",
         url: `${BASE_URL}/ai-label-remover`,
         type: "website",
         images: [{ url: `${BASE_URL}/icon.png` }],
     },
     twitter: {
         card: "summary_large_image",
-        title: "Instagram AI Label Remover | Remove 'Made with AI' Metadata Free",
+        title: "Instagram AI Content Tag Remover | Remove 'Made with AI' Metadata Free",
         description:
-            "Strip C2PA Content Credentials, IPTC digitalSourceType, and EXIF AI tags so Instagram doesn't label your content.",
+            "Free AI content tag remover from Instagram. Strip C2PA Content Credentials, IPTC digitalSourceType, and EXIF AI tags so Instagram doesn't label your content.",
     },
 };
 
@@ -68,21 +81,22 @@ const jsonLd = [
     {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        name: "Instagram AI Label Remover",
+        name: "Instagram AI Content Tag Remover",
+        alternateName: "AI Content Tag Remover from Instagram",
         url: `${BASE_URL}/ai-label-remover`,
         applicationCategory: "MultimediaApplication",
         operatingSystem: "All",
         browserRequirements: "Requires JavaScript. Requires HTML5 Canvas.",
         description:
-            "Free browser-based metadata sanitizer that removes C2PA Content Credentials, IPTC digitalSourceType, XMP packets, and EXIF AI tags to prevent automated 'Made with AI' labels on Instagram, TikTok, and Meta platforms.",
+            "Free AI content tag remover from Instagram. Removes C2PA Content Credentials, IPTC digitalSourceType, XMP packets, and EXIF AI tags to prevent automated 'Made with AI' and AI content tags on Instagram, TikTok, and Meta platforms.",
         offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
         publisher: { "@type": "Organization", name: "Elite Influencer", url: BASE_URL },
     },
     {
         "@context": "https://schema.org",
         "@type": "HowTo",
-        name: "How to Remove the 'Made with AI' Label from Instagram Photos",
-        description: "A step-by-step guide to stripping C2PA metadata and invisible AI markers before uploading to Instagram.",
+        name: "How to Remove the AI Content Tag from Instagram Photos",
+        description: "A step-by-step guide to removing the AI content tag from Instagram by stripping C2PA metadata and invisible AI markers before uploading.",
         step: [
             {
                 "@type": "HowToStep",
