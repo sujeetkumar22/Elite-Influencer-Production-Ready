@@ -16,6 +16,7 @@ const primaryLinks = [
 const toolLinks = [
     { label: "Portfolio Maker", href: "/dashboard", icon: "brush" },
     { label: "CreatorCalc", href: "/creator-calc", icon: "calculate" },
+    { label: "AI Label Remover", href: "/ai-label-remover", icon: "auto_fix_high" },
     { label: "AI Pitch", href: "/#ai-pitch", icon: "auto_awesome" },
 ];
 
