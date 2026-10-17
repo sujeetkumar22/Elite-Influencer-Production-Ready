@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 
 const BASE_URL = "https://eliteinfluencer.in";
+const TOOL_URL = "https://removeailabel.eliteinfluencer.in";
 
 export const metadata: Metadata = {
     title: "Instagram AI Content Tag Remover | Remove 'Made with AI' & C2PA Metadata Free",
     description:
         "Free AI content tag remover from Instagram. Remove the 'Made with AI', 'AI info', and AI content tag from Instagram posts, Reels, and Stories by stripping C2PA Content Credentials, IPTC, and EXIF metadata in your browser.",
-    alternates: { canonical: `${BASE_URL}/ai-label-remover` },
+    alternates: {
+        canonical: TOOL_URL,
+    },
     keywords: [
         "ai content tag remover from instagram",
         "how to remove ai content tag from instagram",
@@ -38,7 +41,7 @@ export const metadata: Metadata = {
         title: "Instagram AI Content Tag Remover | Strip 'Made with AI' & C2PA Metadata",
         description:
             "Stop Instagram from flagging your posts with the AI content tag. Strip C2PA, IPTC, and invisible AI markers in your browser. 100% private, free, and instant.",
-        url: `${BASE_URL}/ai-label-remover`,
+        url: TOOL_URL,
         type: "website",
         images: [{ url: `${BASE_URL}/icon.png` }],
     },
@@ -83,7 +86,7 @@ const jsonLd = [
         "@type": "WebApplication",
         name: "Instagram AI Content Tag Remover",
         alternateName: "AI Content Tag Remover from Instagram",
-        url: `${BASE_URL}/ai-label-remover`,
+        url: TOOL_URL,
         applicationCategory: "MultimediaApplication",
         operatingSystem: "All",
         browserRequirements: "Requires JavaScript. Requires HTML5 Canvas.",
@@ -102,19 +105,19 @@ const jsonLd = [
                 "@type": "HowToStep",
                 name: "Upload or Drop Your Image",
                 text: "Drag and drop your AI-generated or AI-edited image (JPG, PNG, WebP) into the AI Label Remover tool.",
-                url: `${BASE_URL}/ai-label-remover#uploader`,
+                url: `${TOOL_URL}#uploader`,
             },
             {
                 "@type": "HowToStep",
                 name: "Review Detected AI Metadata",
                 text: "The scanner automatically detects C2PA manifests, IPTC digitalSourceType tags, and generator signatures.",
-                url: `${BASE_URL}/ai-label-remover#inspector`,
+                url: `${TOOL_URL}#inspector`,
             },
             {
                 "@type": "HowToStep",
                 name: "Download Clean, Safe Image",
                 text: "Click Download. All AI tags are stripped and re-rasterized. Post the clean file to Instagram without getting flagged.",
-                url: `${BASE_URL}/ai-label-remover#download`,
+                url: `${TOOL_URL}#download`,
             },
         ],
     },

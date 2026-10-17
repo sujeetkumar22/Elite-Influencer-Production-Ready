@@ -18,6 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.8,
         })),
         { url: `${BASE_URL}/creator-calc`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+        { url: 'https://removeailabel.eliteinfluencer.in', lastModified: new Date(), changeFrequency: 'weekly', priority: 1.0 },
         { url: `${BASE_URL}/ai-label-remover`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.9 },
         { url: `${BASE_URL}/for-brands`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
         { url: `${BASE_URL}/brand-campaigns`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },

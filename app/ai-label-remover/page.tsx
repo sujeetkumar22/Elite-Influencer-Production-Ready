@@ -30,7 +30,7 @@ interface ProcessedImage {
 const SUPPORTED_GENERATORS = [
     { name: 'ChatGPT / DALL·E 3', tags: 'C2PA + IPTC' },
     { name: 'Midjourney v6+', tags: 'C2PA + EXIF' },
-    { name: 'Adobe Firefly', tags: 'Content Credentials' },
+    { name: 'Adobe Firefly / Photoshop', tags: 'Content Credentials' },
     { name: 'Stable Diffusion / ComfyUI', tags: 'PNG Prompts + EXIF' },
     { name: 'Black Forest Labs FLUX', tags: 'XMP + Prompts' },
     { name: 'Meta AI / Imagine', tags: 'C2PA Manifest' },
@@ -45,6 +45,7 @@ export default function AILabelRemoverPage() {
     const [deepClean, setDeepClean] = useState<boolean>(true);
     const [isDragging, setIsDragging] = useState<boolean>(false);
     const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+    const [expandedDetails, setExpandedDetails] = useState<Record<string, boolean>>({});
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -167,15 +168,15 @@ export default function AILabelRemoverPage() {
 
                             // Subtle micro-pixel dithering (+/- 1 on select least significant bits)
                             for (let i = 0; i < data.length; i += 4 * step) {
-                                const delta = (i % 2 === 0 ? 1 : -1);
-                                data[i] = Math.min(255, Math.max(0, data[i] + delta));     // R
-                                data[i + 1] = Math.min(255, Math.max(0, data[i + 1] - delta)); // G
-                                data[i + 2] = Math.min(255, Math.max(0, data[i + 2] + delta)); // B
+                                const delta = i % 2 === 0 ? 1 : -1;
+                                data[i] = Math.min(255, Math.max(0, data[i] + delta));
+                                data[i + 1] = Math.min(255, Math.max(0, data[i + 1] - delta));
+                                data[i + 2] = Math.min(255, Math.max(0, data[i + 2] + delta));
                             }
                             ctx.putImageData(imgData, 0, 0);
                         }
 
-                        // Re-encode to completely fresh container (all C2PA & EXIF omitted)
+                        // Re-encode to clean container (all C2PA & EXIF omitted)
                         canvas.toBlob(
                             (blob) => {
                                 if (blob) {
@@ -271,7 +272,7 @@ export default function AILabelRemoverPage() {
                 }
             }
 
-            toast(`Successfully cleaned ${validFiles.length} image(s)!`, 'success');
+            toast(`Cleaned ${validFiles.length} image(s) successfully!`, 'success');
         },
         [outputFormat, jpegQuality, deepClean, sanitizeImage]
     );
@@ -374,7 +375,6 @@ export default function AILabelRemoverPage() {
     const copyImageToClipboard = async (img: ProcessedImage) => {
         if (!img.cleanedBlob) return;
         try {
-            // Browsers only allow image/png on the clipboard
             let pngBlob = img.cleanedBlob;
             if (img.cleanedBlob.type !== 'image/png') {
                 const { blob } = await sanitizeImage(img.originalFile, 'image/png', 1, false);
@@ -383,10 +383,10 @@ export default function AILabelRemoverPage() {
             await navigator.clipboard.write([
                 new ClipboardItem({ 'image/png': pngBlob }),
             ]);
-            toast('Clean image copied to clipboard! Ready to paste.', 'success');
+            toast('Clean image copied to clipboard!', 'success');
         } catch (err) {
             console.error('Clipboard copy error:', err);
-            toast('Failed to copy to clipboard. Please download directly.', 'error');
+            toast('Failed to copy. Please use Download instead.', 'error');
         }
     };
 
@@ -407,7 +407,11 @@ export default function AILabelRemoverPage() {
             if (img.cleanedUrl) URL.revokeObjectURL(img.cleanedUrl);
         });
         setImages([]);
-        toast('Cleared all images', 'info');
+        toast('All images cleared', 'info');
+    };
+
+    const toggleDetails = (id: string) => {
+        setExpandedDetails((prev) => ({ ...prev, [id]: !prev[id] }));
     };
 
     const formatBytes = (bytes: number): string => {
@@ -417,55 +421,49 @@ export default function AILabelRemoverPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#050505] text-white relative overflow-x-hidden selection:bg-[#8406f9] selection:text-white">
+        <div className="min-h-screen bg-[#070709] text-white relative overflow-x-hidden selection:bg-[#8406f9] selection:text-white font-sans antialiased">
             <Navbar />
 
-            {/* Background Ambient Glows */}
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#8406f9]/15 blur-[160px] rounded-full pointer-events-none -z-10" />
-            <div className="absolute top-1/3 left-0 w-[500px] h-[500px] bg-pink-600/10 blur-[150px] rounded-full pointer-events-none -z-10" />
-            <div className="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] bg-purple-900/10 blur-[140px] rounded-full pointer-events-none -z-10" />
+            {/* Subtle Ambient Light */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-[#8406f9]/10 blur-[130px] rounded-full pointer-events-none -z-10" />
 
-            <main className="pt-32 pb-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto relative z-10">
-                {/* HERO HEADER */}
-                <header className="text-center max-w-3xl mx-auto mb-12">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#8406f9]/10 border border-[#8406f9]/30 text-[#8406f9] text-xs font-bold uppercase tracking-widest mb-6 shadow-[0_0_20px_rgba(132,6,249,0.2)]">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#8406f9] opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#8406f9]"></span>
-                        </span>
-                        AI Content Tag Remover from Instagram • 100% Free & Private
+            <main className="pt-28 pb-24 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto relative z-10">
+                {/* CLEAN HERO HEADER */}
+                <header className="text-center max-w-2xl mx-auto mb-10 pt-4">
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.05] border border-white/10 text-white/80 text-xs font-medium mb-5 shadow-sm">
+                        <span className="w-2 h-2 rounded-full bg-[#8406f9] animate-pulse" />
+                        <span>Instagram AI Content Tag Remover • 100% Free & Private</span>
                     </div>
 
-                    <h1 className="text-4xl sm:text-6xl md:text-7xl font-black mb-6 tracking-tight leading-[1.08] text-white">
-                        AI CONTENT{' '}
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8406f9] via-pink-400 to-purple-300 drop-shadow-[0_0_35px_rgba(132,6,249,0.4)]">
-                            TAG REMOVER
-                        </span>{' '}
-                        FROM INSTAGRAM
+                    <h1 className="text-3xl sm:text-5xl font-black mb-4 tracking-tight leading-[1.15] text-white">
+                        Remove AI Label from{' '}
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#9b34fb] to-pink-400">
+                            Instagram
+                        </span>
                     </h1>
 
-                    <p className="text-white/60 text-base sm:text-xl leading-relaxed mb-6">
-                        Strip C2PA Content Credentials, IPTC markers, and invisible AI metadata before uploading to Instagram, Facebook, and TikTok. The #1 tool to remove the &ldquo;Made with AI&rdquo; and AI content tag from your photos, Reels, and carousels.
+                    <p className="text-white/60 text-sm sm:text-base leading-relaxed mb-6 max-w-xl mx-auto">
+                        Strip C2PA Content Credentials, IPTC markers, and invisible AI tags before posting. Reconstructs clean pixels in your browser so Instagram never tags your photos as &ldquo;Made with AI&rdquo;.
                     </p>
 
-                    <div className="flex items-center justify-center gap-6 text-xs text-white/40 font-medium">
+                    <div className="flex items-center justify-center gap-4 sm:gap-6 text-xs text-white/50 flex-wrap">
                         <span className="flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-sm text-green-400">check_circle</span>
+                            <span className="material-symbols-outlined text-sm text-emerald-400">verified</span>
                             C2PA & IPTC Stripped
                         </span>
                         <span className="flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-sm text-green-400">check_circle</span>
-                            No AI Content Tag on Post
+                            <span className="material-symbols-outlined text-sm text-emerald-400">lock</span>
+                            100% In-Browser Privacy
                         </span>
                         <span className="flex items-center gap-1.5">
-                            <span className="material-symbols-outlined text-sm text-green-400">check_circle</span>
-                            100% In-Browser Privacy
+                            <span className="material-symbols-outlined text-sm text-emerald-400">high_quality</span>
+                            Zero Quality Loss
                         </span>
                     </div>
                 </header>
 
                 {/* UPLOADER DROPZONE */}
-                <section id="uploader" className="mb-12">
+                <section id="uploader" className="mb-6">
                     <div
                         onDragOver={(e) => {
                             e.preventDefault();
@@ -478,10 +476,10 @@ export default function AILabelRemoverPage() {
                             if (e.dataTransfer.files) handleFiles(e.dataTransfer.files);
                         }}
                         onClick={() => fileInputRef.current?.click()}
-                        className={`relative group bg-[#0e0e12]/90 border-2 border-dashed rounded-3xl p-10 sm:p-14 text-center cursor-pointer transition-all duration-300 backdrop-blur-xl ${
+                        className={`group relative bg-[#0d0d12]/90 border-2 border-dashed rounded-3xl p-10 sm:p-14 text-center cursor-pointer transition-all duration-200 backdrop-blur-xl ${
                             isDragging
-                                ? 'border-[#8406f9] bg-[#8406f9]/10 shadow-[0_0_40px_rgba(132,6,249,0.3)]'
-                                : 'border-white/15 hover:border-[#8406f9]/60 hover:bg-[#121217] shadow-2xl'
+                                ? 'border-[#8406f9] bg-[#8406f9]/10 shadow-[0_0_35px_rgba(132,6,249,0.25)]'
+                                : 'border-white/[0.12] hover:border-[#8406f9]/60 hover:bg-[#111117] shadow-xl'
                         }`}
                     >
                         <input
@@ -495,48 +493,47 @@ export default function AILabelRemoverPage() {
                             }}
                         />
 
-                        <div className="w-20 h-20 rounded-3xl bg-[#8406f9]/20 border border-[#8406f9]/40 flex items-center justify-center text-[#8406f9] mx-auto mb-6 group-hover:scale-110 transition-transform shadow-[0_0_25px_rgba(132,6,249,0.25)]">
-                            <span className="material-symbols-outlined text-4xl">auto_fix_high</span>
+                        <div className="w-16 h-16 rounded-2xl bg-[#8406f9]/15 border border-[#8406f9]/30 flex items-center justify-center text-[#8406f9] mx-auto mb-4 group-hover:scale-105 transition-transform">
+                            <span className="material-symbols-outlined text-3xl">add_photo_alternate</span>
                         </div>
 
-                        <h3 className="text-xl sm:text-2xl font-black text-white mb-2">
-                            Drop images here, paste from clipboard (Ctrl+V), or click to upload
-                        </h3>
-                        <p className="text-white/50 text-sm max-w-md mx-auto mb-6">
-                            Upload photos created or edited with ChatGPT, Midjourney, Photoshop Generative Fill, Stable Diffusion, or Flux.
+                        <h2 className="text-lg sm:text-xl font-bold text-white mb-1.5">
+                            Drop images here, paste from clipboard (<kbd className="px-1.5 py-0.5 rounded bg-white/10 text-xs font-mono text-white/80">Ctrl+V</kbd>), or click to browse
+                        </h2>
+                        <p className="text-white/45 text-xs sm:text-sm max-w-md mx-auto mb-5">
+                            Clean Midjourney, ChatGPT, Firefly, Flux, or Photoshop AI creations. Files are processed locally on your device — never uploaded to a server.
                         </p>
 
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-mono text-white/70">
-                            <span>JPG • PNG • WebP • Up to 30 images at once</span>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[11px] text-white/60">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                            <span>Supports JPG, PNG, WebP • Up to 30 images at once</span>
                         </div>
                     </div>
                 </section>
 
-                {/* CONTROLS & SETTINGS BAR */}
-                <section className="bg-[#101015] border border-white/10 rounded-2xl p-5 sm:p-6 mb-12 shadow-xl">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                        <div className="flex items-center gap-6 flex-wrap">
+                {/* CONTROLS BAR */}
+                <section className="bg-[#0f0f15] border border-white/[0.08] rounded-2xl p-4 sm:p-5 mb-10 shadow-lg">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
                             {/* Format selector */}
-                            <div>
-                                <label className="text-xs text-white/50 block font-semibold mb-1.5 uppercase tracking-wider">
-                                    Clean Export Format
-                                </label>
-                                <div className="inline-flex p-1 bg-[#18181f] border border-white/10 rounded-xl">
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs text-white/50 font-medium">Export:</span>
+                                <div className="inline-flex p-1 bg-[#171720] border border-white/10 rounded-xl">
                                     <button
                                         onClick={() => reprocessAll('image/jpeg', jpegQuality, deepClean)}
-                                        className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                                             outputFormat === 'image/jpeg'
-                                                ? 'bg-[#8406f9] text-white shadow-md'
+                                                ? 'bg-[#8406f9] text-white shadow-sm'
                                                 : 'text-white/60 hover:text-white'
                                         }`}
                                     >
-                                        Clean JPG (Recommended for Instagram)
+                                        Clean JPG (Instagram)
                                     </button>
                                     <button
                                         onClick={() => reprocessAll('image/png', jpegQuality, deepClean)}
-                                        className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                                             outputFormat === 'image/png'
-                                                ? 'bg-[#8406f9] text-white shadow-md'
+                                                ? 'bg-[#8406f9] text-white shadow-sm'
                                                 : 'text-white/60 hover:text-white'
                                         }`}
                                     >
@@ -545,289 +542,316 @@ export default function AILabelRemoverPage() {
                                 </div>
                             </div>
 
-                            {/* Deep Cleanse / SynthID Watermark Scrub */}
-                            <div>
-                                <label className="text-xs text-white/50 block font-semibold mb-1.5 uppercase tracking-wider">
-                                    Deep Clean (Disrupt Invisible Watermarks)
-                                </label>
-                                <button
-                                    onClick={() => reprocessAll(outputFormat, jpegQuality, !deepClean)}
-                                    className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                                        deepClean
-                                            ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400'
-                                            : 'bg-white/5 border-white/10 text-white/40'
-                                    }`}
-                                >
-                                    <span className="material-symbols-outlined text-sm">
-                                        {deepClean ? 'check_box' : 'check_box_outline_blank'}
-                                    </span>
-                                    <span>SynthID / Invisible Watermark Scrub ({deepClean ? 'ACTIVE' : 'OFF'})</span>
-                                </button>
-                            </div>
+                            {/* Deep Cleanse toggle */}
+                            <button
+                                onClick={() => reprocessAll(outputFormat, jpegQuality, !deepClean)}
+                                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all cursor-pointer ${
+                                    deepClean
+                                        ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                                        : 'bg-white/5 border-white/10 text-white/40'
+                                }`}
+                                title="Applies subtle micro-pixel dithering to disrupt invisible watermarks (e.g., SynthID) without changing human-visible quality."
+                            >
+                                <span className="material-symbols-outlined text-sm">
+                                    {deepClean ? 'check_circle' : 'radio_button_unchecked'}
+                                </span>
+                                <span>SynthID Scrub {deepClean ? 'On' : 'Off'}</span>
+                            </button>
                         </div>
 
                         {/* Batch actions */}
                         {images.length > 0 && (
-                            <div className="flex items-center gap-3 self-end md:self-center">
+                            <div className="flex items-center gap-2.5 self-end sm:self-center">
                                 <button
                                     onClick={clearAll}
-                                    className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-xs font-bold border border-white/10 transition-colors cursor-pointer"
+                                    className="px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/60 hover:text-white text-xs font-medium border border-white/10 transition-colors cursor-pointer"
                                 >
-                                    Clear All
+                                    Clear
                                 </button>
                                 <button
                                     onClick={downloadAll}
-                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#8406f9] hover:bg-[#8406f9]/90 text-white text-xs font-bold uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(132,6,249,0.3)] cursor-pointer"
+                                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#8406f9] hover:bg-[#8406f9]/90 text-white text-xs font-semibold transition-all shadow-[0_0_15px_rgba(132,6,249,0.3)] cursor-pointer"
                                 >
                                     <span className="material-symbols-outlined text-sm">download</span>
-                                    <span>Download All Clean ({images.length})</span>
+                                    <span>Download All ({images.length})</span>
                                 </button>
                             </div>
                         )}
                     </div>
                 </section>
 
-                {/* PROCESSED IMAGES LIST & INSPECTOR */}
+                {/* PROCESSED IMAGES LIST */}
                 {images.length > 0 && (
-                    <section id="inspector" className="mb-16 space-y-8">
-                        <div className="flex items-center justify-between">
-                            <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
-                                <span className="material-symbols-outlined text-[#8406f9]">verified_user</span>
-                                <span>Sanitization & Diagnostic Inspector</span>
+                    <section id="inspector" className="mb-14 space-y-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                                <span className="material-symbols-outlined text-sm text-[#8406f9]">photo_library</span>
+                                <span>Cleaned Images ({images.length})</span>
                             </h2>
-                            <span className="text-xs text-white/50">{images.length} file(s) ready</span>
+                            <span className="text-xs text-white/40">Ready to post on Instagram</span>
                         </div>
 
-                        <div className="grid grid-cols-1 gap-6">
-                            {images.map((img) => (
-                                <div
-                                    key={img.id}
-                                    className="bg-[#0c0c0f] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row gap-6 items-start justify-between"
-                                >
-                                    {/* Image Preview & Details */}
-                                    <div className="flex flex-col sm:flex-row items-start gap-6 w-full lg:w-2/3">
-                                        <div className="relative w-full sm:w-48 h-48 rounded-2xl overflow-hidden bg-[#15151c] border border-white/10 shrink-0 flex items-center justify-center group">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img
-                                                src={img.previewUrl}
-                                                alt={img.originalName}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                            />
-                                            <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md text-[10px] font-mono text-white/80">
-                                                {img.dimensions ? `${img.dimensions.width}×${img.dimensions.height}` : 'Loading...'}
-                                            </div>
-                                        </div>
+                        <div className="space-y-3">
+                            {images.map((img) => {
+                                const isDetailsOpen = expandedDetails[img.id] || false;
+                                return (
+                                    <div
+                                        key={img.id}
+                                        className="bg-[#0e0e13] border border-white/[0.08] hover:border-white/15 rounded-2xl p-4 sm:p-5 transition-all shadow-md"
+                                    >
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                            {/* Left: Thumbnail & Details */}
+                                            <div className="flex items-center gap-4 min-w-0 flex-1">
+                                                <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden bg-[#181822] border border-white/10 shrink-0">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                    <img
+                                                        src={img.previewUrl}
+                                                        alt={img.originalName}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </div>
 
-                                        <div className="flex-1 w-full">
-                                            <div className="flex items-center justify-between gap-2 mb-2">
-                                                <h3 className="font-bold text-white text-base truncate max-w-sm" title={img.originalName}>
-                                                    {img.originalName}
-                                                </h3>
-                                                <button
-                                                    onClick={() => removeImage(img.id)}
-                                                    className="text-white/30 hover:text-red-400 transition-colors cursor-pointer"
-                                                    title="Remove"
-                                                >
-                                                    <span className="material-symbols-outlined text-lg">close</span>
-                                                </button>
-                                            </div>
-
-                                            <div className="flex items-center gap-3 text-xs text-white/50 mb-4 flex-wrap">
-                                                <span>Original: <strong className="text-white">{formatBytes(img.originalSize)}</strong></span>
-                                                <span>•</span>
-                                                <span>Cleaned: <strong className="text-emerald-400">{img.cleanedSize ? formatBytes(img.cleanedSize) : 'Processing...'}</strong></span>
-                                                <span>•</span>
-                                                <span className="capitalize">{outputFormat.replace('image/', '')}</span>
-                                            </div>
-
-                                            {/* Marker Diagnostic Status */}
-                                            <div className="space-y-2 mb-4">
-                                                {img.markers.length > 0 ? (
-                                                    <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3.5">
-                                                        <div className="flex items-center gap-2 text-xs font-bold text-red-400 mb-1.5">
-                                                            <span className="material-symbols-outlined text-sm">warning</span>
-                                                            <span>{img.markers.length} AI Marker(s) Detected in Original File:</span>
-                                                        </div>
-                                                        <ul className="space-y-1 text-xs text-white/70">
-                                                            {img.markers.map((m, idx) => (
-                                                                <li key={idx} className="flex items-center gap-1.5">
-                                                                    <span className="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0" />
-                                                                    <strong className="text-white">{m.label}</strong> — {m.details}
-                                                                </li>
-                                                            ))}
-                                                        </ul>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <h3 className="font-semibold text-white text-sm truncate max-w-xs sm:max-w-md" title={img.originalName}>
+                                                            {img.originalName}
+                                                        </h3>
+                                                        <span className="px-1.5 py-0.5 rounded bg-white/10 text-[10px] font-mono text-white/70 uppercase">
+                                                            {outputFormat.replace('image/', '')}
+                                                        </span>
                                                     </div>
-                                                ) : (
-                                                    <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-xs text-white/60">
-                                                        <div className="flex items-center gap-1.5 text-white/80 font-semibold mb-0.5">
-                                                            <span className="material-symbols-outlined text-sm text-[#8406f9]">info</span>
-                                                            <span>No direct plain-text AI tags found in header</span>
-                                                        </div>
-                                                        <span>Full rasterization applied to ensure any hidden chunks or metadata boxes are eliminated.</span>
-                                                    </div>
-                                                )}
 
-                                                <div className="bg-emerald-500/10 border border-emerald-500/25 rounded-xl p-3 flex items-center gap-2 text-xs text-emerald-400 font-semibold">
-                                                    <span className="material-symbols-outlined text-base">verified</span>
-                                                    <span>Cleaned image has 0 C2PA, 0 IPTC, 0 EXIF AI tags. 100% Safe for Instagram!</span>
+                                                    <div className="flex items-center gap-2 text-xs text-white/45 mb-2 flex-wrap">
+                                                        <span>{formatBytes(img.originalSize)}</span>
+                                                        <span>→</span>
+                                                        <span className="text-emerald-400 font-medium">
+                                                            {img.cleanedSize ? formatBytes(img.cleanedSize) : 'Sanitizing...'}
+                                                        </span>
+                                                        {img.dimensions && (
+                                                            <>
+                                                                <span>•</span>
+                                                                <span>{img.dimensions.width}×{img.dimensions.height}px</span>
+                                                            </>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Status Badge */}
+                                                    <div className="flex items-center gap-2 flex-wrap">
+                                                        {img.markers.length > 0 ? (
+                                                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+                                                                <span className="material-symbols-outlined text-xs">check_circle</span>
+                                                                <span>Stripped: C2PA / AI Markers ({img.markers.length})</span>
+                                                                <button
+                                                                    onClick={() => toggleDetails(img.id)}
+                                                                    className="underline hover:text-white ml-1 text-[11px] cursor-pointer"
+                                                                >
+                                                                    {isDetailsOpen ? 'Hide' : 'Details'}
+                                                                </button>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+                                                                <span className="material-symbols-outlined text-xs">verified</span>
+                                                                <span>Safe for Instagram (0 AI Tags)</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
+
+                                            {/* Right: Actions */}
+                                            <div className="flex items-center gap-2 w-full sm:w-auto justify-end pt-3 sm:pt-0 border-t sm:border-t-0 border-white/5">
+                                                <button
+                                                    onClick={() => downloadImage(img)}
+                                                    disabled={!img.cleanedUrl || img.isProcessing}
+                                                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#8406f9] hover:bg-[#8406f9]/90 disabled:opacity-50 text-white font-medium text-xs transition-all shadow-sm cursor-pointer"
+                                                >
+                                                    <span className="material-symbols-outlined text-sm">download</span>
+                                                    <span>Download</span>
+                                                </button>
+
+                                                <button
+                                                    onClick={() => copyImageToClipboard(img)}
+                                                    disabled={!img.cleanedBlob || img.isProcessing}
+                                                    className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors cursor-pointer"
+                                                    title="Copy clean image to clipboard"
+                                                >
+                                                    <span className="material-symbols-outlined text-base">content_copy</span>
+                                                </button>
+
+                                                <button
+                                                    onClick={() => removeImage(img.id)}
+                                                    className="p-2 rounded-xl text-white/30 hover:text-red-400 transition-colors cursor-pointer"
+                                                    title="Remove"
+                                                >
+                                                    <span className="material-symbols-outlined text-base">close</span>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    {/* Action Buttons */}
-                                    <div className="flex flex-col sm:flex-row lg:flex-col gap-3 w-full lg:w-auto shrink-0 pt-4 lg:pt-0 border-t lg:border-t-0 border-white/5">
-                                        <button
-                                            onClick={() => downloadImage(img)}
-                                            disabled={!img.cleanedUrl || img.isProcessing}
-                                            className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#8406f9] hover:bg-[#8406f9]/90 disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(132,6,249,0.3)] hover:shadow-[0_0_30px_rgba(132,6,249,0.5)] cursor-pointer"
-                                        >
-                                            <span className="material-symbols-outlined text-base">download</span>
-                                            <span>Download Clean Image</span>
-                                        </button>
-
-                                        <button
-                                            onClick={() => copyImageToClipboard(img)}
-                                            disabled={!img.cleanedBlob || img.isProcessing}
-                                            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white text-xs font-bold border border-white/10 transition-colors cursor-pointer"
-                                        >
-                                            <span className="material-symbols-outlined text-base">content_copy</span>
-                                            <span>Copy to Clipboard</span>
-                                        </button>
+                                        {/* Optional Expandable Diagnostic Details */}
+                                        {isDetailsOpen && img.markers.length > 0 && (
+                                            <div className="mt-4 pt-3 border-t border-white/5 space-y-2 text-xs text-white/60">
+                                                <div className="font-semibold text-white/80">Detected & Eliminated Markers:</div>
+                                                {img.markers.map((m, idx) => (
+                                                    <div key={idx} className="flex items-start gap-2 bg-white/[0.02] p-2.5 rounded-lg border border-white/5">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1 shrink-0" />
+                                                        <div>
+                                                            <strong className="text-white/90">{m.label}:</strong> {m.details}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </section>
                 )}
 
-                {/* SUPPORTED PLATFORMS & GENERATORS BADGE GRID */}
-                <section className="mb-20">
+                {/* 3-STEP HOW IT WORKS */}
+                <section className="mb-16">
                     <div className="text-center mb-8">
-                        <span className="text-xs font-mono uppercase tracking-widest text-[#8406f9]">Comprehensive Coverage</span>
-                        <h2 className="text-2xl sm:text-3xl font-black text-white mt-1">
-                            Removes AI Labels From All Leading Generators
+                        <span className="text-xs font-mono uppercase tracking-widest text-[#8406f9]">Simple 3-Step Process</span>
+                        <h2 className="text-xl sm:text-2xl font-black text-white mt-1">
+                            How to Post on Instagram Without the AI Label
                         </h2>
                     </div>
 
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <div className="bg-[#0e0e13] border border-white/[0.08] rounded-2xl p-6 relative overflow-hidden">
+                            <div className="text-3xl font-black text-white/15 mb-4">01</div>
+                            <h3 className="font-bold text-white text-base mb-2">Upload or Paste</h3>
+                            <p className="text-xs text-white/60 leading-relaxed">
+                                Drop your image from Midjourney, ChatGPT, Firefly, or Stable Diffusion. You can also press <kbd className="px-1 py-0.5 rounded bg-white/10 text-[10px] font-mono">Ctrl+V</kbd> to paste directly.
+                            </p>
+                        </div>
+
+                        <div className="bg-[#0e0e13] border border-white/[0.08] rounded-2xl p-6 relative overflow-hidden">
+                            <div className="text-3xl font-black text-white/15 mb-4">02</div>
+                            <h3 className="font-bold text-white text-base mb-2">Instant Strip</h3>
+                            <p className="text-xs text-white/60 leading-relaxed">
+                                Our in-browser canvas engine strips C2PA manifests, IPTC tags, and invisible watermarks by re-encoding clean RGB pixels.
+                            </p>
+                        </div>
+
+                        <div className="bg-[#0e0e13] border border-white/[0.08] rounded-2xl p-6 relative overflow-hidden">
+                            <div className="text-3xl font-black text-white/15 mb-4">03</div>
+                            <h3 className="font-bold text-white text-base mb-2">Post Freely</h3>
+                            <p className="text-xs text-white/60 leading-relaxed">
+                                Download the sanitized file and upload to Instagram feed, Reels, or Stories. Instagram scans 0 AI tags and publishes normally.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                {/* SUPPORTED GENERATORS */}
+                <section className="mb-16">
+                    <div className="text-center mb-6">
+                        <span className="text-xs font-mono uppercase tracking-widest text-[#8406f9]">Compatibility</span>
+                        <h2 className="text-lg sm:text-xl font-bold text-white mt-1">
+                            Supported AI Generators & Platforms
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         {SUPPORTED_GENERATORS.map((gen) => (
                             <div
                                 key={gen.name}
-                                className="bg-[#0e0e12] border border-white/10 rounded-2xl p-4 text-center hover:border-[#8406f9]/40 transition-colors"
+                                className="bg-[#0e0e13] border border-white/[0.07] rounded-xl p-3.5 text-center hover:border-white/20 transition-colors"
                             >
-                                <p className="font-bold text-sm text-white mb-1">{gen.name}</p>
-                                <span className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">
-                                    Stripped: {gen.tags}
+                                <p className="font-semibold text-xs sm:text-sm text-white mb-1">{gen.name}</p>
+                                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">
+                                    {gen.tags}
                                 </span>
                             </div>
                         ))}
                     </div>
                 </section>
 
-                {/* DETAILED EDUCATIONAL GUIDE SECTION (SEO-MAXIMIZED) */}
-                <section className="mb-20 bg-[#0c0c0f] border border-white/10 rounded-3xl p-8 sm:p-12 relative overflow-hidden">
-                    <div className="max-w-3xl">
+                {/* CLEAN GUIDE / SEO EXPLAINER */}
+                <section className="mb-16 bg-[#0c0c11] border border-white/[0.08] rounded-3xl p-6 sm:p-10">
+                    <div className="max-w-2xl mx-auto">
                         <span className="text-xs font-mono text-[#8406f9] uppercase tracking-wider mb-2 block">
-                            {'// HOW INSTAGRAM AI DETECTION WORKS'}
+                            {'// How Instagram Detects AI Content'}
                         </span>
-                        <h2 className="text-2xl sm:text-4xl font-black text-white mb-6 leading-tight">
-                            Why Instagram Automatically Slaps the &ldquo;Made with AI&rdquo; Badge on Your Content
+                        <h2 className="text-xl sm:text-3xl font-black text-white mb-4 leading-tight">
+                            Why Instagram Automatically Labels AI Images
                         </h2>
 
-                        <div className="space-y-6 text-sm sm:text-base text-white/70 leading-relaxed">
+                        <div className="space-y-4 text-xs sm:text-sm text-white/65 leading-relaxed">
                             <p>
-                                In 2024, Meta implemented automated detection across <strong>Instagram, Facebook, and Threads</strong> to label AI-generated content. Rather than visually examining every pixel with complex neural networks, Meta scans the file header for <strong>C2PA (Coalition for Content Provenance and Authenticity) manifests</strong> and <strong>IPTC digitalSourceType</strong> metadata.
+                                Instagram, Facebook, and Threads use automated scanners that inspect uploaded image files. Instead of analyzing pixels with slow neural models, Meta primarily inspects <strong>metadata headers</strong> for:
                             </p>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-6">
-                                <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-5">
-                                    <h3 className="font-bold text-white text-base mb-2 flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-[#8406f9]">fingerprint</span>
-                                        C2PA Content Credentials
-                                    </h3>
-                                    <p className="text-xs text-white/60 leading-normal">
-                                        Invisible cryptographically signed data boxes added by OpenAI, Adobe, Google, and Midjourney recording when and where the AI was used.
-                                    </p>
-                                </div>
+                            <ul className="space-y-2 pl-4 list-disc marker:text-[#8406f9]">
+                                <li>
+                                    <strong className="text-white">C2PA (Content Credentials)</strong>: Cryptographic manifests embedded by OpenAI (DALL·E 3), Adobe Firefly, Midjourney, and Google.
+                                </li>
+                                <li>
+                                    <strong className="text-white">IPTC digitalSourceType</strong>: Metadata tags marking algorithmic media creation.
+                                </li>
+                                <li>
+                                    <strong className="text-white">EXIF / Software Tags</strong>: Strings written by generation pipelines and editors.
+                                </li>
+                            </ul>
 
-                                <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-5">
-                                    <h3 className="font-bold text-white text-base mb-2 flex items-center gap-2">
-                                        <span className="material-symbols-outlined text-[#8406f9]">tag</span>
-                                        IPTC & XMP Source Tags
-                                    </h3>
-                                    <p className="text-xs text-white/60 leading-normal">
-                                        Standard photo industry tags like <code className="text-purple-300">trainedAlgorithmicMedia</code> that signal to social algorithms that an image originated from an AI model.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <h3 className="text-xl font-bold text-white pt-2">The False Positive Problem for Creators</h3>
                             <p>
-                                The biggest issue facing photographers and digital creators is <strong>false positives</strong>. If you take an authentic camera photo on your Sony or iPhone and use Photoshop&apos;s Generative Fill to remove a photobomber or expand a background margin, Adobe quietly embeds C2PA manifests into your file. When you upload your genuine photo to Instagram, Instagram flags the entire photo as &ldquo;Made with AI&rdquo; or &ldquo;AI info&rdquo;, damaging your reach and creator authenticity.
+                                If you use Photoshop&apos;s Generative Fill to adjust a tiny background flaw in a real camera photo, Adobe injects C2PA credentials. Instagram detects this tag and labels the entire authentic photo as &ldquo;Made with AI&rdquo;.
                             </p>
 
-                            <h3 className="text-xl font-bold text-white pt-2">How Our Sanitizer Guarantees Freedom from AI Labels</h3>
                             <p>
-                                By drawing the image into an isolated browser canvas and reconstructing the binary stream from raw RGB pixel data, our tool strips 100% of auxiliary C2PA boxes, XMP packets, and EXIF comments. The resulting output is a clean, natural file ready to upload to Instagram without triggering Meta&apos;s detection filters.
+                                Our sanitizer re-rasterizes the image through an isolated HTML5 Canvas. Because the canvas produces a pristine binary image stream containing only the raw RGB pixels, <strong>100% of auxiliary C2PA manifests and AI tags are omitted</strong>.
                             </p>
                         </div>
                     </div>
                 </section>
 
-                {/* FAQ ACCORDION SECTION */}
-                <section className="mb-20">
-                    <div className="text-center max-w-2xl mx-auto mb-12">
-                        <span className="text-xs font-mono text-[#8406f9] uppercase tracking-wider">Help & Answers</span>
-                        <h2 className="text-2xl sm:text-4xl font-black text-white mt-1">
+                {/* FAQ ACCORDION */}
+                <section className="mb-16">
+                    <div className="text-center max-w-xl mx-auto mb-8">
+                        <span className="text-xs font-mono text-[#8406f9] uppercase tracking-wider">Common Questions</span>
+                        <h2 className="text-xl sm:text-2xl font-black text-white mt-1">
                             Frequently Asked Questions
                         </h2>
                     </div>
 
-                    <div className="space-y-4 max-w-3xl mx-auto">
+                    <div className="space-y-3 max-w-2xl mx-auto">
                         {[
                             {
                                 q: "How does this AI content tag remover from Instagram work?",
-                                a: "Our AI content tag remover from Instagram strips the C2PA Content Credentials manifests, IPTC digitalSourceType markers, and EXIF software tags that trigger Meta's automated detection. When you post the sanitized photo to Instagram, the platform finds zero AI markers, preventing the AI content tag and 'Made with AI' label from appearing.",
+                                a: "It strips C2PA manifests, IPTC digitalSourceType tags, and generation metadata that trigger Meta's automated detection. When you upload the clean image to Instagram, there are 0 AI markers, preventing the AI content tag.",
                             },
                             {
                                 q: "How do I remove the 'Made with AI' label on Instagram?",
-                                a: "Before uploading your image to Instagram, upload it to our tool. It automatically detects and strips the C2PA Content Credentials, IPTC tags, and EXIF comments that trigger Instagram's automated scanner. Download the clean file and post it to Instagram — it will publish without the AI label.",
+                                a: "Drop your image into this tool, click Download to save the clean version, and post that file to Instagram. It will publish without the automated AI label.",
                             },
                             {
-                                q: "Is this tool safe and legal to use?",
-                                a: "Yes. As a creator, you own your creative files and have the full right to remove metadata tags, EXIF details, and personal comments from your own assets prior to distribution. Our tool runs locally in your browser and never touches our servers.",
-                            },
-                            {
-                                q: "Does Instagram detect visual AI without metadata?",
-                                a: "Meta's automated 'Made with AI' label is primarily triggered by file metadata (C2PA, IPTC, XMP). For the vast majority of posts, stripping metadata prevents the label. However, if you explicitly toggle Instagram's manual 'Label as AI' switch in post settings, Instagram will display the label.",
+                                q: "Is this tool safe and private?",
+                                a: "Yes, 100%. All processing happens entirely within your web browser on your own device. No image is ever uploaded to any server or stored in any database.",
                             },
                             {
                                 q: "Will the image quality drop after cleaning?",
-                                a: "No. The visual clarity and pixel dimensions are preserved. You can select clean high-quality JPG (96% quality) or lossless PNG. Your image will look identical to your original creation.",
+                                a: "No. Original pixel dimensions and visual fidelity are preserved. You can export as pristine JPG (96% quality) or lossless PNG.",
                             },
                             {
-                                q: "Can I use this for Instagram Reels or video thumbnails?",
-                                a: "Yes! You can clean your cover images, Reel thumbnails, carousel slides, and story graphics before posting.",
-                            },
-                            {
-                                q: "Is there any limit on how many images I can clean?",
-                                a: "No limits whatsoever. You can process unlimited single photos or batches for free without signing up or creating an account.",
+                                q: "Can I use this for Instagram Reels cover photos?",
+                                a: "Yes. You can clean carousel slides, Reel covers, Story images, and feed photos before posting.",
                             },
                         ].map((faq, idx) => {
                             const isOpen = openFaqIndex === idx;
                             return (
                                 <div
                                     key={idx}
-                                    className="bg-[#0e0e12] border border-white/10 rounded-2xl overflow-hidden transition-colors"
+                                    className="bg-[#0e0e13] border border-white/[0.08] rounded-2xl overflow-hidden transition-colors"
                                 >
                                     <button
                                         onClick={() => setOpenFaqIndex(isOpen ? null : idx)}
-                                        className="w-full text-left p-6 flex items-center justify-between gap-4 cursor-pointer focus:outline-none"
+                                        className="w-full text-left p-5 flex items-center justify-between gap-4 cursor-pointer focus:outline-none"
                                     >
-                                        <span className="font-bold text-white text-base sm:text-lg">{faq.q}</span>
+                                        <span className="font-semibold text-white text-sm sm:text-base">{faq.q}</span>
                                         <span
-                                            className={`material-symbols-outlined text-white/50 transition-transform ${
+                                            className={`material-symbols-outlined text-white/40 transition-transform ${
                                                 isOpen ? 'rotate-180 text-[#8406f9]' : ''
                                             }`}
                                         >
@@ -835,7 +859,7 @@ export default function AILabelRemoverPage() {
                                         </span>
                                     </button>
                                     {isOpen && (
-                                        <div className="px-6 pb-6 text-sm text-white/60 leading-relaxed border-t border-white/5 pt-4">
+                                        <div className="px-5 pb-5 text-xs sm:text-sm text-white/60 leading-relaxed border-t border-white/5 pt-3">
                                             {faq.a}
                                         </div>
                                     )}
@@ -845,26 +869,26 @@ export default function AILabelRemoverPage() {
                     </div>
                 </section>
 
-                {/* CROSS-PROMOTION BANNER */}
-                <section className="bg-gradient-to-r from-[#8406f9]/20 via-pink-600/10 to-[#8406f9]/20 border border-[#8406f9]/30 rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden shadow-2xl">
-                    <h2 className="text-2xl sm:text-4xl font-black text-white mb-4">
-                        Ready to Turn Your Content into Paid Brand Deals?
+                {/* MINIMAL CTA BANNER */}
+                <section className="bg-gradient-to-r from-[#8406f9]/15 via-pink-600/10 to-[#8406f9]/15 border border-[#8406f9]/25 rounded-3xl p-6 sm:p-8 text-center relative overflow-hidden shadow-xl">
+                    <h2 className="text-xl sm:text-2xl font-black text-white mb-2">
+                        Grow Your Creator Business with Elite Influencer
                     </h2>
-                    <p className="text-white/70 text-sm sm:text-base max-w-xl mx-auto mb-8">
-                        Elite Influencer gives creators verified media kits, accurate rate calculations with CreatorCalc, and direct access to paid brand campaigns in India.
+                    <p className="text-white/60 text-xs sm:text-sm max-w-lg mx-auto mb-6">
+                        Build your media kit, calculate fair Reel sponsorship rates, and discover brand campaigns in India.
                     </p>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <div className="flex flex-wrap items-center justify-center gap-3">
                         <Link
                             href="/dashboard"
-                            className="px-8 py-4 rounded-full bg-[#8406f9] hover:bg-[#8406f9]/90 text-white font-bold text-sm uppercase tracking-wider transition-all shadow-[0_0_25px_rgba(132,6,249,0.4)]"
+                            className="px-6 py-2.5 rounded-full bg-[#8406f9] hover:bg-[#8406f9]/90 text-white font-semibold text-xs tracking-wide transition-all shadow-[0_0_20px_rgba(132,6,249,0.3)]"
                         >
                             Build Free Media Kit
                         </Link>
                         <Link
                             href="/creator-calc"
-                            className="px-8 py-4 rounded-full bg-white/10 hover:bg-white/15 text-white font-bold text-sm border border-white/15 transition-colors"
+                            className="px-6 py-2.5 rounded-full bg-white/10 hover:bg-white/15 text-white font-semibold text-xs border border-white/10 transition-colors"
                         >
-                            Calculate My Reel Rate
+                            Calculate Reel Rate
                         </Link>
                     </div>
                 </section>
