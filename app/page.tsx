@@ -31,7 +31,28 @@ export default async function Home() {
         <div className="bg-[#050505] min-h-screen text-white relative selection:bg-[#8406f9] selection:text-white">
             <Navbar isLoggedIn={isLoggedIn} />
 
-            <main className="pt-24 pb-20">
+            <main className="pt-20 pb-20">
+                {/* VIP WHATSAPP COMMUNITY TOP BANNER */}
+                <div className="bg-gradient-to-r from-[#25D366]/15 via-[#8406f9]/15 to-[#25D366]/15 border-b border-white/10 px-4 py-2.5 sm:py-3 relative z-30">
+                    <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm text-center">
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#25D366]/20 border border-[#25D366]/40 text-[#25D366] text-[11px] font-extrabold uppercase tracking-wider">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#25D366] animate-ping" />
+                            Live Community
+                        </span>
+                        <span className="text-white/90 font-medium">
+                            Join 2,500+ Indian creators & brands getting instant casting calls, collab invites & paid deal alerts.
+                        </span>
+                        <a
+                            href="https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-[#25D366] hover:text-[#25D366]/80 font-bold underline underline-offset-4 ml-1 transition-colors"
+                        >
+                            Join WhatsApp Community
+                            <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                        </a>
+                    </div>
+                </div>
                 {/* 1. ATMOSPHERIC HERO WITH FLOATING 3D CREATOR SHOWCASE */}
                 <HeroShowcase isLoggedIn={isLoggedIn} />
 

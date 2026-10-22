@@ -79,7 +79,7 @@ export default async function MarketplacePage() {
                                     <div className="flex items-center gap-4 mb-6">
                                         <div className="w-14 h-14 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 overflow-hidden">
                                             {offer.logo_url ? (
-                                                <Image src={offer.logo_url} alt={offer.brand_name} width={56} height={56} unoptimized className="w-full h-full object-cover" />
+                                                <Image src={offer.logo_url} alt={offer.brand_name} width={56} height={56} unoptimized className="w-full h-full object-contain p-1.5" />
                                             ) : (
                                                 <span className="material-symbols-outlined text-3xl text-[#8406f9]">campaign</span>
                                             )}

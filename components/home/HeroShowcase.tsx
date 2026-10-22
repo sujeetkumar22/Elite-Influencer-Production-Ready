@@ -20,15 +20,22 @@ export default function HeroShowcase({ isLoggedIn }: HeroShowcaseProps) {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Top Badge */}
                 <div className="flex justify-center mb-8">
-                    <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-white/90 text-xs font-semibold tracking-wide backdrop-blur-xl shadow-[0_0_20px_rgba(132,6,249,0.15)] hover:border-[#8406f9]/40 transition-all duration-300">
+                    <a
+                        href="https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.04] hover:bg-[#25D366]/10 border border-white/10 hover:border-[#25D366]/40 text-white/90 text-xs font-semibold tracking-wide backdrop-blur-xl shadow-[0_0_20px_rgba(132,6,249,0.15)] hover:shadow-[0_0_25px_rgba(37,211,102,0.25)] transition-all duration-300 group cursor-pointer"
+                    >
                         <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#8406f9] opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#8406f9]"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#25D366]"></span>
                         </span>
-                        <span className="text-white/80">India&apos;s Premier Creator Operating System</span>
+                        <span className="text-white/90 font-medium">Join WhatsApp Community</span>
                         <span className="text-white/30">•</span>
-                        <span className="text-[#8406f9] font-bold">Zero Commission</span>
-                    </div>
+                        <span className="text-[#25D366] font-bold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
+                            2,500+ Creators <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                        </span>
+                    </a>
                 </div>
 
                 {/* Hero Headline */}
