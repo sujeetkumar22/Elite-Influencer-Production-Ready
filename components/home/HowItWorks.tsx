@@ -17,7 +17,7 @@ const STEPS = [
         icon: 'trending_up',
         title: 'Price Fairly & Expand Your Network',
         subtitle: 'Data-driven leverage',
-        description: 'Use CreatorCalc to determine your true market rate per Reel or Story. Find local creators on the Collab Board for joint videos, and draft AI-powered outreach emails.',
+        description: 'Use CreatorCalc to determine your true market rate per Reel or Story. Discover trending photo-ready events in your city, and draft AI-powered outreach emails.',
         badge: 'Backed by Indian CPM Data',
         highlight: 'Never get lowballed by agencies again'
     },

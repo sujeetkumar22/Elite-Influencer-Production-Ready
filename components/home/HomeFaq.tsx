@@ -12,7 +12,7 @@ interface FAQItem {
 const FAQS: FAQItem[] = [
     {
         question: "Is Elite Influencer really 100% free for content creators?",
-        answer: "Yes, completely free. Building and hosting your media kit portfolio, calculating rates on CreatorCalc, generating brand pitches with AI, and networking on the Collab Finder cost zero rupees. We never charge creators hidden fees or take commissions from your brand deals.",
+        answer: "Yes, completely free. Building and hosting your media kit portfolio, calculating rates on CreatorCalc, and generating brand pitches with AI cost zero rupees. We never charge creators hidden fees or take commissions from your brand deals.",
         category: "Pricing"
     },
     {
@@ -21,9 +21,9 @@ const FAQS: FAQItem[] = [
         category: "Brand Deals"
     },
     {
-        question: "How does the Creator Collab Finder work?",
-        answer: "The Collab Finder board allows creators to post and discover networking opportunities by city (Delhi NCR, Mumbai, Bangalore, Pune, Hyderabad, Remote), format (Joint Reels, Podcast Guests, YouTube Collabs), and niche. Creators connect directly without intermediaries.",
-        category: "Collabs"
+        question: "How does the Brand Deals Marketplace work?",
+        answer: "The Marketplace features active paid brand campaigns, product collaborations, and sponsor briefs with upfront budgets and deliverables. Creators can apply directly in seconds.",
+        category: "Marketplace"
     },
     {
         question: "How does CreatorCalc calculate sponsorship rates?",

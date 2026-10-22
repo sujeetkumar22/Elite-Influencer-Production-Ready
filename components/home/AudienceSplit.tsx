@@ -91,11 +91,11 @@ export default function AudienceSplit() {
 
                                 <div className="flex items-start gap-3.5">
                                     <div className="w-8 h-8 rounded-lg bg-[#8406f9]/20 border border-[#8406f9]/30 flex items-center justify-center text-[#8406f9] shrink-0 mt-0.5">
-                                        <span className="material-symbols-outlined text-base">handshake</span>
+                                        <span className="material-symbols-outlined text-base">campaign</span>
                                     </div>
                                     <div>
-                                        <h4 className="text-sm sm:text-base font-bold text-white">Collab Finder Networking</h4>
-                                        <p className="text-xs sm:text-sm text-white/50">Discover creators in your city for joint Reels, podcasts, and co-promotions to grow audiences together.</p>
+                                        <h4 className="text-sm sm:text-base font-bold text-white">Brand Deals Marketplace</h4>
+                                        <p className="text-xs sm:text-sm text-white/50">Apply directly to curated paid campaigns, barter perks, and sponsorships from verified brands.</p>
                                     </div>
                                 </div>
 

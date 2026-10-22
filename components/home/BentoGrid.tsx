@@ -126,42 +126,42 @@ export default function BentoGrid() {
                         </Link>
                     </div>
 
-                    {/* BENTO 3: Collab Finder Networking */}
+                    {/* BENTO 3: Instagrammable Events */}
                     <div className="group relative bg-[#0c0c0e] border border-white/10 hover:border-[#8406f9]/40 rounded-3xl p-8 transition-all duration-300 hover:shadow-[0_20px_40px_rgba(132,6,249,0.12)] flex flex-col justify-between overflow-hidden">
                         <div className="absolute top-0 right-0 w-48 h-48 bg-[#8406f9]/10 rounded-full blur-3xl pointer-events-none" />
 
                         <div>
                             <div className="flex items-center justify-between mb-6">
                                 <div className="w-12 h-12 rounded-2xl bg-[#8406f9]/20 border border-[#8406f9]/30 flex items-center justify-center text-[#8406f9]">
-                                    <span className="material-symbols-outlined text-2xl">handshake</span>
+                                    <span className="material-symbols-outlined text-2xl">photo_camera</span>
                                 </div>
-                                <span className="text-[11px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-                                    New
+                                <span className="text-[11px] font-bold text-[#8406f9] uppercase tracking-widest bg-[#8406f9]/15 px-2.5 py-1 rounded-full border border-[#8406f9]/30">
+                                    AI Curated
                                 </span>
                             </div>
 
-                            <h3 className="text-2xl font-black text-white mb-2">Collab Finder</h3>
+                            <h3 className="text-2xl font-black text-white mb-2">Instagrammable Events</h3>
                             <p className="text-white/60 text-sm leading-relaxed mb-6">
-                                Connect with creators in Delhi NCR, Mumbai, and Bangalore for joint Reels, podcast appearances, and audience-swapping partnerships.
+                                Discover visually spectacular events, pop-ups, and photo-ready venues in Delhi NCR, Mumbai, Hyderabad, and Pune refreshed daily.
                             </p>
 
-                            {/* Mini Collab Request Snippet */}
+                            {/* Mini Event Snippet */}
                             <div className="bg-[#141418] border border-white/10 rounded-2xl p-4 mb-6">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                                    <span className="text-xs text-white font-bold">Delhi NCR • Tech & AI</span>
+                                    <span className="w-2 h-2 rounded-full bg-[#8406f9] animate-pulse" />
+                                    <span className="text-xs text-white font-bold">Mumbai • Immersive Art Pop-up</span>
                                 </div>
                                 <p className="text-xs text-white/70 line-clamp-2">
-                                    &ldquo;Looking for AI startup creators for high-production joint podcast episode.&rdquo;
+                                    &ldquo;High-aesthetic lighting & backdrops perfect for viral reels and photography.&rdquo;
                                 </p>
                             </div>
                         </div>
 
                         <Link
-                            href="/collabs"
+                            href="/events"
                             className="inline-flex items-center gap-2 text-sm font-bold text-[#8406f9] hover:text-purple-300 transition-colors group-hover:translate-x-1"
                         >
-                            <span>Browse Open Collabs</span>
+                            <span>Explore Creator Events</span>
                             <span className="material-symbols-outlined text-base">arrow_forward</span>
                         </Link>
                     </div>

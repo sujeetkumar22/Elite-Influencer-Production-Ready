@@ -33,7 +33,7 @@ export default function HeroShowcase({ isLoggedIn }: HeroShowcaseProps) {
                         <span className="text-white/90 font-medium">Join WhatsApp Community</span>
                         <span className="text-white/30">•</span>
                         <span className="text-[#25D366] font-bold flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                            2,500+ Creators <span className="material-symbols-outlined text-xs">arrow_forward</span>
+                            Join Free <span className="material-symbols-outlined text-xs">arrow_forward</span>
                         </span>
                     </a>
                 </div>
@@ -48,7 +48,7 @@ export default function HeroShowcase({ isLoggedIn }: HeroShowcaseProps) {
                         & BRANDS
                     </h1>
                     <p className="text-lg sm:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed font-normal">
-                        Turn your influence into a high-growth business. Build a media kit brands trust, calculate fair market pricing, find local collabs, and unlock direct paid campaigns — without agency cuts.
+                        Turn your influence into a high-growth business. Build a media kit brands trust, calculate fair market pricing, discover trending events, and unlock direct paid campaigns — without agency cuts.
                     </p>
                 </div>
 
@@ -158,10 +158,10 @@ export default function HeroShowcase({ isLoggedIn }: HeroShowcaseProps) {
                                     View Full Kit
                                 </Link>
                                 <Link
-                                    href="/collabs"
+                                    href="/marketplace"
                                     className="px-5 py-2.5 rounded-xl bg-[#8406f9] hover:bg-[#8406f9]/90 text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-[#8406f9]/25"
                                 >
-                                    Request Collab
+                                    View Campaigns
                                 </Link>
                             </div>
                         </div>
@@ -203,11 +203,11 @@ export default function HeroShowcase({ isLoggedIn }: HeroShowcaseProps) {
                     {/* Floating Chip 1: New Collab Request */}
                     <div className="hidden lg:flex items-center gap-3 absolute -top-4 -left-10 bg-[#121214]/95 border border-[#8406f9]/40 rounded-2xl px-4 py-3 shadow-[0_15px_35px_rgba(0,0,0,0.7)] backdrop-blur-xl animate-float">
                         <div className="w-9 h-9 rounded-xl bg-[#8406f9]/20 border border-[#8406f9]/30 flex items-center justify-center text-[#8406f9]">
-                            <span className="material-symbols-outlined text-lg">handshake</span>
+                            <span className="material-symbols-outlined text-lg">verified</span>
                         </div>
                         <div>
-                            <p className="text-xs font-bold text-white">New Collab Request</p>
-                            <p className="text-[11px] text-white/50">Joint AI Reel in Mumbai with @styledbyrhea</p>
+                            <p className="text-xs font-bold text-white">Direct Brand Inquiry</p>
+                            <p className="text-[11px] text-white/50">Verified partnership inquiry</p>
                         </div>
                     </div>
 

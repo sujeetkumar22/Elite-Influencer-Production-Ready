@@ -12,7 +12,7 @@ import { createClient } from "@/utils/supabase/server";
 
 export const metadata: Metadata = {
     title: "Elite Influencer | The Operating System for Creators & Brands",
-    description: "Build a professional media kit, calculate fair market pricing with CreatorCalc, discover verified collabs, and connect with direct paid brand campaigns in India.",
+    description: "Build a professional media kit, calculate fair market pricing with CreatorCalc, discover verified brand deals, and connect with direct paid brand campaigns in India.",
     alternates: { canonical: "https://eliteinfluencer.in" },
     openGraph: {
         title: "Elite Influencer | The Operating System for Creators & Brands",
@@ -40,7 +40,7 @@ export default async function Home() {
                             Live Community
                         </span>
                         <span className="text-white/90 font-medium">
-                            Join 2,500+ Indian creators & brands getting instant casting calls, collab invites & paid deal alerts.
+                            Join our WhatsApp community for instant brand casting calls and paid deal alerts.
                         </span>
                         <a
                             href="https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq"
@@ -114,12 +114,12 @@ export default async function Home() {
                                     Join Our Creator Community
                                 </h3>
                                 <p className="text-white/80 text-sm leading-relaxed mb-6">
-                                    Get instant alerts for high-ticket casting calls, collab meetups, and direct brand requirements before they go public.
+                                    Get instant alerts for high-ticket casting calls and direct brand requirements before they go public.
                                 </p>
                             </div>
 
                             <div>
-                                <div className="text-xs text-white/60 mb-3 font-medium">Free access • 500+ Indian Creators</div>
+                                <div className="text-xs text-white/60 mb-3 font-medium">Free access • Direct WhatsApp Link</div>
                                 <a
                                     href="https://chat.whatsapp.com/LSM4Vmw3z1cAzjD90QUmtq"
                                     target="_blank"
